@@ -86,56 +86,75 @@ documentation.</p>
 <p>These short introductions isolate the optimization ideas. The sphere
 example uses two iris measurements; the other three construct small
 synthetic problems with known reference answers.</p>
-<table class="table">
-<colgroup>
-<col width="30%">
-<col width="23%">
-<col width="24%">
-<col width="11%">
-<col width="10%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">Application</th>
-<th align="left">Dataset</th>
-<th align="left">Geometry</th>
-<th align="left">Level</th>
-<th align="left">CPU render</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left"><a href="example-sphere-pca.html">Find a principal
-direction</a></td>
-<td align="left">Iris</td>
-<td align="left">Sphere</td>
-<td align="left">Introductory</td>
-<td align="left">7.0 s</td>
-</tr>
-<tr class="even">
-<td align="left"><a href="example-robust-regression.html">Compare
-quadratic and Huber loss</a></td>
-<td align="left">Synthetic regression</td>
-<td align="left">Euclidean</td>
-<td align="left">Introductory</td>
-<td align="left">6.1 s</td>
-</tr>
-<tr class="odd">
-<td align="left"><a href="example-spd-mean.html">Compute a geometric
-midpoint</a></td>
-<td align="left">Two synthetic matrices</td>
-<td align="left">Positive-definite matrices</td>
-<td align="left">Intermediate</td>
-<td align="left">8.8 s</td>
-</tr>
-<tr class="even">
-<td align="left"><a href="example-matrix-completion.html">Complete a
-low-rank matrix</a></td>
-<td align="left">Synthetic rank-two matrix</td>
-<td align="left">Compact fixed rank</td>
-<td align="left">Intermediate</td>
-<td align="left">8.0 s</td>
-</tr>
-</tbody>
-</table>
+<div class="rt-gallery-grid">
+<a class="rt-gallery-card" href="example-sphere-pca.html" aria-labelledby="example-sphere-pca-title"><img class="rt-gallery-image" src="example-sphere-pca_files/figure-html/direction-plot-1.png" alt="Centered iris measurements with the optimized principal direction." loading="lazy" width="1680" height="1104"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Sphere</span>
+<strong class="rt-gallery-title" id="example-sphere-pca-title">Find a
+principal direction</strong>
+<p class="rt-gallery-description">
+Recover the direction of greatest variation in two iris measurements.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> Iris
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Introductory</span> <span class="rt-gallery-runtime">CPU render: 7.0 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+</a>
+<a class="rt-gallery-card" href="example-robust-regression.html" aria-labelledby="example-robust-regression-title"><img class="rt-gallery-image" src="example-robust-regression_files/figure-html/fits-plot-1.png" alt="Synthetic observations and fitted quadratic and Huber regression lines." loading="lazy" width="1680" height="1104"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Euclidean</span>
+<strong class="rt-gallery-title" id="example-robust-regression-title">Compare
+quadratic and Huber loss</strong>
+<p class="rt-gallery-description">
+See how Huber loss changes a regression fit when observations contain
+outliers.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> Synthetic regression
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Introductory</span> <span class="rt-gallery-runtime">CPU render: 6.1 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+</a>
+<a class="rt-gallery-card" href="example-spd-mean.html" aria-labelledby="example-spd-mean-title"><img class="rt-gallery-image" src="example-spd-mean_files/figure-html/ellipses-1.png" alt="Ellipses comparing the input matrices and their geometric and arithmetic averages." loading="lazy" width="1680" height="1176"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Positive-definite matrices</span>
+<strong class="rt-gallery-title" id="example-spd-mean-title">Compute a
+geometric midpoint</strong>
+<p class="rt-gallery-description">
+Compare a geometric midpoint with the arithmetic average of two
+covariance shapes.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> Two synthetic matrices
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 8.8 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+</a>
+<a class="rt-gallery-card" href="example-matrix-completion.html" aria-labelledby="example-matrix-completion-title"><img class="rt-gallery-image" src="example-matrix-completion_files/figure-html/matrix-panels-1.png" alt="Heatmaps of the true, partially observed, and recovered rank-two matrix." loading="lazy" width="1536" height="652"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Compact fixed rank</span>
+<strong class="rt-gallery-title" id="example-matrix-completion-title">Complete
+a low-rank matrix</strong>
+<p class="rt-gallery-description">
+Recover missing entries while keeping the matrix in a compact rank-two
+representation.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> Synthetic rank-two matrix
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 8.0 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+<p></p></a>
+</div>
 </div>
 <div class="section level2">
 <h2 id="public-data-applications">Public-data applications<a class="anchor" aria-label="anchor" href="#public-data-applications"></a>
@@ -144,56 +163,77 @@ low-rank matrix</a></td>
 objective relates to the question being asked. The independent checks
 are available after the main workflow, so you can follow the data
 analysis before studying its numerical details.</p>
-<table class="table">
-<colgroup>
-<col width="27%">
-<col width="19%">
-<col width="33%">
-<col width="10%">
-<col width="9%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">Application</th>
-<th align="left">Dataset</th>
-<th align="left">Geometry</th>
-<th align="left">Level</th>
-<th align="left">CPU render</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left"><a href="example-penguin-subspace.html">Find a penguin
-subspace</a></td>
-<td align="left">Palmer Penguins</td>
-<td align="left">Grassmann</td>
-<td align="left">Intermediate</td>
-<td align="left">10.7 s</td>
-</tr>
-<tr class="even">
-<td align="left"><a href="example-stackloss-regression.html">Fit robust
-industrial regression</a></td>
-<td align="left">Stack loss</td>
-<td align="left">Euclidean</td>
-<td align="left">Introductory</td>
-<td align="left">8.6 s</td>
-</tr>
-<tr class="odd">
-<td align="left"><a href="example-airquality-completion.html">Reconstruct missing
-measurements</a></td>
-<td align="left">Air quality</td>
-<td align="left">Compact fixed rank</td>
-<td align="left">Intermediate</td>
-<td align="left">9.3 s</td>
-</tr>
-<tr class="even">
-<td align="left"><a href="example-covariance-means.html">Average
-observed covariances</a></td>
-<td align="left">European stock indices</td>
-<td align="left">SPD: log-Euclidean and affine-invariant</td>
-<td align="left">Intermediate</td>
-<td align="left">9.3 s</td>
-</tr>
-</tbody>
-</table>
+<div class="rt-gallery-grid">
+<a class="rt-gallery-card" href="example-penguin-subspace.html" aria-labelledby="example-penguin-subspace-title"><img class="rt-gallery-image" src="example-penguin-subspace_files/figure-html/penguin-projection-1.png" alt="Penguin observations projected onto two dimensions and colored by species." loading="lazy" width="1680" height="1152"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Grassmann</span>
+<strong class="rt-gallery-title" id="example-penguin-subspace-title">Find
+a penguin subspace</strong>
+<p class="rt-gallery-description">
+Project four penguin body measurements onto a two-dimensional plane and
+compare with PCA.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> Palmer Penguins
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 10.7 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+</a>
+<a class="rt-gallery-card" href="example-stackloss-regression.html" aria-labelledby="example-stackloss-regression-title"><img class="rt-gallery-image" src="example-stackloss-regression_files/figure-html/fitted-residuals-1.png" alt="Fitted values and residuals for quadratic and Huber industrial regression." loading="lazy" width="1920" height="960"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Euclidean</span>
+<strong class="rt-gallery-title" id="example-stackloss-regression-title">Fit
+robust industrial regression</strong>
+<p class="rt-gallery-description">
+Fit quadratic and Huber models to industrial measurements and inspect
+their residuals.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> Stack loss
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Introductory</span> <span class="rt-gallery-runtime">CPU render: 8.6 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+</a>
+<a class="rt-gallery-card" href="example-airquality-completion.html" aria-labelledby="example-airquality-completion-title"><img class="rt-gallery-image" src="example-airquality-completion_files/figure-html/patterns-1.png" alt="Heatmaps separating missing and withheld measurements and showing their reconstruction." loading="lazy" width="1920" height="960"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Compact fixed rank</span>
+<strong class="rt-gallery-title" id="example-airquality-completion-title">Reconstruct
+missing measurements</strong>
+<p class="rt-gallery-description">
+Fill gaps in environmental measurements and assess predictions on
+held-out observations.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> Air quality
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 9.3 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+</a>
+<a class="rt-gallery-card" href="example-covariance-means.html" aria-labelledby="example-covariance-means-title"><img class="rt-gallery-image" src="example-covariance-means_files/figure-html/covariance-heatmaps-1.png" alt="Heatmaps comparing arithmetic, log-Euclidean, and affine-invariant covariance means." loading="lazy" width="2160" height="816"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">SPD: log-Euclidean and
+affine-invariant</span>
+<strong class="rt-gallery-title" id="example-covariance-means-title">Average
+observed covariances</strong>
+<p class="rt-gallery-description">
+Compare geometric averages of covariance matrices estimated from
+stock-index returns.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> European stock indices
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 9.3 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+<p></p></a>
+</div>
 </div>
 <div class="section level2">
 <h2 id="constraints-and-sparsity">Constraints and sparsity<a class="anchor" aria-label="anchor" href="#constraints-and-sparsity"></a>
@@ -201,40 +241,43 @@ observed covariances</a></td>
 <p>Euclidean space also fits the manifold interface. These examples use
 it to make equality constraints, inequalities, and an exact proximal
 operator easy to understand and verify.</p>
-<table class="table">
-<colgroup>
-<col width="25%">
-<col width="15%">
-<col width="38%">
-<col width="10%">
-<col width="9%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">Application</th>
-<th align="left">Dataset</th>
-<th align="left">Geometry</th>
-<th align="left">Level</th>
-<th align="left">CPU render</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left"><a href="example-tree-constraints.html">Constrain a
-tree-volume model</a></td>
-<td align="left">Black cherry trees</td>
-<td align="left">Euclidean with equality/inequality constraints</td>
-<td align="left">Intermediate</td>
-<td align="left">11.8 s</td>
-</tr>
-<tr class="even">
-<td align="left"><a href="example-mtcars-proximal.html">Trace a sparse
-regression path</a></td>
-<td align="left">Motor Trend cars</td>
-<td align="left">Euclidean with L1 penalty</td>
-<td align="left">Intermediate</td>
-<td align="left">17.9 s</td>
-</tr>
-</tbody>
-</table>
+<div class="rt-gallery-grid">
+<a class="rt-gallery-card" href="example-tree-constraints.html" aria-labelledby="example-tree-constraints-title"><img class="rt-gallery-image" src="example-tree-constraints_files/figure-html/fit-plot-1.png" alt="Observed tree volume against fitted volume with a perfect-fit reference line." loading="lazy" width="1440" height="1440"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Euclidean with equality/inequality
+constraints</span>
+<strong class="rt-gallery-title" id="example-tree-constraints-title">Constrain
+a tree-volume model</strong>
+<p class="rt-gallery-description">
+Fit a log-volume model with nonnegative slopes that sum to three, then
+check the constraints.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> Black cherry trees
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 11.8 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+</a>
+<a class="rt-gallery-card" href="example-mtcars-proximal.html" aria-labelledby="example-mtcars-proximal-title"><img class="rt-gallery-image" src="example-mtcars-proximal_files/figure-html/coefficient-path-1.png" alt="Five standardized regression coefficients along a decreasing sequence of L1 penalties." loading="lazy" width="1680" height="1104"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Euclidean with L1 penalty</span>
+<strong class="rt-gallery-title" id="example-mtcars-proximal-title">Trace
+a sparse regression path</strong>
+<p class="rt-gallery-description">
+Follow regression coefficients across five L1 penalties using an exact
+soft-thresholding step.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> Motor Trend cars
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 17.9 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+<p></p></a>
+</div>
 </div>
 <div class="section level2">
 <h2 id="reading-the-results">Reading the results<a class="anchor" aria-label="anchor" href="#reading-the-results"></a>

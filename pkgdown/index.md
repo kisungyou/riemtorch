@@ -41,6 +41,7 @@ Explore ten worked examples in the [example gallery](articles/examples.html),
 from short introductions to complete applications. Every example includes
 executable code, figures, and numerical checks.
 
+```{=html}
 <div class="rt-example-grid">
 <a class="rt-example" href="articles/example-penguin-subspace.html"><strong>Penguin measurements</strong><span>Find a two-dimensional subspace and compare deterministic and finite-sum optimization.</span></a>
 <a class="rt-example" href="articles/example-stackloss-regression.html"><strong>Industrial measurements</strong><span>Compare quadratic and Huber regression on observations from an ammonia plant.</span></a>
@@ -49,6 +50,7 @@ executable code, figures, and numerical checks.
 <a class="rt-example" href="articles/example-tree-constraints.html"><strong>Tree-volume constraints</strong><span>Encode nonnegative scaling exponents and check the constrained optimum.</span></a>
 <a class="rt-example" href="articles/example-mtcars-proximal.html"><strong>Sparse car-data regression</strong><span>Write an exact proximal operator and trace coefficients across penalty strengths.</span></a>
 </div>
+```
 
 The data are built into R or bundled locally with attribution. See
 [data sources and reproducibility](articles/example-data-sources.html) for

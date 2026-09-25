@@ -19,12 +19,41 @@ runtime_for <- function(article) {
   stopifnot(!anyNA(i), all(is.finite(timings$render_seconds[i])))
   sprintf("%.1f s", timings$render_seconds[i])
 }
-show_examples <- function(article, application, dataset, geometry, level) {
-  knitr::kable(data.frame(
-    Application = sprintf("[%s](%s.html)", application, article),
-    Dataset = dataset, Geometry = geometry, Level = level,
-    `CPU render` = runtime_for(article), check.names = FALSE
-  ), row.names = FALSE)
+escape_html <- function(x) {
+  for (pair in list(c("&", "&amp;"), c("<", "&lt;"), c(">", "&gt;"),
+                    c('"', "&quot;"), c("'", "&#39;"))) {
+    x <- gsub(pair[1], pair[2], x, fixed = TRUE)
+  }
+  x
+}
+show_examples <- function(article, application, dataset, geometry, level,
+                          description, figure, alt, width, height) {
+  entries <- data.frame(
+    article, application, dataset, geometry, level, description, figure, alt,
+    width, height, runtime = runtime_for(article), stringsAsFactors = FALSE
+  )
+  cat('<div class="rt-gallery-grid">\n')
+  for (i in seq_len(nrow(entries))) {
+    item <- lapply(entries[i, ], escape_html)
+    cat(sprintf(paste0(
+      '<a class="rt-gallery-card" href="%s.html" aria-labelledby="%s-title">',
+      '<img class="rt-gallery-image" src="%s_files/figure-html/%s-1.png" alt="%s" ',
+      'loading="lazy" width="%s" height="%s">',
+      '<div class="rt-gallery-body">',
+      '<span class="rt-gallery-geometry">%s</span>\n',
+      '<strong class="rt-gallery-title" id="%s-title">%s</strong>\n',
+      '<p class="rt-gallery-description">%s</p>',
+      '<p class="rt-gallery-meta"><strong>Dataset</strong> %s</p>',
+      '<div class="rt-gallery-footer">',
+      '<span class="rt-gallery-level">%s</span>\n',
+      '<span class="rt-gallery-runtime">CPU render: %s</span>',
+      '</div><span class="rt-gallery-link" aria-hidden="true">',
+      'Read example &rarr;</span></div></a>\n'
+    ), item$article, item$article, item$article, item$figure, item$alt,
+       item$width, item$height, item$geometry, item$article, item$application,
+       item$description, item$dataset, item$level, item$runtime))
+  }
+  cat('</div>\n')
 }
 ```
 
@@ -42,7 +71,17 @@ show_examples(
     "Compute a geometric midpoint", "Complete a low-rank matrix"),
   c("Iris", "Synthetic regression", "Two synthetic matrices", "Synthetic rank-two matrix"),
   c("Sphere", "Euclidean", "Positive-definite matrices", "Compact fixed rank"),
-  c("Introductory", "Introductory", "Intermediate", "Intermediate")
+  c("Introductory", "Introductory", "Intermediate", "Intermediate"),
+  c("Recover the direction of greatest variation in two iris measurements.",
+    "See how Huber loss changes a regression fit when observations contain outliers.",
+    "Compare a geometric midpoint with the arithmetic average of two covariance shapes.",
+    "Recover missing entries while keeping the matrix in a compact rank-two representation."),
+  c("direction-plot", "fits-plot", "ellipses", "matrix-panels"),
+  c("Centered iris measurements with the optimized principal direction.",
+    "Synthetic observations and fitted quadratic and Huber regression lines.",
+    "Ellipses comparing the input matrices and their geometric and arithmetic averages.",
+    "Heatmaps of the true, partially observed, and recovered rank-two matrix."),
+  c(1680, 1680, 1680, 1536), c(1104, 1104, 1176, 652)
 )
 ```
 
@@ -61,7 +100,17 @@ show_examples(
     "Reconstruct missing measurements", "Average observed covariances"),
   c("Palmer Penguins", "Stack loss", "Air quality", "European stock indices"),
   c("Grassmann", "Euclidean", "Compact fixed rank", "SPD: log-Euclidean and affine-invariant"),
-  c("Intermediate", "Introductory", "Intermediate", "Intermediate")
+  c("Intermediate", "Introductory", "Intermediate", "Intermediate"),
+  c("Project four penguin body measurements onto a two-dimensional plane and compare with PCA.",
+    "Fit quadratic and Huber models to industrial measurements and inspect their residuals.",
+    "Fill gaps in environmental measurements and assess predictions on held-out observations.",
+    "Compare geometric averages of covariance matrices estimated from stock-index returns."),
+  c("penguin-projection", "fitted-residuals", "patterns", "covariance-heatmaps"),
+  c("Penguin observations projected onto two dimensions and colored by species.",
+    "Fitted values and residuals for quadratic and Huber industrial regression.",
+    "Heatmaps separating missing and withheld measurements and showing their reconstruction.",
+    "Heatmaps comparing arithmetic, log-Euclidean, and affine-invariant covariance means."),
+  c(1680, 1920, 1920, 2160), c(1152, 960, 960, 816)
 )
 ```
 
@@ -77,7 +126,13 @@ show_examples(
   c("Constrain a tree-volume model", "Trace a sparse regression path"),
   c("Black cherry trees", "Motor Trend cars"),
   c("Euclidean with equality/inequality constraints", "Euclidean with L1 penalty"),
-  c("Intermediate", "Intermediate")
+  c("Intermediate", "Intermediate"),
+  c("Fit a log-volume model with nonnegative slopes that sum to three, then check the constraints.",
+    "Follow regression coefficients across five L1 penalties using an exact soft-thresholding step."),
+  c("fit-plot", "coefficient-path"),
+  c("Observed tree volume against fitted volume with a perfect-fit reference line.",
+    "Five standardized regression coefficients along a decreasing sequence of L1 penalties."),
+  c(1440, 1680), c(1440, 1104)
 )
 ```
 

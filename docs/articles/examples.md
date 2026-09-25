@@ -12,12 +12,61 @@ These short introductions isolate the optimization ideas. The sphere
 example uses two iris measurements; the other three construct small
 synthetic problems with known reference answers.
 
-| Application | Dataset | Geometry | Level | CPU render |
-|:---|:---|:---|:---|:---|
-| [Find a principal direction](https://www.kisungyou.com/riemtorch/articles/example-sphere-pca.md) | Iris | Sphere | Introductory | 7.0 s |
-| [Compare quadratic and Huber loss](https://www.kisungyou.com/riemtorch/articles/example-robust-regression.md) | Synthetic regression | Euclidean | Introductory | 6.1 s |
-| [Compute a geometric midpoint](https://www.kisungyou.com/riemtorch/articles/example-spd-mean.md) | Two synthetic matrices | Positive-definite matrices | Intermediate | 8.8 s |
-| [Complete a low-rank matrix](https://www.kisungyou.com/riemtorch/articles/example-matrix-completion.md) | Synthetic rank-two matrix | Compact fixed rank | Intermediate | 8.0 s |
+[![Centered iris measurements with the optimized principal
+direction.](example-sphere-pca_files/figure-html/direction-plot-1.png)](https://www.kisungyou.com/riemtorch/articles/example-sphere-pca.md)
+
+Sphere **Find a principal direction**
+
+Recover the direction of greatest variation in two iris measurements.
+
+**Dataset** Iris
+
+Introductory CPU render: 7.0 s
+
+Read example →
+
+[![Synthetic observations and fitted quadratic and Huber regression
+lines.](example-robust-regression_files/figure-html/fits-plot-1.png)](https://www.kisungyou.com/riemtorch/articles/example-robust-regression.md)
+
+Euclidean **Compare quadratic and Huber loss**
+
+See how Huber loss changes a regression fit when observations contain
+outliers.
+
+**Dataset** Synthetic regression
+
+Introductory CPU render: 6.1 s
+
+Read example →
+
+[![Ellipses comparing the input matrices and their geometric and
+arithmetic
+averages.](example-spd-mean_files/figure-html/ellipses-1.png)](https://www.kisungyou.com/riemtorch/articles/example-spd-mean.md)
+
+Positive-definite matrices **Compute a geometric midpoint**
+
+Compare a geometric midpoint with the arithmetic average of two
+covariance shapes.
+
+**Dataset** Two synthetic matrices
+
+Intermediate CPU render: 8.8 s
+
+Read example →
+
+[![Heatmaps of the true, partially observed, and recovered rank-two
+matrix.](example-matrix-completion_files/figure-html/matrix-panels-1.png)](https://www.kisungyou.com/riemtorch/articles/example-matrix-completion.md)
+
+Compact fixed rank **Complete a low-rank matrix**
+
+Recover missing entries while keeping the matrix in a compact rank-two
+representation.
+
+**Dataset** Synthetic rank-two matrix
+
+Intermediate CPU render: 8.0 s
+
+Read example →
 
 ## Public-data applications
 
@@ -26,12 +75,63 @@ objective relates to the question being asked. The independent checks
 are available after the main workflow, so you can follow the data
 analysis before studying its numerical details.
 
-| Application | Dataset | Geometry | Level | CPU render |
-|:---|:---|:---|:---|:---|
-| [Find a penguin subspace](https://www.kisungyou.com/riemtorch/articles/example-penguin-subspace.md) | Palmer Penguins | Grassmann | Intermediate | 10.7 s |
-| [Fit robust industrial regression](https://www.kisungyou.com/riemtorch/articles/example-stackloss-regression.md) | Stack loss | Euclidean | Introductory | 8.6 s |
-| [Reconstruct missing measurements](https://www.kisungyou.com/riemtorch/articles/example-airquality-completion.md) | Air quality | Compact fixed rank | Intermediate | 9.3 s |
-| [Average observed covariances](https://www.kisungyou.com/riemtorch/articles/example-covariance-means.md) | European stock indices | SPD: log-Euclidean and affine-invariant | Intermediate | 9.3 s |
+[![Penguin observations projected onto two dimensions and colored by
+species.](example-penguin-subspace_files/figure-html/penguin-projection-1.png)](https://www.kisungyou.com/riemtorch/articles/example-penguin-subspace.md)
+
+Grassmann **Find a penguin subspace**
+
+Project four penguin body measurements onto a two-dimensional plane and
+compare with PCA.
+
+**Dataset** Palmer Penguins
+
+Intermediate CPU render: 10.7 s
+
+Read example →
+
+[![Fitted values and residuals for quadratic and Huber industrial
+regression.](example-stackloss-regression_files/figure-html/fitted-residuals-1.png)](https://www.kisungyou.com/riemtorch/articles/example-stackloss-regression.md)
+
+Euclidean **Fit robust industrial regression**
+
+Fit quadratic and Huber models to industrial measurements and inspect
+their residuals.
+
+**Dataset** Stack loss
+
+Introductory CPU render: 8.6 s
+
+Read example →
+
+[![Heatmaps separating missing and withheld measurements and showing
+their
+reconstruction.](example-airquality-completion_files/figure-html/patterns-1.png)](https://www.kisungyou.com/riemtorch/articles/example-airquality-completion.md)
+
+Compact fixed rank **Reconstruct missing measurements**
+
+Fill gaps in environmental measurements and assess predictions on
+held-out observations.
+
+**Dataset** Air quality
+
+Intermediate CPU render: 9.3 s
+
+Read example →
+
+[![Heatmaps comparing arithmetic, log-Euclidean, and affine-invariant
+covariance
+means.](example-covariance-means_files/figure-html/covariance-heatmaps-1.png)](https://www.kisungyou.com/riemtorch/articles/example-covariance-means.md)
+
+SPD: log-Euclidean and affine-invariant **Average observed covariances**
+
+Compare geometric averages of covariance matrices estimated from
+stock-index returns.
+
+**Dataset** European stock indices
+
+Intermediate CPU render: 9.3 s
+
+Read example →
 
 ## Constraints and sparsity
 
@@ -39,10 +139,36 @@ Euclidean space also fits the manifold interface. These examples use it
 to make equality constraints, inequalities, and an exact proximal
 operator easy to understand and verify.
 
-| Application | Dataset | Geometry | Level | CPU render |
-|:---|:---|:---|:---|:---|
-| [Constrain a tree-volume model](https://www.kisungyou.com/riemtorch/articles/example-tree-constraints.md) | Black cherry trees | Euclidean with equality/inequality constraints | Intermediate | 11.8 s |
-| [Trace a sparse regression path](https://www.kisungyou.com/riemtorch/articles/example-mtcars-proximal.md) | Motor Trend cars | Euclidean with L1 penalty | Intermediate | 17.9 s |
+[![Observed tree volume against fitted volume with a perfect-fit
+reference
+line.](example-tree-constraints_files/figure-html/fit-plot-1.png)](https://www.kisungyou.com/riemtorch/articles/example-tree-constraints.md)
+
+Euclidean with equality/inequality constraints **Constrain a tree-volume
+model**
+
+Fit a log-volume model with nonnegative slopes that sum to three, then
+check the constraints.
+
+**Dataset** Black cherry trees
+
+Intermediate CPU render: 11.8 s
+
+Read example →
+
+[![Five standardized regression coefficients along a decreasing sequence
+of L1
+penalties.](example-mtcars-proximal_files/figure-html/coefficient-path-1.png)](https://www.kisungyou.com/riemtorch/articles/example-mtcars-proximal.md)
+
+Euclidean with L1 penalty **Trace a sparse regression path**
+
+Follow regression coefficients across five L1 penalties using an exact
+soft-thresholding step.
+
+**Dataset** Motor Trend cars
+
+Intermediate CPU render: 17.9 s
+
+Read example →
 
 ## Reading the results
 
