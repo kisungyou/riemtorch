@@ -1,0 +1,18 @@
+library(torch)
+args<-commandArgs(TRUE);out<-args[1];dir.create(out,recursive=TRUE,showWarnings=FALSE)
+torch_set_num_threads(1)
+for(seed in 1:3) {
+  set.seed(seed);folder<-file.path(out,paste0("seed",seed));dir.create(folder,showWarnings=FALSE)
+  save<-function(name,x) write.table(x,file.path(folder,paste0(name,".csv")),sep=",",row.names=FALSE,col.names=FALSE)
+  A<-crossprod(matrix(rnorm(36),6));save("eigen_A",A);x<-rnorm(6);save("eigen_x",x/sqrt(sum(x*x)))
+  save("procrustes_A",matrix(rnorm(12),6,2));save("procrustes_x",qr.Q(qr(matrix(rnorm(12),6,2))))
+  U<-qr.Q(qr(matrix(rnorm(12),6,2)));V<-qr.Q(qr(matrix(rnorm(10),5,2)))
+  save("completion_A",U%*%diag(c(3,1))%*%t(V));save("completion_mask",matrix(as.numeric(runif(30)>.15),6,5))
+  save("completion_U",qr.Q(qr(matrix(rnorm(12),6,2))));save("completion_V",qr.Q(qr(matrix(rnorm(10),5,2))));save("completion_S",c(1.2,.8))
+  C<-matrix(rnorm(9),3);C<-(C+t(C))/5;save("spd_C",C);save("spd_x",diag(3))
+  A<-cbind(1,seq(-1,1,length.out=20));b<-A%*%c(.5,1)+rnorm(20,sd=.05);b[c(3,9)]<-b[c(3,9)]+c(4,-5)
+  save("robust_A",A);save("robust_b",b);save("robust_x",c(0,0))
+  save("hyperbolic_A",matrix(runif(10,-.2,.2),5,2));save("hyperbolic_x",matrix(runif(10,-.05,.05),5,2))
+  a<-exp(1i*runif(5,-pi,pi));z<-exp(1i*runif(5,-pi,pi));save("phase_A",cbind(Re(a),Im(a)));save("phase_x",cbind(Re(z),Im(z)))
+  save("constrained_A",c(2,.2,-1));save("constrained_x",rep(1/3,3))
+}

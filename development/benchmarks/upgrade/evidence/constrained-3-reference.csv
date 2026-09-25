@@ -1,0 +1,2 @@
+case,implementation,version,algorithm,seconds,objective,gradient_norm,feasibility,optimum,fn,gradient,termination,device,dtype,transfer_seconds,seed
+constrained,SciPy,1.13.1,SLSQP with analytic derivatives,0.0009986250000000307,1.0200000000000014,0.0,1.3322676295501878e-15,1.02,2,2,Optimization terminated successfully,cpu,float64,0,3

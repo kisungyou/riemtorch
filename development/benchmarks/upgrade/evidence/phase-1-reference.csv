@@ -1,0 +1,2 @@
+case,implementation,version,algorithm,seconds,objective,gradient_norm,feasibility,optimum,fn,gradient,termination,device,dtype,transfer_seconds,seed
+phase,Pymanopt,2.2.1,Riemannian CG PR+ (default retraction),0.0003887089999999871,-12.499999999999991,3.606778895184897e-07,0.0,-12.5,30,12,"Terminated - min grad norm reached after 12 iterations, 0.00 seconds.",cpu,complex128,0,1

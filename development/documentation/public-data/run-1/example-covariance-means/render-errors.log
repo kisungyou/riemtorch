@@ -1,0 +1,5 @@
+Tracing function "download.file" in package "namespace:utils"
+[WARNING] Could not convert TeX math 
+   \min_{G\in\mathrm{SPD}(4)} \frac{1}{2B}\sum_{b=1}^{B}d(G,C_b)^2.
+  , rendering as TeX
+Untracing function "download.file" in package "namespace:utils"

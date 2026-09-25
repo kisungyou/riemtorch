@@ -1,0 +1,54 @@
+---
+title: "Deterministic optimization and diagnostics"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Deterministic optimization and diagnostics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = torch::torch_is_installed())
+library(riemtorch)
+library(torch)
+if (torch::torch_is_installed()) {
+  torch::torch_set_num_threads(1)
+  torch::torch_manual_seed(1)
+}
+```
+
+Orthogonal Procrustes is a nontrivial matrix objective with a known solution.
+Neither the geometry nor the solver contains a special Procrustes estimator.
+
+```{r}
+M <- manifold.stiefel(5, 2, "euclidean")
+A <- torch_randn(c(5, 2), dtype = torch_float64())
+P <- riem.problem(M, function(X, data) -torch_sum(data * X), data = A)
+fit <- riem.optimize(P, riem.random(M), "conjugate_gradient",
+                     control = list(max_iterations = 150))
+fit
+fit$evaluations
+stopifnot(riem.belongs(M, fit$point))
+reference <- riem.project(M, riem.to(A, device = fit$execution$device,
+                                     dtype = fit$execution$dtype))
+torch_sum((fit$point - reference)^2)$item()
+```
+
+Armijo backtracking rejects infeasible or nonfinite trials. Strong Wolfe is
+available only where the true retraction-curve derivative is supported. PR+
+conjugate gradient restarts on loss of descent. L-BFGS transports secant history
+and skips invalid curvature pairs; BB bounds its spectral step lengths.
+
+`converged_gradient` is distinct from `stopped_small_step`, `max_iterations`,
+`line_search_failed`, `domain_error`, `nonfinite_objective`, and
+`numerical_failure`. Always inspect termination and the available gradient norm.
+A feasible iterate is useful even when the maximum iteration budget was reached.
+
+```{r}
+head(riem.support("solvers"))
+fit$diagnostics$restarts
+```
+
+The four derivative-free searches and cubic regularization are implemented but
+marked experimental. They have explicit algorithm variants in the installed
+mathematical notes. Heuristics do not claim gradient convergence.

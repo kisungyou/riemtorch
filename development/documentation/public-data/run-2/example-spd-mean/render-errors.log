@@ -1,0 +1,3 @@
+Tracing function "download.file" in package "namespace:utils"
+[WARNING] Could not convert TeX math \det(G) = \sqrt{\det(A)\det(B)}, rendering as TeX
+Untracing function "download.file" in package "namespace:utils"

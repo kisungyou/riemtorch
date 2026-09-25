@@ -1,0 +1,5 @@
+Tracing function "download.file" in package "namespace:utils"
+[WARNING] Could not convert TeX math 
+    f(Q) = \frac{1}{2n}\|X-XQQ^\mathsf{T}\|_F^2.
+  , rendering as TeX
+Untracing function "download.file" in package "namespace:utils"

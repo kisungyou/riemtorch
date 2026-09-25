@@ -1,0 +1,241 @@
+---
+title: "Get started with riemtorch"
+description: "Define a constrained tensor objective, solve it, check the result, and choose CPU or GPU execution."
+output: rmarkdown::html_document
+---
+
+```{r setup, include=FALSE}
+library(torch)
+library(riemtorch)
+runtime_available <- torch::torch_is_installed()
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
+                      eval = runtime_available, fig.width = 7, fig.height = 4)
+if (runtime_available) {
+  torch_set_num_threads(1)
+  torch_manual_seed(7)
+}
+```
+
+`riemtorch` minimizes objectives that you write with R torch, while keeping the
+unknowns on a chosen manifold. A typical workflow has three ingredients:
+the geometry, a scalar loss function, and a feasible starting point. The package
+obtains derivatives with torch and uses the geometry to turn them into
+Riemannian optimization steps.
+
+This tutorial finds the unit vector most aligned with a given direction. The
+answer is known, so we can check the objective, the constraint, and the final
+point independently.
+
+## Install from your local source package
+
+Open `riemtorch.Rproj` in RStudio so that the package directory is your working
+directory. Install the R dependency and its numerical runtime once, then install
+the local package. These commands are setup instructions; the documentation
+build does not run them.
+
+```{r installation, eval=FALSE}
+install.packages("torch")
+if (!torch::torch_is_installed()) torch::install_torch()
+install.packages(".", repos = NULL, type = "source")
+```
+
+If you installed riemtorch already, start with the next section. Reinstall the
+package after changing its source code to use those changes in a fresh R session.
+
+```{r runtime-note, echo=FALSE, results='asis', eval=TRUE}
+if (!runtime_available) {
+  cat("**Examples were not executed:** the torch runtime is unavailable. ",
+      "Run the setup above and rebuild this site to see the numerical output.\n")
+}
+```
+
+## Define the geometry and objective
+
+Let \(a = (1, 2, 3)\). We solve
+
+\[
+\min_{x \in \mathbb{R}^3} -a^\mathsf{T}x
+\qquad\text{subject to}\qquad \|x\|_2 = 1.
+\]
+
+The feasible set is the two-dimensional sphere embedded in three-dimensional
+space, specified by `manifold.sphere(3)`. The objective must return one real
+scalar torch tensor, with the same precision and device as the point.
+
+```{r define-problem}
+library(torch)
+library(riemtorch)
+
+sphere <- manifold.sphere(3)
+a <- torch_tensor(c(1, 2, 3), dtype = torch_float64())
+problem <- riem.problem(
+  sphere,
+  fn = function(x, data) -torch_sum(x * data),
+  data = a,
+  label = "Find an aligned unit vector",
+  required_operations = "basic"
+)
+
+x0 <- torch_tensor(c(0, 1, 0), dtype = torch_float64())
+riem.belongs(sphere, x0)
+```
+
+The `data` argument registers `a` with the problem. The execution driver can then
+move it together with the initial point when a run uses a different device.
+Avoid capturing device-bound tensors invisibly inside the loss function.
+Here the loss needs only basic tensor operations, so that is the compatibility
+requirement we declare. Leave `required_operations` unset for a conservative
+probe when the needs of a custom loss are unknown.
+
+## Solve and inspect the result
+
+For reproducible output, this article explicitly runs on the CPU in double
+precision. Automatic device selection is explained below.
+
+```{r solve}
+fit <- riem.optimize(
+  problem, x0,
+  method = "conjugate_gradient",
+  control = list(max_iterations = 100, gradient_tolerance = 1e-6),
+  device = "cpu"
+)
+fit
+```
+
+The returned point is available in `fit$point`. Check both the termination
+reason and the constraint: reaching an iteration budget does not mean the
+gradient tolerance was met. For this example the exact minimizer is
+\(a / \|a\|_2\), and the minimum is \(-\|a\|_2\).
+
+```{r verify-solution}
+exact <- a / a$norm()
+data.frame(
+  termination = fit$termination,
+  on_sphere = riem.belongs(sphere, fit$point),
+  gradient_norm = fit$gradient_norm,
+  objective_gap = fit$objective + a$norm()$item(),
+  point_error = (fit$point - exact)$norm()$item()
+)
+as.numeric(fit$point)
+fit$evaluations
+```
+
+`converged_gradient` means the metric gradient norm met the requested tolerance.
+`max_iterations`, `stopped_small_step`, and `line_search_failed` describe
+different stopping conditions and should be interpreted alongside the objective
+and residuals. The evaluation counts help distinguish iteration counts from
+actual objective and derivative work.
+
+## Compare a second solver
+
+The problem and initial point can be reused unchanged. Here we compare conjugate
+gradient with steepest descent on exactly the same small objective.
+
+```{r compare-solvers}
+steepest <- riem.optimize(
+  problem, x0,
+  method = "steepest_descent",
+  control = list(max_iterations = 100, gradient_tolerance = 1e-6),
+  device = "cpu"
+)
+
+fits <- list("Conjugate gradient" = fit, "Steepest descent" = steepest)
+data.frame(
+  solver = names(fits),
+  iterations = vapply(fits, function(z) z$iterations, numeric(1)),
+  objective = vapply(fits, function(z) z$objective, numeric(1)),
+  gradient_norm = vapply(fits, function(z) z$gradient_norm, numeric(1)),
+  termination = vapply(fits, function(z) z$termination, character(1)),
+  row.names = NULL
+)
+```
+
+```{r convergence-plot, fig.alt='Metric gradient norm against iteration for conjugate gradient and steepest descent on a sphere.', fig.cap='Both methods use the same objective and initial point. This small example illustrates how to read a history; it is not a performance benchmark.'}
+history_xy <- function(z) {
+  data.frame(
+    iteration = vapply(z$history, function(h) h$iteration, numeric(1)),
+    gradient = vapply(z$history, function(h) h$gradient_norm, numeric(1))
+  )
+}
+paths <- lapply(fits, history_xy)
+all_gradients <- unlist(lapply(paths, function(z) pmax(z$gradient, 1e-12)))
+plot(paths[[1]]$iteration, pmax(paths[[1]]$gradient, 1e-12),
+     type = "o", pch = 16, col = "#147D92", log = "y",
+     xlim = range(unlist(lapply(paths, function(z) z$iteration))),
+     ylim = range(all_gradients), xlab = "Iteration",
+     ylab = "Metric gradient norm")
+lines(paths[[2]]$iteration, pmax(paths[[2]]$gradient, 1e-12),
+      type = "o", pch = 1, col = "#C15F2D")
+abline(h = 1e-6, lty = 3, col = "grey50")
+legend("topright", legend = names(fits), col = c("#147D92", "#C15F2D"),
+       pch = c(16, 1), lty = 1, bty = "n")
+```
+
+## Check derivatives before a larger run
+
+Check the geometry and the loss at the initial point, away from the solution.
+The gradient checker compares the directional derivative with finite
+differences. It also records a Taylor remainder over several step sizes.
+
+```{r diagnostics}
+direction <- torch_tensor(c(1, 0, 0), dtype = torch_float64())
+geometry_check <- riem.check.manifold(sphere, x0, direction)
+gradient_check <- riem.check.gradient(problem, x0, direction)
+
+geometry_check$checks[, c("check", "error", "status")]
+gradient_check$checks[, c("check", "error", "status")]
+gradient_check$curves
+```
+
+A `pass` is evidence at the tested point and direction, not a proof for the whole
+problem. Repeat checks at several points when adding an analytic derivative or
+a custom geometry. See [Checking geometry and derivatives](checking-derivatives.html)
+for Hessian and adjoint diagnostics.
+
+## Choose CPU or automatic GPU discovery
+
+Managed runs select one compatible device and retain it for the whole run.
+With no explicit device argument, the order of precedence is the R option
+`riemtorch.device`, the environment variable `RIEMTORCH_DEVICE`, then automatic
+discovery. Discovery tries visible CUDA devices, compatible MPS, then CPU,
+preserving the requested precision. The default double precision can rule out
+an accelerator that only supports single precision for the required operations.
+
+```{r inspect-device}
+fit$execution[c("device", "dtype", "reason")]
+riem.devices(dtype = "float64", operations = "basic")
+```
+
+These alternative calls are shown without execution so that this page builds
+on a machine without a GPU:
+
+```{r device-options, eval=FALSE}
+# Discover a compatible device, even if an R option or environment default is set.
+automatic_fit <- riem.optimize(problem, x0, device = "auto")
+
+# Force CPU execution, including on a workstation with CUDA GPUs.
+cpu_fit <- riem.optimize(problem, x0, device = "cpu")
+
+# Use the first visible CUDA GPU; indices start at zero.
+gpu_fit <- riem.optimize(problem, x0, device = "cuda:0")
+
+# Set a session default for runs that omit the device argument.
+options(riemtorch.device = "cpu")
+default_cpu_fit <- riem.optimize(problem, x0)
+options(riemtorch.device = NULL)  # Remove the session override.
+```
+
+An explicit unavailable or incompatible device raises an error. Selection does
+not silently reduce precision or switch devices in the middle of a run.
+The [applications and devices guide](applications-and-devices.html) covers
+registered tensor data and device-aware training in more detail.
+
+## Where to go next
+
+- [Example gallery](examples.html): ten illustrated introductions and public-data applications.
+- [Data sources and reproducibility](example-data-sources.html): local data, provenance, and numerical checks.
+- [Geometry and metrics](geometry-and-metrics.html): choose a geometry and its metric.
+- [Custom objectives](custom-objectives.html): write losses and register tensor data.
+- [Deterministic optimization](deterministic-optimization.html): solver controls and termination.
+- [Second-order and least-squares methods](second-order-and-leastsquares.html): Hessian and residual models.
+- [Torch training](torch-training.html): optimize manifold-valued module parameters.

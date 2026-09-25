@@ -1,0 +1,56 @@
+{
+  "status": "pass",
+  "checked_at_utc": "2026-09-25T16:03:13.866949+00:00",
+  "html_pages": 80,
+  "local_links_and_assets": 2778,
+  "html_fragment_links": 592,
+  "css_asset_references": 48,
+  "public_article_plots": {
+    "example-penguin-subspace": {
+      "plots": 1,
+      "descriptive_alt": 1
+    },
+    "example-stackloss-regression": {
+      "plots": 2,
+      "descriptive_alt": 2
+    },
+    "example-airquality-completion": {
+      "plots": 2,
+      "descriptive_alt": 2
+    },
+    "example-covariance-means": {
+      "plots": 2,
+      "descriptive_alt": 2
+    },
+    "example-tree-constraints": {
+      "plots": 1,
+      "descriptive_alt": 1
+    },
+    "example-mtcars-proximal": {
+      "plots": 1,
+      "descriptive_alt": 1
+    }
+  },
+  "downloads": {
+    "penguins.csv": {
+      "bytes": 15241,
+      "linked": true
+    },
+    "NOTICE-penguins.txt": {
+      "bytes": 1616,
+      "linked": true
+    },
+    "extract-penguins.R": {
+      "bytes": 902,
+      "linked": true
+    },
+    "example-runtimes.csv": {
+      "bytes": 590,
+      "linked": true,
+      "rows": 10
+    }
+  },
+  "penguins_sha256": "f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93",
+  "penguins_source_and_site_match": true,
+  "errors": []
+}

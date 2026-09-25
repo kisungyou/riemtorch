@@ -1,0 +1,2 @@
+"case","implementation","version","algorithm","seconds","objective","gradient_norm","feasibility","optimum","fn","gradient","termination","device","dtype","transfer_seconds","seed"
+"completion","riemtorch","0.6.0","lbfgs",0.622,8.46051467916472e-16,4.09974521238644e-08,0,0,31,16,"converged_gradient","cpu","float64",0,3

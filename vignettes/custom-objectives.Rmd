@@ -1,0 +1,47 @@
+---
+title: "Custom tensor objectives"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Custom tensor objectives}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = torch::torch_is_installed())
+library(riemtorch)
+library(torch)
+if (torch::torch_is_installed()) {
+  torch::torch_set_num_threads(1)
+  torch::torch_manual_seed(1)
+}
+```
+
+The solver only sees a scalar torch objective and a manifold. A new loss does
+not require a new estimator. Here the exact minimizer is a normalized vector.
+
+```{r}
+M <- manifold.sphere(3)
+a <- torch_tensor(c(1, 2, 3), dtype = torch_float64())
+x <- torch_tensor(c(1, 0, 0), dtype = torch_float64())
+P <- riem.problem(M, function(x, data) -torch_sum(x * data), data = a)
+fit <- riem.optimize(P, x, "conjugate_gradient")
+fit
+as.numeric(fit$point)
+stopifnot(abs(fit$objective + sqrt(14)) < 1e-7)
+```
+
+An ambient gradient and an intrinsic gradient are different callbacks. The
+sphere gradient removes the radial component; the package performs that
+conversion for an ambient callback.
+
+```{r}
+analytic <- riem.problem(M, function(x, data) -torch_sum(x * data),
+                        egrad = function(x, data) -data, data = a)
+riem.evaluate(analytic, x)$gradient
+```
+
+Objectives must return one scalar tensor with the point's dtype/device. Data can
+be converted explicitly at the boundary, then all numerical work stays in torch.
+Deterministic callbacks must not change batches, dropout masks or other state
+inside a line search. Returned solutions are detached from the optimization graph.

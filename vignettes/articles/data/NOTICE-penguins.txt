@@ -1,0 +1,35 @@
+Palmer Penguins data snapshot
+
+File: penguins.csv
+Source: extdata/penguins.csv from palmerpenguins R package version 0.1.1
+Copied without modification on 2026-09-25; 344 observations, 8 columns.
+Package: https://allisonhorst.github.io/palmerpenguins/
+Repository: https://github.com/allisonhorst/palmerpenguins
+License: CC0 1.0 Universal (data)
+License text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+Upstream license: https://allisonhorst.github.io/palmerpenguins/LICENSE.html
+
+Credit: Data collected by Kristen B. Gorman and the Palmer Station,
+Antarctica Long Term Ecological Research program. Curated for R by Allison
+Marie Horst, Alison Presmanes Hill, and Kristen B. Gorman.
+
+Package citation:
+Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer Archipelago
+(Antarctica) penguin data. https://doi.org/10.5281/zenodo.3960218
+
+Original research:
+Gorman KB, Williams TD, Fraser WR (2014). Ecological sexual dimorphism and
+environmental variability within a community of Antarctic penguins (genus
+Pygoscelis). PLoS ONE 9(3):e90081.
+https://doi.org/10.1371/journal.pone.0090081
+
+Original species data, Palmer Station Antarctica LTER and K. Gorman (2020):
+Adelie: https://doi.org/10.6073/pasta/98b16d7d563f265cb52372c8ca99e60f
+Gentoo: https://doi.org/10.6073/pasta/7fca67fb28d56ee2ffa3d9370ebda689
+Chinstrap: https://doi.org/10.6073/pasta/c14dfcfada8ea13a17536e73eb6fbe9e
+
+SHA-256:
+f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93
+
+Only this CSV is redistributed here. No upstream artwork is included.
+Riemtorch's code license does not replace this dataset's CC0 dedication.

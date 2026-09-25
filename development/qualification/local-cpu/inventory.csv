@@ -1,0 +1,2 @@
+"device","type","index","available","compatible","reason","model","operations"
+"cpu","cpu",NA,TRUE,TRUE,"passed operations: basic, cholesky, eigh, svd, qr, solve, matrix_exp","arm64 CPU","basic,cholesky,eigh,svd,qr,solve,matrix_exp"

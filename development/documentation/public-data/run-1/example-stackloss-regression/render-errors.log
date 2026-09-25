@@ -1,0 +1,9 @@
+Tracing function "download.file" in package "namespace:utils"
+[WARNING] Could not convert TeX math 
+  \rho_\delta(r)=
+  \begin{cases}
+   r^2/2, & |r|\leq\delta,\\
+   \delta(|r|-\delta/2), & |r|>\delta.
+  \end{cases}
+  , rendering as TeX
+Untracing function "download.file" in package "namespace:utils"

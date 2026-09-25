@@ -1,0 +1,40 @@
+---
+title: "Variance reduction and solver controls"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Variance reduction and solver controls}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse=TRUE,comment="#>",eval=torch::torch_is_installed())
+library(riemtorch);library(torch)
+if(torch_is_installed()) {torch_set_num_threads(1);torch_manual_seed(12)}
+```
+
+A finite sum separates expensive full gradients from inexpensive stochastic
+updates. SVRG uses a snapshot gradient; SRG transports a recursive estimator.
+Only full gradients establish stationarity.
+
+```{r}
+P <- riem.problem.finitesum(manifold.euclidean(1),
+  function(x,i) ((x-i)^2)$sum()/2, n=5)
+x <- torch_tensor(0,dtype=torch_float64())
+fits <- lapply(c("svrg","srg"),function(method)
+  riem.optimize(P,x,method,control=list(step_size=0.2,max_iterations=100),device="cpu"))
+vapply(fits,function(f) as.numeric(f$point),numeric(1))
+fits[[1]]$evaluations
+```
+
+SVRG requires a local logarithm for its snapshot-to-current transport path.
+It rejects unsupported geometries before evaluating the objective. Work budgets
+and callbacks distinguish a requested stop from convergence.
+
+```{r}
+fit <- riem.optimize(P,x,control=list(callback=function(state) state$iteration>=1),device="cpu")
+fit$termination
+L <- riem.problem.leastsquares(manifold.euclidean(1),
+  function(x) torch_cat(list(x-1,x-2,x-100)),loss="huber")
+riem.optimize(L,x,"levenberg_marquardt",device="cpu")$point
+```

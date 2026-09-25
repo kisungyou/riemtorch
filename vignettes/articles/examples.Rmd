@@ -1,0 +1,104 @@
+---
+title: "Example gallery"
+description: "Ten complete optimization examples, from first steps to public-data applications, constraints, and sparse solutions."
+output: rmarkdown::html_document
+resource_files:
+  - data/example-runtimes.csv
+---
+
+Start with a foundation example to learn the problem interface, or choose a
+public-data application close to your work. Every page contains runnable code,
+figures, and checks of the numerical result. The six applications use data
+already included with R or bundled in this website; no dataset download is
+needed when building the documentation.
+
+```{r setup, include=FALSE}
+timings <- read.csv("data/example-runtimes.csv", stringsAsFactors = FALSE)
+runtime_for <- function(article) {
+  i <- match(article, timings$article)
+  stopifnot(!anyNA(i), all(is.finite(timings$render_seconds[i])))
+  sprintf("%.1f s", timings$render_seconds[i])
+}
+show_examples <- function(article, application, dataset, geometry, level) {
+  knitr::kable(data.frame(
+    Application = sprintf("[%s](%s.html)", application, article),
+    Dataset = dataset, Geometry = geometry, Level = level,
+    `CPU render` = runtime_for(article), check.names = FALSE
+  ), row.names = FALSE)
+}
+```
+
+## Foundations
+
+These short introductions isolate the optimization ideas. The sphere example
+uses two iris measurements; the other three construct small synthetic problems
+with known reference answers.
+
+```{r foundations, echo=FALSE, results='asis'}
+show_examples(
+  c("example-sphere-pca", "example-robust-regression", "example-spd-mean",
+    "example-matrix-completion"),
+  c("Find a principal direction", "Compare quadratic and Huber loss",
+    "Compute a geometric midpoint", "Complete a low-rank matrix"),
+  c("Iris", "Synthetic regression", "Two synthetic matrices", "Synthetic rank-two matrix"),
+  c("Sphere", "Euclidean", "Positive-definite matrices", "Compact fixed rank"),
+  c("Introductory", "Introductory", "Intermediate", "Intermediate")
+)
+```
+
+## Public-data applications
+
+Each application starts with the observations and explains how the objective
+relates to the question being asked. The independent checks are available after
+the main workflow, so you can follow the data analysis before studying its
+numerical details.
+
+```{r applications, echo=FALSE, results='asis'}
+show_examples(
+  c("example-penguin-subspace", "example-stackloss-regression",
+    "example-airquality-completion", "example-covariance-means"),
+  c("Find a penguin subspace", "Fit robust industrial regression",
+    "Reconstruct missing measurements", "Average observed covariances"),
+  c("Palmer Penguins", "Stack loss", "Air quality", "European stock indices"),
+  c("Grassmann", "Euclidean", "Compact fixed rank", "SPD: log-Euclidean and affine-invariant"),
+  c("Intermediate", "Introductory", "Intermediate", "Intermediate")
+)
+```
+
+## Constraints and sparsity
+
+Euclidean space also fits the manifold interface. These examples use it to
+make equality constraints, inequalities, and an exact proximal operator easy
+to understand and verify.
+
+```{r constraints, echo=FALSE, results='asis'}
+show_examples(
+  c("example-tree-constraints", "example-mtcars-proximal"),
+  c("Constrain a tree-volume model", "Trace a sparse regression path"),
+  c("Black cherry trees", "Motor Trend cars"),
+  c("Euclidean with equality/inequality constraints", "Euclidean with L1 penalty"),
+  c("Intermediate", "Intermediate")
+)
+```
+
+## Reading the results
+
+The CPU times are measured complete article render times, not solver-only
+benchmarks or speed guarantees. They include data preparation, independent
+checks, figures, and HTML rendering in fresh R sessions. Values are the mean
+of two serial runs on the reference machine: macOS arm64, R 4.5.2, torch 0.17.0,
+CPU float64, one torch thread. The
+[timing table](data/example-runtimes.csv) contains both measurements.
+
+Each public-data example reports its termination reason and the residuals
+appropriate to the method. A small training loss is not proof of accurate
+missing-value predictions, and a stopped iteration budget is not convergence.
+The articles discuss these distinctions using their actual results.
+
+Use `device = "auto"` to request automatic device selection or `device = "cpu"`
+to force CPU execution, including on a GPU workstation. An explicit CUDA device
+must be available and support the requested precision. See the
+[device guide](applications-and-devices.html).
+
+For citations, units, missing values, the penguin CSV, and the reproducibility
+procedure, see [Data sources and reproducibility](example-data-sources.html).

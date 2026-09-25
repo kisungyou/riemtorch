@@ -1,0 +1,19 @@
+Reading vignettes/articles/example-penguin-subspace.Rmd
+Writing `articles/example-penguin-subspace.html`
+Reading vignettes/articles/example-stackloss-regression.Rmd
+Writing `articles/example-stackloss-regression.html`
+Reading vignettes/articles/example-airquality-completion.Rmd
+Writing `articles/example-airquality-completion.html`
+Reading vignettes/articles/example-covariance-means.Rmd
+Writing `articles/example-covariance-means.html`
+Reading vignettes/articles/example-tree-constraints.Rmd
+Writing `articles/example-tree-constraints.html`
+Reading vignettes/articles/example-mtcars-proximal.Rmd
+Writing `articles/example-mtcars-proximal.html`
+   user  system elapsed 
+ 59.121   9.318  87.467 
+Reading vignettes/articles/examples.Rmd
+Writing `articles/examples.html`
+Reading vignettes/articles/example-data-sources.Rmd
+── Building search index ───────────────────────────────────────────────────────
+── Building docs for llms ──────────────────────────────────────────────────────

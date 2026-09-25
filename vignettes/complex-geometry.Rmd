@@ -1,0 +1,46 @@
+---
+title: "Optimization with complex geometry"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Optimization with complex geometry}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse=TRUE,comment="#>",eval=torch::torch_is_installed())
+library(riemtorch);library(torch)
+if(torch_is_installed()) {torch_set_num_threads(1);torch_manual_seed(43)}
+```
+
+Complex points use a real Hermitian metric, Re(trace(U* V)). Objectives must
+return real scalars: float64 for complex128 points, float32 for complex64.
+Torch's conjugate gradient convention is checked using independent real and
+imaginary perturbations. Complex Euclidean, sphere and phase geometries support
+automatic Hessians; complex frame and unitary geometries currently qualify only
+first-order optimization. Matrix factorizations at repeated singular values
+are not advertised as automatically twice differentiable.
+
+```{r}
+M <- manifold.complexcircle(4)
+x <- riem.random(M,device="cpu")
+P <- riem.problem(M,function(z) -z$real$sum())
+riem.check.gradient(P,x)$checks
+riem.check.hessian(P,x)$checks
+fit <- riem.optimize(P,x,device="cpu")
+fit$objective
+riem.belongs(M,fit$point)
+```
+
+Complex Stiefel uses the embedded Euclidean metric. Complex Grassmann uses
+orthonormal frames and objectives must be invariant to unitary basis changes.
+Its logarithm is local and rejects the cut locus.
+
+```{r}
+G <- manifold.grassmann(4,2,field="complex")
+X <- riem.random(G,device="cpu")
+U <- riem.tangent(G,X,torch_randn_like(X))*0.05
+Y <- riem.exp(G,X,U)
+(riem.log(G,X,Y)-U)$abs()$max()
+riem.belongs(manifold.unitary(2),riem.random(manifold.unitary(2),device="cpu"))
+```

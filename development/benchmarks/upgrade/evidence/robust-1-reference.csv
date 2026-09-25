@@ -1,0 +1,2 @@
+case,implementation,version,algorithm,seconds,objective,gradient_norm,feasibility,optimum,fn,gradient,termination,device,dtype,transfer_seconds,seed
+robust,SciPy,1.13.1,trust-region reflective robust least squares,0.004561999999999983,1.794452268771122,3.973993651728112e-16,0.0,nan,5,4,`gtol` termination condition is satisfied.,cpu,float64,0,1

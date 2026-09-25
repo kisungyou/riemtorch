@@ -1,0 +1,21 @@
+method,variant,requirements,status,reference,evidence
+steepest_descent,Armijo retraction descent,gradient; retraction,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+conjugate_gradient,transported PR+/FR/HS+/DY; descent restarts,gradient; transport,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+barzilai_borwein,BB1/BB2/alternating with safeguarded Armijo,gradient; transport,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+lbfgs,transported limited-memory secants; curvature rejection,gradient; transport,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+trust_regions,Steihaug truncated CG and acceptance ratio,exact Riemannian HVP,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+newton_cg,truncated CG; negative-curvature safeguard; line search,exact Riemannian HVP,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+adaptive_regularization_cubics,Cauchy-initialized iterative cubic model minimization,exact Riemannian HVP,experimental,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+gauss_newton,metric-adjoint normal operator and CG,residual differential and metric adjoint,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+levenberg_marquardt,damped metric normal operator with ratio updates,residual differential and metric adjoint,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+stochastic_gradient,vectorized minibatch; explicit sum/mean normalization; chunked full diagnostics,finite-sum autodiff,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+alternating_gradient,cyclic product block gradient,named product; gradient,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+particle_swarm,transported velocity; local or aligned chord displacement,tangent; retraction; transport,experimental,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+nelder_mead,tangent-centroid simplex; retraction reflection and shrink,tangent; retraction; local displacement,experimental,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+stiefel_annealing,reversible left orthogonal proposals; cooling Metropolis,Stiefel frames; value only,experimental,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+grassmann_macg,elite MACG sampling; shrinkage fixed-point shape fit,Grassmann frames; value only,experimental,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+svrg,snapshot finite-sum gradient with endpoint-compatible transport,local log and qualified snapshot transport,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+srg,recursive transported estimator with periodic full refresh,finite sum; transport along last accepted step,verified,inst/math/solvers.md; development/competitors/audit.md,test-smooth-upgrade; test-solver-evidence
+augmented_lagrangian,Powell-Hestenes-Rockafellar; adaptive penalty; smooth inner solver,equality/inequality values and metric adjoints,verified,inst/math/solvers.md; development/competitors/audit.md,test-broader-optimization
+proximal_gradient,unaccelerated exponential gradient step and intrinsic prox; backtracking,exact maps; caller-supplied manifold-distance proximal map,verified,inst/math/solvers.md; development/competitors/audit.md,test-broader-optimization
+cyclic_proximal_point,diminishing steps; deterministic cyclic order,matching nonsmooth values and exact proximal maps; cycle stop is not stationarity,verified,inst/math/solvers.md; development/competitors/audit.md,test-broader-optimization

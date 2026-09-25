@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^development$
+^\.DS_Store$
+^\.Rhistory$
+^\.github$
+^pkgdown$
+^docs$
+^vignettes/articles$
+^\.gitignore$

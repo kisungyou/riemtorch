@@ -1,0 +1,2 @@
+case,implementation,version,algorithm,seconds,objective,gradient_norm,feasibility,optimum,fn,gradient,termination,device,dtype,transfer_seconds,seed
+spd,SciPy,1.13.1,BFGS in log-Euclidean coordinates,0.0003298339999999733,1.925929944387236e-33,6.206335383118183e-17,0.0,0,3,3,Optimization terminated successfully.,cpu,float64,0,2

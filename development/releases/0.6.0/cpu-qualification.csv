@@ -1,0 +1,5 @@
+"request","precision","selected","status","model","libtorch","reason","point_error","checkpoint_error","transfer_seconds","seconds","error"
+"auto","float64","cpu","verified","arm64 CPU","2.8.0","explicit selection: passed operations: basic",0,0,0.00099999999999989,0.048,""
+"auto","float32","cpu","verified","arm64 CPU","2.8.0","explicit selection: passed operations: basic",0,0,0.000999999999999446,7.374,""
+"cpu","float64","cpu","verified","arm64 CPU","2.8.0","explicit selection: passed operations: basic",0,0,0,0.0570000000000022,""
+"cpu","float32","cpu","verified","arm64 CPU","2.8.0","explicit selection: passed operations: basic",0,0,0,7.249,""

@@ -1,0 +1,5 @@
+"request","precision","selected","status","model","libtorch","reason","point_error","checkpoint_error","transfer_seconds","seconds","error"
+"auto","float64",NA,"failed",NA,NA,NA,NA,NA,NA,NA,"can't optimize a non-leaf Tensor"
+"auto","float32",NA,"failed",NA,NA,NA,NA,NA,NA,NA,"can't optimize a non-leaf Tensor"
+"cpu","float64",NA,"failed",NA,NA,NA,NA,NA,NA,NA,"can't optimize a non-leaf Tensor"
+"cpu","float32",NA,"failed",NA,NA,NA,NA,NA,NA,NA,"can't optimize a non-leaf Tensor"

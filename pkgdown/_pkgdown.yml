@@ -1,0 +1,187 @@
+# Local builds deliberately have no published URL. Set `url` when deploying.
+destination: docs
+title: riemtorch
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  theme: github-light
+  math-rendering: mathml
+  bslib:
+    primary: "#086b63"
+    dark: "#243746"
+    link-color: "#086b63"
+    border-radius: 0.5rem
+    btn-border-radius: 0.3rem
+
+authors:
+  Kisung You:
+    href: https://kisungyou.com
+
+home:
+  title: Riemannian optimization with R and torch
+  description: Define a tensor objective, choose its geometry, and optimize on CPU or GPU with riemtorch.
+  sidebar:
+    structure: [start, license, citation, authors]
+    components:
+      start:
+        title: Documentation
+        text: |
+          [Get started](articles/getting-started.html)
+
+          [Example gallery](articles/examples.html)
+
+          [Function reference](reference/index.html)
+
+          [Device selection](articles/applications-and-devices.html)
+
+navbar:
+  bg: dark
+  structure:
+    left: [start, examples, guides, reference, news, related]
+    right: [search]
+  components:
+    start:
+      text: Get started
+      href: articles/getting-started.html
+    examples:
+      text: Examples
+      href: articles/examples.html
+    guides:
+      text: Guides
+      href: articles/index.html
+    reference:
+      text: Functions
+      href: reference/index.html
+    news:
+      text: News
+      href: news/index.html
+    related:
+      text: Other packages
+      menu:
+        - text: Riemann
+          href: https://www.kisungyou.com/Riemann/
+        - text: Rdimtools
+          href: https://www.kisungyou.com/Rdimtools/
+        - text: T4cluster
+          href: https://www.kisungyou.com/T4cluster/
+        - text: T4transport
+          href: https://www.kisungyou.com/T4transport/
+
+articles:
+  - title: Start here
+    desc: Install the package, define an objective, and inspect your first result.
+    contents:
+      - articles/getting-started
+      - articles/examples
+      - articles/example-data-sources
+  - title: Foundations
+    desc: Four small optimization problems with plots and independent checks.
+    contents:
+      - articles/example-sphere-pca
+      - articles/example-robust-regression
+      - articles/example-spd-mean
+      - articles/example-matrix-completion
+  - title: Public-data applications
+    desc: Work with biological, industrial, environmental, and time-series measurements.
+    contents:
+      - articles/example-penguin-subspace
+      - articles/example-stackloss-regression
+      - articles/example-airquality-completion
+      - articles/example-covariance-means
+  - title: Constraints and sparsity
+    desc: Express modeling assumptions and penalties through optimization callbacks.
+    contents:
+      - articles/example-tree-constraints
+      - articles/example-mtcars-proximal
+  - title: Geometry and objectives
+    contents:
+      - geometry-and-metrics
+      - custom-objectives
+      - structured-problems
+      - compact-lowrank
+      - complex-geometry
+  - title: Solvers and numerical checks
+    contents:
+      - deterministic-optimization
+      - second-order-and-leastsquares
+      - checking-derivatives
+      - variance-reduction
+      - constrained-nonsmooth
+  - title: Training and execution
+    contents:
+      - torch-training
+      - sparse-training
+      - applications-and-devices
+  - title: Extending the package and understanding limits
+    contents:
+      - extending-riemtorch
+      - numerical-limitations
+
+reference:
+  - title: Define and solve a problem
+    desc: User-defined scalar objectives, structured losses, and optimization drivers.
+    contents:
+      - riemtorch-package
+      - riem.problem
+      - riem.problem.finitesum
+      - riem.problem.leastsquares
+      - riem.problem.constrained
+      - riem.problem.composite
+      - riem.optimize
+      - riem.multistart
+      - riem.evaluate
+  - title: Choose a geometry
+  - subtitle: Vectors, tensors, and curved spaces
+    contents:
+      - manifold.euclidean
+      - manifold.sphere
+      - manifold.oblique
+      - manifold.hyperbolic
+      - manifold.torus
+      - manifold.positive
+      - manifold.complexcircle
+  - subtitle: Frames, matrix groups, and subspaces
+    contents:
+      - manifold.stiefel
+      - manifold.stiefel.generalized
+      - manifold.rotation
+      - manifold.affine
+  - subtitle: Positive-definite, low-rank, and constrained matrices
+    contents:
+      - manifold.spd
+      - manifold.spdk
+      - manifold.fixedrank
+      - manifold.elliptope
+      - manifold.correlation
+      - manifold.doublystochastic
+      - manifold.landmark
+  - subtitle: Combine and scale geometries
+    contents:
+      - manifold.product
+      - manifold.power
+  - title: Operate on manifold points
+    contents:
+      - riem.random
+      - riem.belongs
+      - riem.materialize
+      - riem.chart
+      - riem.matrix.function
+  - title: Check derivatives and capabilities
+    contents:
+      - riem.check.manifold
+      - riem.hessian.spectrum
+      - riem.capabilities
+      - riem.support
+      - riem.manifold
+  - title: Train torch models
+    contents:
+      - optim_rsgd
+      - optim_rlinesearch
+      - riem.train
+      - riem.schedule
+      - riem.save
+  - title: Devices and precision
+    contents:
+      - riem.devices
+      - riem.to

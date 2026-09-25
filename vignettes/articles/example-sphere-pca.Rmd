@@ -1,0 +1,120 @@
+---
+title: "Find a principal direction on the sphere"
+description: "A complete optimization example with iris data, a convergence plot, and an independent eigenvector check."
+output: rmarkdown::html_document
+---
+
+```{r setup, include=FALSE}
+library(torch)
+library(riemtorch)
+if (!torch::torch_is_installed()) {
+  stop("This article needs the torch runtime. Run torch::install_torch() first.")
+}
+torch_set_num_threads(1)
+torch_manual_seed(2026)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7,
+                      fig.height = 4.6, fig.align = "center", dpi = 120)
+```
+
+The first principal component is a unit vector that captures as much variation
+as possible. That unit-length constraint makes the sphere a natural search
+space. This example writes PCA as an optimization problem, solves it, and checks
+the answer against R's `eigen()` function.
+
+We use two measurements from the built-in `iris` data so the result is easy to
+draw. The measurements are centered but kept in their original units.
+
+## Build the objective
+
+```{r data}
+X <- scale(as.matrix(iris[, c("Sepal.Length", "Petal.Length")]),
+           center = TRUE, scale = FALSE)
+C <- crossprod(X) / nrow(X)
+
+sphere <- manifold.sphere(2)
+covariance <- torch_tensor(C, dtype = torch_float64(), device = "cpu")
+problem <- riem.problem(
+  sphere,
+  function(q, data) -(q * data$matmul(q))$sum(),
+  data = covariance
+)
+```
+
+For a unit vector $q$, the projected variance is $q^\mathsf{T} Cq$. The solver
+minimizes its negative. `riem.problem()` obtains the gradient by automatic
+differentiation, and the geometry converts it to a tangent vector on the
+sphere. Registering the covariance through `data` lets the execution driver
+place it on the same device as the point.
+
+## Solve and inspect the result
+
+```{r solve}
+initial <- torch_tensor(c(1, 0), dtype = torch_float64(), device = "cpu")
+fit <- riem.optimize(
+  problem, initial, method = "conjugate_gradient",
+  control = list(max_iterations = 100, gradient_tolerance = 1e-7),
+  device = "cpu"
+)
+fit
+```
+
+The examples on this site explicitly select CPU and float64 for reproducibility.
+For automatic device discovery on your workstation, use `device = "auto"`.
+You can always keep `device = "cpu"` to override an available CUDA GPU.
+
+## Check against the eigensystem
+
+The sign of a principal direction is arbitrary: $q$ and $-q$ describe the same
+line. Compare their absolute inner product rather than their signed entries.
+
+```{r reference}
+reference <- eigen(C, symmetric = TRUE)
+direction <- as.numeric(fit$point)
+agreement <- abs(sum(direction * reference$vectors[, 1]))
+captured <- -fit$objective / sum(diag(C))
+
+data.frame(
+  check = c("Unit-length error", "Direction agreement", "Variance captured"),
+  value = c(abs(sum(direction^2) - 1), agreement, captured)
+)
+stopifnot(riem.belongs(sphere, fit$point), agreement > 1 - 1e-10)
+```
+
+The variance fraction is for these two centered measurements. It is not the
+variance fraction for all four iris measurements or for standardized data.
+
+```{r direction-plot, echo=FALSE, fig.alt="Centered iris measurements with the optimized first principal direction drawn through the origin.", fig.cap="The optimized direction follows the strongest variation in the two measurements."}
+plot(X, pch = 19, col = grDevices::adjustcolor("#447A9C", alpha.f = 0.5),
+     xlab = "Centered sepal length (cm)",
+     ylab = "Centered petal length (cm)", asp = 1,
+     main = "A principal direction from optimization")
+abline(h = 0, v = 0, col = "#E2E8ED", lty = 3)
+abline(a = 0, b = direction[2] / direction[1], col = "#CD713B", lwd = 3)
+legend("topleft", c("Measurements", "Principal direction"),
+       pch = c(19, NA), lty = c(NA, 1), lwd = c(NA, 3),
+       col = c("#447A9C", "#CD713B"), bty = "n", cex = 0.85)
+```
+
+## Read the convergence history
+
+The result retains the objective and metric gradient norm at each iteration.
+Here the known optimum is minus the largest eigenvalue, so we can also measure
+the objective gap directly.
+
+```{r convergence, fig.alt="The objective gap decreases toward machine precision as conjugate-gradient iterations proceed.", fig.cap="The objective approaches the independently known optimum."}
+iteration <- vapply(fit$history, function(record) record$iteration, numeric(1))
+objective <- vapply(fit$history, function(record) record$objective, numeric(1))
+gap <- pmax(objective + reference$values[1], .Machine$double.eps)
+plot(iteration, gap, type = "l", log = "y", lwd = 2, col = "#267C74",
+     xlab = "Iteration", ylab = "Objective gap (log scale)",
+     main = "Progress toward the known optimum")
+```
+
+The plotted gap is clipped at machine precision because subtraction near the
+optimum is affected by floating-point rounding. The solver's stopping criterion
+uses the gradient norm. For several principal directions together, use
+`manifold.grassmann()` and an orthonormal matrix-valued point.
+
+Try [the penguin subspace application](example-penguin-subspace.html) to fit
+two directions from public measurements and compare a finite-sum solver.
+Browse all ten applications and introductions in the [example gallery](examples.html).

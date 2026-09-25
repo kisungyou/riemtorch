@@ -1,0 +1,6 @@
+Tracing function "download.file" in package "namespace:utils"
+[WARNING] Could not convert TeX math 
+   f(X) = \frac{1}{2|\Omega|}\sum_{(i,j)\in\Omega}(X_{ij}-Z_{ij})^2
+         + \frac{\lambda}{2np}\lVert X\rVert_F^2,\qquad \lambda=0.01.
+  , rendering as TeX
+Untracing function "download.file" in package "namespace:utils"

@@ -1,0 +1,43 @@
+Rendering example-sphere-pca (run 1)
+Rendering example-sphere-pca (run 2)
+Rendering example-robust-regression (run 1)
+Rendering example-robust-regression (run 2)
+Rendering example-spd-mean (run 1)
+Rendering example-spd-mean (run 2)
+Rendering example-matrix-completion (run 1)
+Rendering example-matrix-completion (run 2)
+Rendering example-penguin-subspace (run 1)
+Rendering example-penguin-subspace (run 2)
+Rendering example-stackloss-regression (run 1)
+Rendering example-stackloss-regression (run 2)
+Rendering example-airquality-completion (run 1)
+Rendering example-airquality-completion (run 2)
+Rendering example-covariance-means (run 1)
+Rendering example-covariance-means (run 2)
+Rendering example-tree-constraints (run 1)
+Rendering example-tree-constraints (run 2)
+Rendering example-mtcars-proximal (run 1)
+Rendering example-mtcars-proximal (run 2)
+                       article run1_seconds run2_seconds render_seconds
+            example-sphere-pca        6.805        7.227         7.0160
+     example-robust-regression        5.812        6.391         6.1015
+              example-spd-mean        7.762        9.738         8.7500
+     example-matrix-completion        9.097        6.903         8.0000
+      example-penguin-subspace       10.836       10.536        10.6860
+  example-stackloss-regression        8.346        8.877         8.6115
+ example-airquality-completion        8.750        9.820         9.2850
+      example-covariance-means        9.545        9.031         9.2880
+      example-tree-constraints       12.040       11.550        11.7950
+       example-mtcars-proximal       17.788       18.021        17.9045
+ max_relative_difference
+                      NA
+                      NA
+                      NA
+                      NA
+                       0
+                       0
+                       0
+                       0
+                       0
+                       0
+All application checks and repeated-render comparisons passed.

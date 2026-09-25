@@ -1,0 +1,11 @@
+"article","run1_seconds","run2_seconds","render_seconds","max_relative_difference"
+"example-sphere-pca",6.805,7.227,7.016,NA
+"example-robust-regression",5.812,6.391,6.1015,NA
+"example-spd-mean",7.762,9.738,8.75,NA
+"example-matrix-completion",9.097,6.903,8,NA
+"example-penguin-subspace",10.836,10.536,10.686,0
+"example-stackloss-regression",8.346,8.877,8.6115,0
+"example-airquality-completion",8.75,9.82000000000001,9.285,0
+"example-covariance-means",9.545,9.03099999999998,9.28799999999999,0
+"example-tree-constraints",12.04,11.55,11.795,0
+"example-mtcars-proximal",17.788,18.021,17.9045,0

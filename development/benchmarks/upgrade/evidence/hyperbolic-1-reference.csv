@@ -1,0 +1,2 @@
+case,implementation,version,algorithm,seconds,objective,gradient_norm,feasibility,optimum,fn,gradient,termination,device,dtype,transfer_seconds,seed
+hyperbolic,SciPy,1.13.1,BFGS in global Poincare coordinates; independent distance formula,0.004387291999999987,1.2678746941219225e-13,5.032649584385549e-07,0.0,0,110,0,Optimization terminated successfully.,cpu,float64,0,1

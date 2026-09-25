@@ -1,0 +1,48 @@
+Generated using installed Riemann 0.1.7 in an independent R session.
+Source baseline audited separately: e847692576f8b250c8140e1343b145f72caa379f.
+The installed binary does not expose a source commit; do not infer build provenance.
+Inputs are deterministic constants; expected distances come from Riemann::riem.pdist.
+R version 4.5.2 (2025-10-31)
+Platform: aarch64-apple-darwin20
+Running under: macOS Tahoe 26.6.2
+
+Matrix products: default
+BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+
+time zone: America/New_York
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] gtable_0.3.6         ggplot2_4.0.3        ks_1.15.3           
+ [4] lattice_0.23-1       bitops_1.1-0         vctrs_0.7.3         
+ [7] tools_4.5.2          Rdpack_2.6.6         generics_0.1.4      
+[10] parallel_4.5.2       tibble_3.3.1         cluster_2.1.8.3     
+[13] highs_1.14.0-2       pkgconfig_2.0.3      fds_1.9             
+[16] rstiefel_1.0.1       Matrix_1.7-6         KernSmooth_2.23-27  
+[19] checkmate_2.3.4      RColorBrewer_1.1-3   S7_0.2.2            
+[22] scatterplot3d_0.3-45 maotai_0.3.0         lifecycle_1.0.5     
+[25] compiler_4.5.2       farver_2.1.2         CVXR_1.9.2          
+[28] RcppDE_0.1.9         codetools_0.2-20     Riemann_0.1.7       
+[31] rainbow_3.8          RCurl_1.98-1.20      gsignal_0.3-7       
+[34] gmp_0.7-5.1          pracma_2.4.6         pillar_1.11.1       
+[37] MASS_7.3-66          T4transport_0.1.9    clarabel_0.11.3     
+[40] ADMM_0.3.4           dbscan_1.2.6         iterators_1.0.14    
+[43] Rdimtools_1.1.5      mclust_6.1.3         foreach_1.5.2       
+[46] RSpectra_0.16-2      tidyselect_1.2.1     Rtsne_0.17          
+[49] mvtnorm_1.4-2        dplyr_1.2.1          splines_4.5.2       
+[52] pcaPP_2.0-5          grid_4.5.2           colorspace_2.1-3    
+[55] cli_3.6.6            magrittr_2.0.5       scales_1.4.0        
+[58] backports_1.5.1      DEoptim_2.2-8        scs_3.2.7           
+[61] deSolve_1.42         RANN_2.6.3           fastcluster_1.3.0   
+[64] lpSolve_5.6.23       RiemBase_0.2.6       rbibutils_2.4.1     
+[67] doParallel_1.0.17    T4cluster_0.1.4      rlang_1.3.0         
+[70] Rcpp_1.1.2           glue_1.8.1           fda_6.3.0           
+[73] hdrcde_3.5.0         osqp_1.0.0           mclustcomp_0.3.5    
+[76] R6_2.6.1            

@@ -1,0 +1,46 @@
+---
+title: "Checking geometry and derivatives"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Checking geometry and derivatives}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse=TRUE, comment="#>", eval=torch::torch_is_installed())
+library(riemtorch)
+library(torch)
+if(torch_is_installed()) {torch_set_num_threads(1); torch_manual_seed(13)}
+```
+
+A diagnostic checks a mathematical identity at sampled points. Repeat it at
+several interior points, and inspect the errors rather than treating a passing
+result as a proof over the whole manifold.
+
+```{r}
+M <- manifold.sphere(3)
+x <- torch_tensor(c(0.6, 0.8, 0), dtype=torch_float64())
+u <- torch_tensor(c(-0.8, 0.6, 0), dtype=torch_float64())
+P <- riem.problem(M, function(x) -x[1])
+riem.check.manifold(M,x,u)$checks
+riem.check.gradient(P,x,u)$curves
+riem.check.hessian(P,x,u)$checks
+```
+
+The gradient Taylor remainder should decay quadratically until roundoff
+intervenes. A Hessian Taylor test requires an exponential map or a declared
+second-order retraction. Without one, the Taylor test is inconclusive while
+linearity and symmetry tests still run.
+
+```{r}
+bad <- riem.problem(M,function(x) -x[1],rgrad=function(x) x*0)
+stopifnot(riem.check.gradient(bad,x,u)$status == "fail")
+Q <- riem.problem(manifold.euclidean(3),function(x) (x*x)$sum())
+riem.hessian.spectrum(Q,torch_ones(3,dtype=torch_float64()))$values
+riem.devices(operations="basic")
+```
+
+Spectrum results are Ritz estimates with residuals, not certificates that no
+unseen more extreme eigenvalue exists. Device probes qualify specific operations;
+unknown user callbacks retain the conservative full probe.

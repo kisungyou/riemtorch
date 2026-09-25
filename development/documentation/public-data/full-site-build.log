@@ -1,0 +1,181 @@
+── Installing package riemtorch into temporary library ─────────────────────────
+── Building pkgdown site for package riemtorch ─────────────────────────────────
+Reading from: /Users/kisung/Desktop/develop/R-devel/riemtorch
+Writing to: /Users/kisung/Desktop/develop/R-devel/riemtorch/docs
+── Sitrep ──────────────────────────────────────────────────────────────────────
+✖ URLs not ok.
+  In pkgdown/_pkgdown.yml, url is missing.
+  See details in `vignette(pkgdown::metadata)`.
+✔ Favicons ok.
+✔ Open graph metadata ok.
+✔ Articles metadata ok.
+✔ Reference metadata ok.
+── Initialising site ───────────────────────────────────────────────────────────
+── Building home ───────────────────────────────────────────────────────────────
+Writing `authors.html`
+Reading pkgdown/index.md
+Writing `index.html`
+Writing `404.html`
+── Building function reference ─────────────────────────────────────────────────
+Writing `reference/index.html`
+Reading man/manifold.affine.Rd
+Writing `reference/manifold.affine.html`
+Reading man/manifold.complexcircle.Rd
+Writing `reference/manifold.complexcircle.html`
+Reading man/manifold.correlation.Rd
+Writing `reference/manifold.correlation.html`
+Reading man/manifold.doublystochastic.Rd
+Writing `reference/manifold.doublystochastic.html`
+Reading man/manifold.elliptope.Rd
+Writing `reference/manifold.elliptope.html`
+Reading man/manifold.euclidean.Rd
+Writing `reference/manifold.euclidean.html`
+Reading man/manifold.fixedrank.Rd
+Writing `reference/manifold.fixedrank.html`
+Reading man/manifold.hyperbolic.Rd
+Writing `reference/manifold.hyperbolic.html`
+Reading man/manifold.landmark.Rd
+Writing `reference/manifold.landmark.html`
+Reading man/manifold.oblique.Rd
+Writing `reference/manifold.oblique.html`
+Reading man/manifold.positive.Rd
+Writing `reference/manifold.positive.html`
+Reading man/manifold.power.Rd
+Writing `reference/manifold.power.html`
+Reading man/manifold.product.Rd
+Writing `reference/manifold.product.html`
+Reading man/manifold.rotation.Rd
+Writing `reference/manifold.rotation.html`
+Reading man/manifold.spd.Rd
+Writing `reference/manifold.spd.html`
+Reading man/manifold.spdk.Rd
+Writing `reference/manifold.spdk.html`
+Reading man/manifold.sphere.Rd
+Writing `reference/manifold.sphere.html`
+Reading man/manifold.stiefel.Rd
+Writing `reference/manifold.stiefel.html`
+Reading man/manifold.stiefel.generalized.Rd
+Writing `reference/manifold.stiefel.generalized.html`
+Reading man/manifold.torus.Rd
+Writing `reference/manifold.torus.html`
+Reading man/optim_rlinesearch.Rd
+Writing `reference/optim_rlinesearch.html`
+Reading man/optim_rsgd.Rd
+Writing `reference/optim_rsgd.html`
+Reading man/riem.belongs.Rd
+Writing `reference/riem.belongs.html`
+Reading man/riem.capabilities.Rd
+Writing `reference/riem.capabilities.html`
+Reading man/riem.chart.Rd
+Writing `reference/riem.chart.html`
+Reading man/riem.check.manifold.Rd
+Writing `reference/riem.check.manifold.html`
+Reading man/riem.devices.Rd
+Writing `reference/riem.devices.html`
+Reading man/riem.evaluate.Rd
+Writing `reference/riem.evaluate.html`
+Reading man/riem.hessian.spectrum.Rd
+Writing `reference/riem.hessian.spectrum.html`
+Reading man/riem.manifold.Rd
+Writing `reference/riem.manifold.html`
+Reading man/riem.materialize.Rd
+Writing `reference/riem.materialize.html`
+Reading man/riem.matrix.function.Rd
+Writing `reference/riem.matrix.function.html`
+Reading man/riem.multistart.Rd
+Writing `reference/riem.multistart.html`
+Reading man/riem.optimize.Rd
+Writing `reference/riem.optimize.html`
+Reading man/riem.problem.Rd
+Writing `reference/riem.problem.html`
+Reading man/riem.problem.composite.Rd
+Writing `reference/riem.problem.composite.html`
+Reading man/riem.problem.constrained.Rd
+Writing `reference/riem.problem.constrained.html`
+Reading man/riem.problem.finitesum.Rd
+Writing `reference/riem.problem.finitesum.html`
+Reading man/riem.problem.leastsquares.Rd
+Writing `reference/riem.problem.leastsquares.html`
+Reading man/riem.random.Rd
+Writing `reference/riem.random.html`
+Reading man/riem.save.Rd
+Writing `reference/riem.save.html`
+Reading man/riem.schedule.Rd
+Writing `reference/riem.schedule.html`
+Reading man/riem.support.Rd
+Writing `reference/riem.support.html`
+Reading man/riem.to.Rd
+Writing `reference/riem.to.html`
+Reading man/riem.train.Rd
+Writing `reference/riem.train.html`
+Reading man/riemtorch-package.Rd
+Writing `reference/riemtorch-package.html`
+── Building articles ───────────────────────────────────────────────────────────
+Writing `articles/index.html`
+Reading vignettes/applications-and-devices.Rmd
+Writing `articles/applications-and-devices.html`
+Reading vignettes/checking-derivatives.Rmd
+Writing `articles/checking-derivatives.html`
+Reading vignettes/compact-lowrank.Rmd
+Writing `articles/compact-lowrank.html`
+Reading vignettes/complex-geometry.Rmd
+Writing `articles/complex-geometry.html`
+Reading vignettes/constrained-nonsmooth.Rmd
+Writing `articles/constrained-nonsmooth.html`
+Reading vignettes/custom-objectives.Rmd
+Writing `articles/custom-objectives.html`
+Reading vignettes/deterministic-optimization.Rmd
+Writing `articles/deterministic-optimization.html`
+Reading vignettes/articles/example-airquality-completion.Rmd
+Writing `articles/example-airquality-completion.html`
+Reading vignettes/articles/example-covariance-means.Rmd
+Writing `articles/example-covariance-means.html`
+Reading vignettes/articles/example-data-sources.Rmd
+Writing `articles/example-data-sources.html`
+Reading vignettes/articles/example-matrix-completion.Rmd
+Writing `articles/example-matrix-completion.html`
+Reading vignettes/articles/example-mtcars-proximal.Rmd
+Writing `articles/example-mtcars-proximal.html`
+Reading vignettes/articles/example-penguin-subspace.Rmd
+Writing `articles/example-penguin-subspace.html`
+Reading vignettes/articles/example-robust-regression.Rmd
+Writing `articles/example-robust-regression.html`
+Reading vignettes/articles/example-spd-mean.Rmd
+Writing `articles/example-spd-mean.html`
+Reading vignettes/articles/example-sphere-pca.Rmd
+Writing `articles/example-sphere-pca.html`
+Reading vignettes/articles/example-stackloss-regression.Rmd
+Writing `articles/example-stackloss-regression.html`
+Reading vignettes/articles/example-tree-constraints.Rmd
+Writing `articles/example-tree-constraints.html`
+Reading vignettes/articles/examples.Rmd
+Writing `articles/examples.html`
+Reading vignettes/extending-riemtorch.Rmd
+Writing `articles/extending-riemtorch.html`
+Reading vignettes/geometry-and-metrics.Rmd
+Writing `articles/geometry-and-metrics.html`
+Reading vignettes/articles/getting-started.Rmd
+Writing `articles/getting-started.html`
+Reading vignettes/numerical-limitations.Rmd
+Writing `articles/numerical-limitations.html`
+Reading vignettes/second-order-and-leastsquares.Rmd
+Writing `articles/second-order-and-leastsquares.html`
+Reading vignettes/sparse-training.Rmd
+Writing `articles/sparse-training.html`
+Reading vignettes/structured-problems.Rmd
+Writing `articles/structured-problems.html`
+Reading vignettes/torch-training.Rmd
+Writing `articles/torch-training.html`
+Reading vignettes/variance-reduction.Rmd
+Writing `articles/variance-reduction.html`
+── Building news ───────────────────────────────────────────────────────────────
+Writing `news/index.html`
+── Building sitemap ────────────────────────────────────────────────────────────
+Writing `sitemap.xml`
+── Building docs for llms ──────────────────────────────────────────────────────
+── Building search index ───────────────────────────────────────────────────────
+── Checking for problems ───────────────────────────────────────────────────────
+── Finished building pkgdown site for package riemtorch ────────────────────────
+── Finished building pkgdown site for package riemtorch ────────────────────────
+   user  system elapsed 
+257.885  60.291 410.824 

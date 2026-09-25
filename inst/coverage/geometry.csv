@@ -1,0 +1,45 @@
+id,source_geometry,constructor,metric,representation,status,evidence,space_equivalence
+G01,Euclidean,manifold.euclidean,euclidean,tensor,verified,test-geometry-contracts; test-solver-evidence: euclidean,distinct metric/space family or parameterized construction
+G02,Sphere,manifold.sphere,round,unit vector,verified,test-geometry-contracts; test-solver-evidence: sphere,distinct metric/space family or parameterized construction
+G03,SphereExtrinsic,manifold.sphere,round,identity embedding; alias of G02,verified,test-geometry-contracts; test-solver-evidence: sphere,G02
+G04,Oblique,manifold.oblique,column_round,p x k unit columns,verified,test-geometry-contracts; test-solver-evidence: oblique,distinct metric/space family or parameterized construction
+G05,ProbabilitySimplex,manifold.multinomial,fisher_rao,positive probability vector,verified,test-geometry-contracts; test-solver-evidence: multinomial,distinct metric/space family or parameterized construction
+G06,PoincareBall,manifold.hyperbolic,poincare; negative curvature,d-vector inside ball,verified,test-geometry-contracts; test-solver-evidence: poincare,distinct metric/space family or parameterized construction
+G07,Hyperboloid,manifold.hyperbolic,lorentz; negative curvature,d+1 vector positive time,verified,test-geometry-contracts; test-solver-evidence: hyperboloid,G06
+G08,Torus,manifold.torus,flat_angles,d angles modulo 2pi,verified,test-geometry-contracts; test-solver-evidence: torus,distinct metric/space family or parameterized construction
+G09,Stiefel,manifold.stiefel,canonical,p x k frame,verified,test-geometry-contracts; test-solver-evidence: stiefel_canonical,distinct metric/space family or parameterized construction
+G10,StiefelEuclidean,manifold.stiefel,euclidean,p x k frame,verified,test-geometry-contracts; test-solver-evidence: stiefel_euclidean,distinct metric/space family or parameterized construction
+G11,Grassmann,manifold.grassmann,canonical,p x k quotient frame,verified,test-geometry-contracts; test-solver-evidence: grassmann,distinct metric/space family or parameterized construction
+G12,GrassmannProjection,manifold.grassmann,projection_half_frobenius,p x p projector; equivalent to G11,verified,test-geometry-contracts; test-solver-evidence: grassmann_projection,G11
+G13,GeneralizedStiefel,manifold.stiefel.generalized,B_euclidean,p x k; X transpose B X = I,verified,test-geometry-contracts; test-solver-evidence: generalized_stiefel,distinct metric/space family or parameterized construction
+G14,GeneralizedGrassmann,manifold.grassmann.generalized,B_euclidean,p x k quotient; fixed SPD B,verified,test-geometry-contracts; test-solver-evidence: generalized_grassmann,distinct metric/space family or parameterized construction
+G15,SpecialOrthogonal,manifold.rotation,frobenius,p x p det +1,verified,test-geometry-contracts; test-solver-evidence: rotation,distinct metric/space family or parameterized construction
+G16,SpecialEuclidean,manifold.rigidmotion,weighted_product,named rotation and translation,verified,test-geometry-contracts; test-solver-evidence: rigidmotion,distinct metric/space family or parameterized construction
+G17,SPDLogEuclidean,manifold.spd,lerm,p x p symmetric SPD,verified,test-geometry-contracts; test-solver-evidence: spd_lerm,distinct metric/space family or parameterized construction
+G18,SPDAffineInvariant,manifold.spd,airm,p x p symmetric SPD,verified,test-geometry-contracts; test-solver-evidence: spd_airm,distinct metric/space family or parameterized construction
+G19,SPDBuresWasserstein,manifold.spd,wasserstein,p x p symmetric SPD,verified,test-geometry-contracts; test-solver-evidence: spd_wasserstein,distinct metric/space family or parameterized construction
+G20,FixedRank,manifold.fixedrank,embedded,m x p rank k,verified,test-geometry-contracts; test-solver-evidence: fixedrank,distinct metric/space family or parameterized construction
+G21,RankKPSD,manifold.spdk,embedded,p x p rank k PSD,verified,test-geometry-contracts; test-solver-evidence: spdk_embedded,distinct metric/space family or parameterized construction
+G22,RankKPSDBuresWasserstein,manifold.spdk,wasserstein,p x p rank k PSD,verified,test-geometry-contracts; test-solver-evidence: spdk_wasserstein,distinct metric/space family or parameterized construction
+G23,Elliptope,manifold.elliptope,embedded,p x p rank k PSD; unit diagonal,verified,test-geometry-contracts; test-solver-evidence: elliptope,distinct metric/space family or parameterized construction
+G24,Spectrahedron,manifold.spectrahedron,embedded,p x p rank k PSD; unit trace,verified,test-geometry-contracts; test-solver-evidence: spectrahedron,distinct metric/space family or parameterized construction
+G25,CorrelationECM,manifold.correlation,ecm,full rank correlation; unit-lower Cholesky chart,verified,test-geometry-contracts; test-solver-evidence: correlation_ecm,distinct metric/space family or parameterized construction
+G26,CorrelationLEC,manifold.correlation,lec,full rank correlation; nilpotent log chart,verified,test-geometry-contracts; test-solver-evidence: correlation_lec,distinct metric/space family or parameterized construction
+G27,CorrelationAffineQuotient,manifold.correlation,affine_quotient,full rank correlation; AIRM diagonal quotient,verified,test-geometry-contracts; test-solver-evidence: correlation_affine,distinct metric/space family or parameterized construction
+G28,KendallShape,manifold.landmark,kendall,centered unit k x p full rank preshape modulo SO(p),verified,test-geometry-contracts; test-solver-evidence: landmark,distinct metric/space family or parameterized construction
+G29,Product,manifold.product,weighted_product,named nested tensor tree,verified,test-geometry-contracts; test-solver-evidence: weighted_product,distinct metric/space family or parameterized construction
+R-landmark-O,Riemann landmark,manifold.landmark,kendall; reflections=TRUE,centered unit preshape modulo O(p),verified,test-geometry-contracts; test-solver-evidence: landmark_reflections,distinct metric/space family or parameterized construction
+R-spdk-factor,Riemann spdk,manifold.spdk,wasserstein,p x k full column rank factor modulo O(k),verified,test-geometry-contracts; test-solver-evidence: spdk_factor,G22
+G30,Repeated factors,manifold.power,sum of base metrics,one tensor with leading factor axis,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,distinct metric/space family or parameterized construction
+G31,Fixed metric scaling,manifold.scaled,base metric times scale squared,base representation,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,distinct metric/space family or parameterized construction
+G32,Positive tensors,manifold.positive,log_euclidean,positive tensor,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,distinct metric/space family or parameterized construction
+G33,Affine subspace,manifold.affine,euclidean,ambient vector with orthonormal basis and offset,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,distinct metric/space family or parameterized construction
+G34,Full orthogonal group,manifold.orthogonal,euclidean,square frame; both determinant signs,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,G10 (square case)
+G35,Positive doubly stochastic,manifold.doublystochastic,fisher,positive matrix with row/column sums one,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,distinct metric/space family or parameterized construction
+G36,Compact fixed rank,manifold.fixedrank,embedded,U S V transpose; full invertible small core; separate tangent factors,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,G20
+G37,Complex Euclidean,manifold.euclidean,real_hermitian,complex tensor,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,G01 (twice real dimension)
+G38,Complex sphere,manifold.sphere,round real_hermitian,unit complex vector,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,G02 (twice ambient dimension)
+G39,Complex circle,manifold.complexcircle,real_hermitian,unit-modulus complex vector,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,G08
+G40,Complex Stiefel,manifold.stiefel,real_hermitian,complex orthonormal frame,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,distinct metric/space family or parameterized construction
+G41,Complex Grassmann,manifold.grassmann,real_hermitian,complex quotient frame,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,distinct metric/space family or parameterized construction
+G42,Unitary group,manifold.unitary,real_hermitian,square complex frame,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,G40 (square case)

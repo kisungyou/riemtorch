@@ -1,0 +1,21 @@
+capability,reference,riemtorch_status,evidence,qualification
+first_order_optimization,Manopt; Pymanopt; ROPTLIB,verified,test-solver-evidence,metric and representation qualified
+public_derivative_diagnostics,Manopt,verified,test-diagnostics-upgrade,numerical evidence with inconclusive cases
+hessian_spectrum,Manopt,verified,test-diagnostics-upgrade,Ritz approximations; no global extremality certificate
+exact_maps,Manifolds.jl; Riemann,verified,test-geometry-contracts; test-math-expansion,primitive-level and local-domain qualifications
+transport,Manopt; Geoopt,verified,test-geometry-contracts,projection transport need not be isometric
+native_batching,Geoopt,verified,test-batching-native,common real geometries
+chunked_diagnostics,Geoopt,verified,test-diagnostics-upgrade,streamed detached gradients and HVPs
+complex_geometry,Manopt; Pymanopt,planned,upgrade-progress,real scalar objectives required
+sparse_training,Geoopt,planned,upgrade-progress,lazy row updates
+robust_least_squares,Manopt.jl,verified,test-smooth-upgrade,diagonal weights for nonquadratic losses
+constrained_optimization,Manopt.jl,planned,upgrade-progress,augmented Lagrangian
+proximal_optimization,Manopt.jl,planned,upgrade-progress,intrinsic proximal callbacks
+cpu_float64,all,verified,full package suite,local macOS arm64 reference
+cuda,Geoopt,awaiting_hardware_validation,test-device-runtime,operation probes do not certify complete workloads
+mps_float32,Geoopt,awaiting_hardware_validation,test-device-runtime,no local MPS runtime
+experimental_search,Manopt; Pymanopt,experimental,test-solver-evidence,local Nelder Mead; transported swarm; cooling annealing; MACG search
+smooth_solver_extensions,Manopt; ROPTLIB,verified,test-smooth-upgrade,CG/BB variants; preconditioned tCG; fused evaluations; budgets
+variance_reduction,R-SVRG; R-SRG,verified,test-smooth-upgrade,local log for snapshots; transported recursive estimator
+compact_fixedrank,Pymanopt 2.2.1,verified,test-smooth-upgrade,embedded Frobenius; full compact core; first-order only
+new_real_geometry,Manifolds.jl; Manopt,verified,test-smooth-upgrade,power/scaled; positive; affine; orthogonal; doubly stochastic

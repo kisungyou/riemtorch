@@ -1,0 +1,6 @@
+version,archive,bytes,sha256,standard_check,passed
+0.3.0,/Users/kisung/Desktop/develop/R-devel/riemtorch_0.3.0.tar.gz,133855,5591390a625e41e1fc96f294afc7742cc0adb90b01bec33529e5245fbc48971c,OK,864
+0.4.0,/Users/kisung/Desktop/develop/R-devel/riemtorch_0.4.0.tar.gz,149748,bc846606bb10a209d1cf856072c04dc7cad80c2cb91ad1df9cc4a21d116ddab0,OK,940
+0.5.0,/Users/kisung/Desktop/develop/R-devel/riemtorch_0.5.0.tar.gz,163938,09248b6d2909a6eef4abc36963df6dbb2cd3e58a51c27c5d45c3850a2f0cd320,OK,1018
+0.6.0,/Users/kisung/Desktop/develop/R-devel/riemtorch_0.6.0.tar.gz,185311,eb5c3be79322f8228e3fb2c3f3f1676ab426239be469f80751d2b9e3c6d7a7b2,OK,1150
+0.1.0,/Users/kisung/Desktop/develop/R-devel/riemtorch_0.1.0.tar.gz,185552,65dc817b35f1df4cddde93fd5e063a4356c5dc15d6a56e6ce467cd452d5f6569,OK,1150

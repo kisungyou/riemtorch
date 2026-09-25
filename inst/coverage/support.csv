@@ -1,0 +1,72 @@
+geometry_id,metric,method,derivative,device,dtype,status,evidence,qualification
+G01,euclidean,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G02,round,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G03,round,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G04,column_round,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G05,fisher_rao,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G06,poincare; negative curvature,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G07,lorentz; negative curvature,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G08,flat_angles,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G09,canonical,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G10,euclidean,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G11,canonical,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G12,projection_half_frobenius,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G13,B_euclidean,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G14,B_euclidean,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G15,frobenius,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G16,weighted_product,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-geometry-contracts: nested products and rigid motions,local smooth domain; no blanket higher-order claim
+G17,lerm,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G18,airm,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G19,wasserstein,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G20,embedded,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G21,embedded,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G22,wasserstein,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G23,embedded,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G24,embedded,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G25,ecm,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G26,lec,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G27,affine_quotient,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G28,kendall,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G29,weighted_product,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-geometry-contracts: weighted products,local smooth domain; no blanket higher-order claim
+R-landmark-O,kendall; reflections=TRUE,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-geometry-contracts: reflection quotient,local smooth domain; no blanket higher-order claim
+R-spdk-factor,wasserstein,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence: every geometry decreases a custom scalar objective,local smooth domain; no blanket higher-order claim
+G02,see geometry ledger,steepest_descent,ambient reverse-mode,cpu,float64,verified,test-solver-evidence,gradient; retraction
+G02,see geometry ledger,conjugate_gradient,ambient reverse-mode,cpu,float64,verified,test-solver-evidence,gradient; transport
+G02,see geometry ledger,barzilai_borwein,ambient reverse-mode,cpu,float64,verified,test-solver-evidence,gradient; transport
+G02,see geometry ledger,lbfgs,ambient reverse-mode,cpu,float64,verified,test-solver-evidence,gradient; transport
+G01;G02;G04;G08;G10;G11;G12;G13;G14;G15;G18;G29,see geometry ledger,trust_regions,exact automatic HVP,cpu,float64,verified,test-solver-evidence; test-math-expansion,exact Riemannian HVP
+G01;G02;G04;G08;G10;G11;G12;G13;G14;G15;G18;G29,see geometry ledger,newton_cg,exact automatic HVP,cpu,float64,verified,test-solver-evidence; test-math-expansion,exact Riemannian HVP
+G01;G02;G04;G08;G10;G11;G12;G13;G14;G15;G18;G29,see geometry ledger,adaptive_regularization_cubics,exact automatic HVP,cpu,float64,experimental,test-solver-evidence; test-math-expansion,exact Riemannian HVP
+G01,see geometry ledger,gauss_newton,residual JVP and metric adjoint,cpu,float64,verified,test-solver-evidence,residual differential and metric adjoint
+G01,see geometry ledger,levenberg_marquardt,residual JVP and metric adjoint,cpu,float64,verified,test-solver-evidence,residual differential and metric adjoint
+G01,see geometry ledger,stochastic_gradient,ambient reverse-mode,cpu,float64,verified,test-scalable-training,finite-sum autodiff
+G29,see geometry ledger,alternating_gradient,ambient reverse-mode,cpu,float64,verified,test-solver-evidence,named product; gradient
+G01,see geometry ledger,particle_swarm,value only,cpu,float64,experimental,test-solver-evidence,tangent; retraction; transport
+G01,see geometry ledger,nelder_mead,value only,cpu,float64,experimental,test-solver-evidence,tangent; retraction; local displacement
+G10,see geometry ledger,stiefel_annealing,value only,cpu,float64,experimental,test-solver-evidence,Stiefel frames; value only
+G11,see geometry ledger,grassmann_macg,value only,cpu,float64,experimental,test-solver-evidence,Grassmann frames; value only
+G09;G18;G01,see geometry ledger,optim_rsgd,ambient reverse-mode,cpu,float64,verified,test-optim-serialization: mixed matrix and Euclidean training,one adaptive scalar per tensor factor
+G09;G18;G01;G11,see geometry ledger,optim_radam,ambient reverse-mode,cpu,float64,verified,test-optim-serialization: mixed matrix training; factorwise basis invariance,one adaptive scalar per tensor factor
+G01;G10,see geometry ledger,riem.train,ambient reverse-mode,cpu,float64,verified,test-scalable-training: managed module and minibatch placement,one resolved device per run
+G30,sum of base metrics,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G31,base metric times scale squared,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G32,log_euclidean,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G33,euclidean,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G34,euclidean,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G35,fisher,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G36,embedded,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G37,real_hermitian,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G38,round real_hermitian,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G39,real_hermitian,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G40,real_hermitian,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G41,real_hermitian,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+G42,real_hermitian,geometry contract,primitive-qualified,cpu,float64; selected float32,verified,test-smooth-upgrade; test-training-complex-upgrade; test-upgrade-stress,no blanket Hessian or accelerator qualification
+qualified subset,see geometry ledger,svrg,problem contract,cpu,float64,verified,test-smooth-upgrade,local log and qualified snapshot transport
+qualified subset,see geometry ledger,srg,problem contract,cpu,float64,verified,test-smooth-upgrade,finite sum; transport along last accepted step
+qualified subset,see geometry ledger,augmented_lagrangian,problem contract,cpu,float64,verified,test-broader-optimization,equality/inequality values and metric adjoints
+qualified subset,see geometry ledger,proximal_gradient,problem contract,cpu,float64,verified,test-broader-optimization,exact maps; caller-supplied manifold-distance proximal map
+qualified subset,see geometry ledger,cyclic_proximal_point,problem contract,cpu,float64,verified,test-broader-optimization,matching nonsmooth values and exact proximal maps; cycle stop is not stationarity
+qualified tensor and row-wise factors,see geometry ledger,optim_radam (AMSGrad),ambient reverse-mode,cpu,float64,verified,test-training-complex-upgrade,power factors independent; sparse row-local clocks; line-search closures deterministic
+qualified tensor and row-wise factors,see geometry ledger,optim_radagrad,ambient reverse-mode,cpu,float64,verified,test-training-complex-upgrade,power factors independent; sparse row-local clocks; line-search closures deterministic
+qualified tensor and row-wise factors,see geometry ledger,optim_rlinesearch,ambient reverse-mode,cpu,float64,verified,test-training-complex-upgrade,power factors independent; sparse row-local clocks; line-search closures deterministic
+qualified tensor and row-wise factors,see geometry ledger,sparse SGD/Adam,ambient reverse-mode,cpu,float64,verified,test-training-complex-upgrade,power factors independent; sparse row-local clocks; line-search closures deterministic

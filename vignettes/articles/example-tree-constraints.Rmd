@@ -1,0 +1,204 @@
+---
+title: "Fit a constrained tree-volume model"
+description: "Use equality and inequality constraints for a log-volume model, then verify the solution by eliminating one slope."
+output: rmarkdown::html_document
+---
+
+```{r setup, include=FALSE}
+library(torch)
+library(riemtorch)
+if (!torch::torch_is_installed()) {
+  stop("This article needs the torch runtime. Run torch::install_torch() first.")
+}
+torch_set_num_threads(1)
+torch_manual_seed(316)
+set.seed(316)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7,
+                      fig.height = 4.6, fig.align = "center", dpi = 120)
+```
+
+Suppose a volume model should increase with both diameter and height, and
+multiplying both measurements by a common factor should multiply predicted
+volume by its cube. These are **modeling assumptions**, not consequences of
+fitting the data. They lead to a small regression problem with both an equality
+and inequalities. Euclidean coefficients let us inspect the constraint solver
+without introducing a geometric representation at the same time.
+
+Start with [the regression introduction](example-robust-regression.html) if the
+problem-and-solver interface is new to you. The
+[constraints and nonsmooth guide](constrained-nonsmooth.html) explains the
+solver contract in more detail.
+
+## Data: diameter, height, and timber volume
+
+R's [`trees` data](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html)
+contain 31 black cherry trees. The misleadingly named `Girth` column records
+**diameter in inches**, not circumference. Height is in feet and timber volume
+in cubic feet. All three variables are positive and complete. No download is
+needed; see [data sources and reproducibility](example-data-sources.html).
+
+```{r data}
+trees <- datasets::trees
+stopifnot(nrow(trees) == 31, !anyNA(trees), all(as.matrix(trees) > 0))
+log_predictors <- log(as.matrix(trees[, c("Girth", "Height")]))
+log_volume <- log(trees$Volume)
+predictor_center <- colMeans(log_predictors)
+response_center <- mean(log_volume)
+X <- cbind(intercept = 1, sweep(log_predictors, 2, predictor_center))
+y <- log_volume - response_center
+
+registered <- list(
+  X = torch_tensor(X, dtype = torch_float64(), device = "cpu"),
+  y = torch_tensor(y, dtype = torch_float64(), device = "cpu")
+)
+```
+
+Centering the log predictors and response improves numerical conditioning and
+changes only the intercept. We do not standardize the predictors, so the slope
+constraints keep their original meaning.
+
+## Objective and constraints
+
+Write the model in the original coordinates as
+
+\[
+\log V_i \approx a + b_D\log D_i + b_H\log H_i,
+\qquad b_D+b_H=3,\quad b_D\geq0,\quad b_H\geq0.
+\]
+
+We minimize the mean squared log residual divided by two. In the constructor,
+equalities have the form \(h(\beta)=0\) and inequalities have the form
+\(g(\beta)\leq0\). Our optimization point contains the centered intercept
+followed by the two slopes. Registered data are passed to every callback, even
+when a particular callback needs only the coefficients.
+
+```{r problem}
+problem <- riem.problem.constrained(
+  manifold.euclidean(3),
+  fn = function(beta, data) {
+    (data$X$matmul(beta) - data$y)$square()$mean() / 2
+  },
+  equality = function(beta, data) (beta[2:3]$sum() - 3)$reshape(1),
+  inequality = function(beta, data) -beta[2:3],
+  data = registered
+)
+```
+
+[`riem.problem.constrained()`](../reference/riem.problem.constrained.html)
+uses automatic differentiation for the objective gradient and constraint
+adjoints here. The augmented-Lagrangian solver repeatedly solves smooth inner
+problems and updates its multipliers.
+
+## Solve and inspect termination
+
+```{r solve}
+initial <- torch_tensor(c(0, 1.5, 1.5), dtype = torch_float64(), device = "cpu")
+fit <- riem.optimize(
+  problem, initial, method = "augmented_lagrangian",
+  control = list(max_iterations = 30, gradient_tolerance = 1e-7,
+                 feasibility_tolerance = 1e-7,
+                 inner_control = list(max_iterations = 100)),
+  device = "cpu"
+)
+centered_coefficients <- as.numeric(fit$point)
+coefficients <- c(
+  intercept = centered_coefficients[1] + response_center -
+    sum(centered_coefficients[2:3] * predictor_center),
+  log_diameter = centered_coefficients[2],
+  log_height = centered_coefficients[3]
+)
+round(coefficients, 6)
+data.frame(termination = fit$termination, as.data.frame(fit$kkt))
+```
+
+`converged_kkt` means the feasibility, stationarity, complementarity, and dual
+feasibility tests passed. An iteration budget or an inner-solver failure is a
+different outcome and must not be reported as convergence. These residuals
+usually give local optimality conditions; the independent calculation below
+also takes advantage of this particular problem's convexity.
+
+## Visualize the fit
+
+```{r fit-plot, echo=FALSE, fig.width=6, fig.height=6, fig.alt="Observed timber volume against exponentiated fitted log volume for 31 trees, with a diagonal perfect-fit line.", fig.cap="The fit is optimized in log-volume units. Exponentiating a fitted log value does not correct for retransformation bias."}
+fitted_log_volume <- drop(X %*% centered_coefficients) + response_center
+fitted_volume <- exp(fitted_log_volume)
+limits <- range(c(trees$Volume, fitted_volume))
+local({
+  old_par <- par(pty = "s")
+  on.exit(par(old_par))
+  plot(trees$Volume, fitted_volume, pch = 19, col = "#267C74",
+       xlim = limits, ylim = limits, asp = 1,
+       xlab = "Observed timber volume (cubic feet)",
+       ylab = "Exponentiated fitted log volume (cubic feet)",
+       main = "Constrained volume model")
+  abline(0, 1, lty = 2, col = "#718494", lwd = 2)
+})
+```
+
+## Independent verification
+
+Eliminate the height slope by setting \(b_H=3-b_D\). Let
+\(z_i=\log D_i-\log H_i\) and \(w_i=\log V_i-3\log H_i\).
+After profiling out the intercept, this is simple least squares in \(b_D\),
+restricted to \([0,3]\). The unrestricted slope is a ratio of centered cross
+products; clipping it to this interval gives the constrained minimum. This
+reference uses base R rather than another call to the riemtorch solver.
+
+```{r independent-verification}
+z <- log_predictors[, 1] - log_predictors[, 2]
+w <- log_volume - 3 * log_predictors[, 2]
+z_centered <- z - mean(z)
+w_centered <- w - mean(w)
+reference_diameter <- min(3, max(0, sum(z_centered * w_centered) /
+                                  sum(z_centered^2)))
+reference <- c(intercept = mean(w) - reference_diameter * mean(z),
+               log_diameter = reference_diameter,
+               log_height = 3 - reference_diameter)
+coefficient_error <- max(abs(coefficients - reference))
+
+# Independently evaluate the Lagrangian gradient and all constraint residuals.
+beta <- centered_coefficients
+lambda <- as.numeric(fit$multipliers$equality)
+mu <- as.numeric(fit$multipliers$inequality)
+objective_gradient <- drop(crossprod(X, drop(X %*% beta) - y)) / nrow(X)
+lagrangian_gradient <- objective_gradient + c(0, lambda, lambda) - c(0, mu)
+independent_kkt <- c(
+  feasibility = max(abs(sum(beta[2:3]) - 3), pmax(0, -beta[2:3])),
+  stationarity = sqrt(sum(lagrangian_gradient^2)),
+  complementarity = max(abs(mu * beta[2:3])),
+  dual_feasibility = max(0, -mu)
+)
+rbind(riemtorch = coefficients, independent = reference)
+data.frame(maximum_coefficient_error = coefficient_error,
+           as.list(independent_kkt), check.names = FALSE)
+stopifnot(fit$termination == "converged_kkt",
+          coefficient_error < 2e-5,
+          max(independent_kkt) < 1e-6,
+          max(abs(unlist(fit$kkt) - independent_kkt)) < 1e-8)
+```
+
+The fitted slopes are close to the familiar diameter-squared-times-height
+relationship. That agreement does not establish that the constraints are
+appropriate for another species or population. Predictions
+shown here are in-sample and are not a forecast accuracy assessment.
+
+## Choose a device for your own run
+
+All code above uses CPU float64 explicitly so the published result is easy to
+reproduce. [`riem.optimize()`](../reference/riem.optimize.html) accepts
+`device = "auto"` to discover a suitable device, `device = "cpu"` to override
+an available GPU, or an indexed CUDA device on a compatible workstation.
+Registered tensors travel with the problem.
+
+```{r device-options, eval=FALSE}
+# Change only the device argument in the solve above:
+# device = "auto"    # automatic selection while preserving float64
+# device = "cpu"     # explicit CPU override
+# device = "cuda:0"  # explicit first CUDA GPU; errors if unavailable
+```
+
+```{r reproducibility-result, include=FALSE}
+example_result <- c(coefficients, objective = fit$objective,
+                    coefficient_error = coefficient_error, independent_kkt)
+stopifnot(is.numeric(example_result), all(is.finite(example_result)))
+```

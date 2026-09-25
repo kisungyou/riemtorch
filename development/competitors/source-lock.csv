@@ -1,0 +1,11 @@
+package,revision,documentation,inspection
+Manopt,6c369671d8834aa28f7e222c7d89c5f216e6953d,https://www.manopt.org/tools.html,official documentation and public revision metadata
+Pymanopt,a1f52e74092535cd416ba3ec68252eb74ed53178,https://pymanopt.org/docs/stable/api-reference.html,stable 2.2.1 documentation; current revision separately locked
+Geoopt,8838dca914d2d7f4cde4b7fb3668724557c77789,https://geoopt.readthedocs.io/en/latest/optimizers.html,0.5.0-labelled documentation; current revision separately locked
+Manopt.jl,3be7a1bc7641f9cf4d4a0ec73b39fe248e014416,https://manoptjl.org/stable/solvers/index.html,official stable documentation and public revision metadata
+Manifolds.jl,4b5fb0b3706dcefeb830b25f0b02fe7f6ff10215,https://juliamanifolds.github.io/Manifolds.jl/stable/,official stable documentation and public revision metadata
+ROPTLIB,9d9e9325cabf5c8b8e4cc87e0a5c17a366e63cbd,https://www.math.fsu.edu/~whuang2/ROPTLIBnew.htm,official overview and public revision metadata
+Riemann,e847692576f8b250c8140e1343b145f72caa379f,https://www.kisungyou.com/Riemann/,previously audited development source; numeric fixtures from released 0.1.7
+GeoJAX,46210cdb5ea2fc6db1a5a15d24d5e3a759d0d025,development/source-audit/README.md,previously audited pinned source
+Pymanopt-executed,2.2.1,https://pymanopt.org/docs/stable/api-reference.html,installed pinned PyPI release; fixed-rank gradient source inspected; four benchmark families executed
+SciPy-executed,1.13.1,https://docs.scipy.org/doc/scipy-1.13.1/reference/optimize.html,development-only independent BFGS robust least-squares and constrained solver comparisons

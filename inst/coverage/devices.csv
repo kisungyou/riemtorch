@@ -1,0 +1,8 @@
+backend,dtype,status,evidence,qualification
+cpu,float64; complex128,verified,full package suite on macOS arm64,complex automatic Hessians only for qualified geometries
+cpu,float32; complex64,verified,test-upgrade-stress; test-device-runtime,selected geometry and solver coverage; not full float32 suite
+cuda,float64; float32,awaiting_hardware_validation,development/qualification/devices.R,no CUDA hardware exercised locally
+mps,float32,awaiting_hardware_validation,development/qualification/devices.R,no MPS-enabled R torch runtime exercised locally
+mps,float64,unsupported,R torch device precision contract,explicit incompatible requests fail
+Linux CPU,float64,awaiting_hardware_validation,.github/workflows/R-CMD-check.yaml,workflow supplied; not executed from this workspace
+Windows CPU,float64,awaiting_hardware_validation,.github/workflows/R-CMD-check.yaml,workflow supplied; not executed from this workspace

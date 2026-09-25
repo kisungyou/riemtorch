@@ -1,0 +1,6 @@
+Tracing function "download.file" in package "namespace:utils"
+[WARNING] Could not convert TeX math 
+  \min_{\beta\in\mathbb R^5}
+    \frac{1}{2n}\|X\beta-y\|_2^2 + \lambda\|\beta\|_1.
+  , rendering as TeX
+Untracing function "download.file" in package "namespace:utils"

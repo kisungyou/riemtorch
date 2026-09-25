@@ -1,0 +1,127 @@
+---
+title: "Applications and Portable Device Execution"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Applications and Portable Device Execution}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup}
+library(torch)
+library(riemtorch)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
+                      eval = torch::torch_is_installed())
+if (torch::torch_is_installed()) {
+  torch_manual_seed(12)
+  torch_set_num_threads(1)
+  device <- riem.device()
+  device
+}
+```
+
+`riemtorch` selects one compatible device for each managed run. It preserves the
+requested precision, so an accelerator that cannot execute float64 is skipped
+rather than used with a silent conversion. Pass `device = "cpu"` to reproduce a
+run on the host, or `device = "cuda:1"` to select the second visible CUDA GPU.
+`riem.devices()` reports the devices that the current R process can see and the
+result of a small compatibility probe. Resolution follows an explicit argument,
+`options(riemtorch.device = ...)`, `RIEMTORCH_DEVICE`, then automatic discovery.
+An explicit `device = "auto"` asks for discovery even when a default is set.
+Scheduler visibility restrictions are respected because only devices exposed to
+the R process are considered.
+
+```{r inventory}
+riem.devices()
+```
+
+## Principal subspace estimation
+
+The leading two-dimensional eigenspace of a covariance matrix is a point on a
+Grassmann manifold. Registering the covariance as problem data lets the execution
+driver move it with the initial point.
+
+```{r pca}
+X <- scale(as.matrix(iris[, 1:4]), center = TRUE, scale = FALSE)
+C <- torch_tensor(crossprod(X) / nrow(X), dtype = torch_float64())
+G <- manifold.grassmann(4, 2)
+pca_problem <- riem.problem(G,
+  function(Q, data) -torch_trace(Q$t()$matmul(data)$matmul(Q)), data = C)
+pca_fit <- riem.optimize(pca_problem, riem.random(G), "conjugate_gradient",
+  control = list(max_iterations = 15))
+pca_fit$objective
+pca_fit$constraint_residuals
+```
+
+## Low-rank matrix completion
+
+The mask and observations are ordinary registered tensors. Changing the loss
+does not require changing the fixed-rank geometry or solver.
+
+```{r completion}
+truth <- torch_tensor(outer(1:5, c(1, -1, 2)) + outer(c(1, 0, -1, 2, 1),
+  c(2, 1, -1)), dtype = torch_float64())
+mask <- torch_tensor(matrix(c(1,1,0, 1,0,1, 0,1,1, 1,1,0, 1,0,1), 5, 3,
+  byrow = TRUE), dtype = torch_float64())
+F <- manifold.fixedrank(5, 3, 2)
+completion <- riem.problem(F, function(Z, data) {
+  observed <- data$mask * (Z - data$truth)
+  torch_sum(observed^2) / 2
+}, data = list(mask = mask, truth = truth))
+completion_fit <- riem.optimize(completion, riem.random(F), "conjugate_gradient",
+  control = list(max_iterations = 10))
+completion_fit$constraint_residuals
+```
+
+## An affine-invariant SPD mean
+
+The Fréchet mean minimizes a sum of squared affine-invariant distances. This
+example uses only the general problem interface and SPD geometry.
+
+```{r spd-mean}
+S <- manifold.spd(2, "airm")
+A <- torch_diag(torch_tensor(c(1, 4), dtype = torch_float64()))
+B <- torch_diag(torch_tensor(c(9, 1), dtype = torch_float64()))
+mean_problem <- riem.problem(S, function(X, data) {
+  (riem.sqdist(S, X, data$A) + riem.sqdist(S, X, data$B)) / 2
+}, data = list(A = A, B = B))
+mean_fit <- riem.optimize(mean_problem, riem.random(S), "conjugate_gradient",
+  control = list(max_iterations = 12))
+mean_fit$point
+```
+
+## Orthogonality-constrained torch training
+
+`riem.train()` moves the module before constructing the optimizer, transfers
+each minibatch, and retains the actual parameter objects used by the optimizer.
+Here the learned linear map remains on a Stiefel manifold after every update.
+
+```{r orthogonal-training}
+inputs <- torch_randn(12, 4, dtype = torch_float64())
+teacher <- torch_eye(4, dtype = torch_float64())[, 1:2]
+responses <- inputs$matmul(teacher)
+loader <- dataloader(tensor_dataset(inputs, responses), batch_size = 4)
+frame_geometry <- manifold.stiefel(4, 2, "euclidean")
+orthogonal_module <- nn_module("orthogonal_module",
+  initialize = function() {
+    self$frame <- nn_parameter(riem.random(frame_geometry, device = "cpu"))
+  },
+  forward = function(x) x$matmul(self$frame))
+trained <- riem.train(orthogonal_module(), loader,
+  loss = function(model, batch)
+    (model(batch[[1]]) - batch[[2]])$square()$mean(),
+  optimizer_factory = function(model)
+    optim_rsgd(list(model$frame), lr = 0.05, manifold = frame_geometry),
+  epochs = 2)
+riem.belongs(frame_geometry, trained$model$frame)
+trained$execution
+```
+
+The selected device and dtype are stored in every managed result. For a forced
+CPU run on a GPU workstation, specify the override on the run itself:
+
+```{r cpu-override}
+cpu_fit <- riem.optimize(pca_problem, riem.random(G, device = "cpu"),
+  "steepest_descent", control = list(max_iterations = 2), device = "cpu")
+cpu_fit$execution
+```

@@ -1,0 +1,2 @@
+case,implementation,version,algorithm,seconds,objective,gradient_norm,feasibility,optimum,fn,gradient,termination,device,dtype,transfer_seconds,seed
+procrustes,Pymanopt,2.2.1,Riemannian CG PR+ (default retraction),0.0008504589999999979,0.3791104669511779,2.3180230040372354e-07,4.0036374687229374e-16,0.3791104669511605,28,12,"Terminated - min grad norm reached after 12 iterations, 0.00 seconds.",cpu,float64,0,1

@@ -1,0 +1,243 @@
+---
+title: "Sparse regression with a proximal operator"
+description: "Follow a five-penalty Lasso path with an exact Euclidean proximal map and verify it using coordinate descent and optimality conditions."
+output: rmarkdown::html_document
+---
+
+```{r setup, include=FALSE}
+library(torch)
+library(riemtorch)
+if (!torch::torch_is_installed()) {
+  stop("This article needs the torch runtime. Run torch::install_torch() first.")
+}
+torch_set_num_threads(1)
+torch_manual_seed(317)
+set.seed(317)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7,
+                      fig.height = 4.6, fig.align = "center", dpi = 120)
+```
+
+An L1 penalty can set regression coefficients exactly to zero. Its corner at
+zero calls for a nonsmooth optimization method. On Euclidean space, the exact
+proximal map is coordinatewise soft thresholding, so this problem provides a
+transparent introduction to [`riem.problem.composite()`](../reference/riem.problem.composite.html).
+The same interface supports other manifolds when the supplied proximal map
+solves the corresponding manifold-distance subproblem.
+
+See the [regression introduction](example-robust-regression.html) for the basic
+problem interface and the [constraints and nonsmooth guide](constrained-nonsmooth.html)
+for the distinction between an intrinsic proximal map and ambient shrinkage.
+
+## Data and scaling
+
+The [`mtcars` data](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html)
+contain 32 cars from 1973--74. We use fuel consumption (`mpg`, miles per US
+gallon) and five continuous predictors: displacement (`disp`, cubic inches),
+horsepower (`hp`), rear axle ratio (`drat`), weight (`wt`, thousands of pounds),
+and quarter-mile time (`qsec`). These selected columns have no missing values.
+The data come with R, so this example needs no download.
+[Data sources and reproducibility](example-data-sources.html) records attribution.
+
+```{r data}
+predictors <- c("disp", "hp", "drat", "wt", "qsec")
+cars <- datasets::mtcars
+stopifnot(!anyNA(cars[, c("mpg", predictors)]))
+X <- scale(as.matrix(cars[, predictors]))
+y <- cars$mpg - mean(cars$mpg)
+n <- nrow(X)
+p <- ncol(X)
+registered <- list(
+  X = torch_tensor(X, dtype = torch_float64(), device = "cpu"),
+  y = torch_tensor(y, dtype = torch_float64(), device = "cpu"),
+  n = n
+)
+```
+
+`scale()` subtracts each column mean and divides by its sample standard
+deviation. Standardization makes a common penalty meaningful across different
+predictor units. Centering the response removes the unpenalized intercept; on
+the original response scale it is restored by adding `mean(cars$mpg)` to
+predictions. No train/test split is used: this is an optimization illustration,
+not evidence of predictive superiority or a procedure for selecting a penalty.
+
+## Objective and exact proximal map
+
+For each penalty \(\lambda\), solve
+
+\[
+\min_{\beta\in\mathbb R^5}
+  \frac{1}{2n}\|X\beta-y\|_2^2 + \lambda\|\beta\|_1.
+\]
+
+The smooth gradient is \(X^T(X\beta-y)/n\). For a step \(t>0\), the Euclidean
+proximal map is
+\(\operatorname{sign}(q)\max(|q|-t\lambda,0)\), applied coordinatewise.
+It exactly minimizes the nonsmooth term plus \(\|\beta-q\|^2/(2t)\).
+On a curved manifold, applying this operation and then projecting would
+generally solve a different problem.
+
+```{r problem}
+make_problem <- function(lambda) {
+  riem.problem.composite(
+    manifold.euclidean(p),
+    fn = function(beta, data) {
+      (data$X$matmul(beta) - data$y)$square()$mean() / 2
+    },
+    egrad = function(beta, data) {
+      data$X$t()$matmul(data$X$matmul(beta) - data$y) / data$n
+    },
+    nonsmooth = function(beta, data) beta$abs()$sum() * data$lambda,
+    prox = function(q, step, data) {
+      q$sign() * (q$abs() - step * data$lambda)$clamp(min = 0)
+    },
+    data = c(registered, list(lambda = lambda))
+  )
+}
+```
+
+The explicit gradient avoids constructing an automatic differentiation graph
+at every iteration. All objective tensors and the penalty are registered as
+problem data.
+
+## Follow a short penalty path
+
+The smallest penalty for which zero satisfies the optimality conditions is
+\(\lambda_{\max}=\|X^Ty/n\|_\infty\). We start there and decrease the penalty
+through five values. Each penalty defines a separate fixed objective. Warm
+starting reuses the preceding solution as the next initial point.
+
+```{r solve}
+lambda_max <- max(abs(drop(crossprod(X, y)) / n))
+penalty_ratio <- c(1, 0.5, 0.2, 0.1, 0.05)
+lambdas <- lambda_max * penalty_ratio
+L <- max(eigen(crossprod(X) / n, symmetric = TRUE, only.values = TRUE)$values)
+initial <- torch_zeros(p, dtype = torch_float64(), device = "cpu")
+fits <- vector("list", length(lambdas))
+for (j in seq_along(lambdas)) {
+  fits[[j]] <- riem.optimize(
+    make_problem(lambdas[j]), initial, method = "proximal_gradient",
+    control = list(max_iterations = 1500, step_size = 1.8 / L,
+                   proximal_tolerance = 1e-5),
+    device = "cpu"
+  )
+  initial <- fits[[j]]$point
+}
+coefficients <- vapply(fits, function(fit) as.numeric(fit$point), numeric(p))
+rownames(coefficients) <- predictors
+colnames(coefficients) <- paste0("ratio_", penalty_ratio)
+round(coefficients, 4)
+status <- data.frame(
+  penalty_ratio = penalty_ratio,
+  lambda = lambdas,
+  objective = vapply(fits, function(fit) fit$objective, numeric(1)),
+  iterations = vapply(fits, function(fit) fit$iterations, numeric(1)),
+  proximal_residual = vapply(fits, function(fit) fit$proximal_residual, numeric(1)),
+  termination = vapply(fits, function(fit) fit$termination, character(1))
+)
+status
+```
+
+Here \(L\) is the largest eigenvalue of the smooth Hessian. The initial step
+`1.8 / L` is below `2 / L`; the solver also checks sufficient decrease and
+backtracks when necessary. The stopping rule uses the proximal gradient mapping,
+not the smooth gradient alone. An iteration limit would mean more work is
+needed; we verify successful termination below.
+
+## Visualize coefficients as the penalty decreases
+
+```{r coefficient-path, echo=FALSE, fig.alt="Five standardized regression coefficients along decreasing L1 penalties, starting at zero and tracing separate colored paths.", fig.cap="The paths are coefficients per sample-standard-deviation change in each predictor. Zero coefficients are exact soft-thresholding results."}
+colors <- c("#446AA0", "#CD713B", "#267C74", "#805AA0", "#596775")
+path_position <- -log10(penalty_ratio)
+matplot(path_position, t(coefficients), type = "b", pch = seq_len(p),
+        lty = 1, lwd = 2, col = colors, xaxt = "n",
+        xlab = expression(lambda / lambda[max] ~ "(decreasing)"),
+        ylab = "Coefficient for a standardized predictor",
+        main = "A short Lasso penalty path")
+axis(1, at = path_position, labels = penalty_ratio)
+abline(h = 0, lty = 3, col = "#718494")
+legend("bottomleft", legend = predictors, col = colors, lty = 1,
+       pch = seq_len(p), bty = "n", ncol = 3, cex = 0.85)
+```
+
+## Independent verification with coordinate descent
+
+For comparison, implement cyclic coordinate descent directly in base R. It
+updates one coefficient at a time using the residual with that coordinate
+removed. The denominator is the actual squared column norm divided by `n`;
+with sample-standard-deviation scaling it is `(n - 1) / n`, not one.
+
+```{r independent-coordinate-descent}
+soft_threshold <- function(z, threshold) sign(z) * max(abs(z) - threshold, 0)
+coordinate_descent <- function(lambda) {
+  beta <- numeric(p)
+  squared_norm <- colSums(X^2) / n
+  for (iteration in seq_len(20000)) {
+    previous <- beta
+    for (j in seq_len(p)) {
+      partial_residual <- y - drop(X %*% beta) + X[, j] * beta[j]
+      score <- sum(X[, j] * partial_residual) / n
+      beta[j] <- soft_threshold(score, lambda) / squared_norm[j]
+    }
+    if (max(abs(beta - previous)) < 1e-11) return(beta)
+  }
+  stop("Independent coordinate descent did not converge.")
+}
+reference <- vapply(lambdas, coordinate_descent, numeric(p))
+coefficient_error <- apply(abs(coefficients - reference), 2, max)
+```
+
+At a nonzero coefficient, the gradient plus \(\lambda\) times the coefficient
+sign must vanish. At zero, the gradient must lie in \([-\lambda,\lambda]\).
+These are the Lasso optimality conditions. Checking them independently avoids
+relying only on a solver's success label.
+
+```{r optimality-check}
+kkt_residual <- function(beta, lambda) {
+  gradient <- drop(crossprod(X, drop(X %*% beta) - y)) / n
+  active <- abs(beta) > 1e-8
+  residual <- pmax(abs(gradient) - lambda, 0)
+  residual[active] <- abs(gradient[active] + lambda * sign(beta[active]))
+  max(residual)
+}
+kkt <- vapply(seq_along(lambdas), function(j) {
+  kkt_residual(coefficients[, j], lambdas[j])
+}, numeric(1))
+comparison <- data.frame(penalty_ratio = penalty_ratio,
+                        maximum_coefficient_error = coefficient_error,
+                        independent_kkt_residual = kkt)
+comparison
+stopifnot(all(status$termination == "converged_proximal_residual"),
+          max(coefficient_error) < 5e-4,
+          max(kkt) < 2e-5,
+          max(abs(coefficients[, 1])) < 1e-8)
+```
+
+The tolerances allow small numerical differences between algorithms while
+requiring close coefficient agreement and small optimality residuals. The
+correlated predictors in this small historical dataset make coefficient paths
+sensitive to modeling choices. A predictive analysis would need an appropriate
+validation design, with preprocessing estimated within each training split.
+
+## Choose a device for your own run
+
+This article explicitly uses CPU float64. In
+[`riem.optimize()`](../reference/riem.optimize.html), change `device` to
+`"auto"` for automatic discovery, retain `"cpu"` to force CPU even when CUDA is
+available, or choose `"cuda:0"` on a compatible workstation. Registered data
+move to the resolved device together with the point.
+
+```{r device-options, eval=FALSE}
+# Replace the device argument inside the loop above:
+# device = "auto"    # automatic selection preserving the requested precision
+# device = "cpu"     # explicit CPU override
+# device = "cuda:0"  # explicit first CUDA GPU; errors if unavailable
+```
+
+```{r reproducibility-result, include=FALSE}
+example_result <- c(setNames(as.numeric(coefficients),
+                             paste0("coefficient_", seq_along(coefficients))),
+                    setNames(kkt, paste0("kkt_", seq_along(kkt))),
+                    setNames(coefficient_error, paste0("reference_error_",
+                                                       seq_along(lambdas))))
+stopifnot(is.numeric(example_result), all(is.finite(example_result)))
+```

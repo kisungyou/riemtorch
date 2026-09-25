@@ -1,0 +1,53 @@
+---
+title: "Geometry, metrics and representations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Geometry, metrics and representations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = torch::torch_is_installed())
+library(riemtorch)
+library(torch)
+if (torch::torch_is_installed()) {
+  torch::torch_set_num_threads(1)
+  torch::torch_manual_seed(1)
+}
+```
+
+Constructors specify a space, metric and representation. Multi-metric families
+require an explicit choice. SPD tangents are symmetric matrices; choosing AIRM
+changes gradient conversion, not just the reported distance.
+
+```{r}
+X <- torch_diag(torch_tensor(c(2, 3), dtype = torch_float64()))
+G <- torch_eye(2, dtype = X$dtype)
+M <- manifold.spd(2, "airm")
+riem.egrad2rgrad(M, X, G)       # X G X
+riem.inner(M, X, G, G)
+riem.capabilities(M)
+```
+
+Leading batch axes are independent geometry evaluations. They are never inferred
+to be factors of a joint optimization problem. Every input must have identical
+batch axes; implicit broadcasting is deliberately rejected.
+
+```{r}
+S <- manifold.sphere(3)
+batch <- riem.random(S, batch_shape = c(2, 4))
+u <- riem.tangent(S, batch, torch_randn_like(batch))
+riem.inner(S, batch, u, u)$shape
+stopifnot(all(riem.belongs(S, riem.retr(S, batch, u, step = 0.1))))
+```
+
+Grassmann frame objectives must be invariant under changes of orthonormal basis.
+PSD factor objectives must depend on Y Y'. Kendall shape objectives must be
+invariant under rotations. Low-rank and shape constructors document their regular
+strata. Repair through `riem.project()` is explicit; a solver never repairs a
+failed trial invisibly. The installed geometry ledger maps all source rows:
+
+```{r}
+head(riem.support("geometry"), 8)
+```

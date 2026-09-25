@@ -1,0 +1,105 @@
+── Installing package riemtorch into temporary library ─────────────────────────
+── Building pkgdown site for package riemtorch ─────────────────────────────────
+Reading from: /Users/kisung/Desktop/develop/R-devel/riemtorch
+Writing to: /Users/kisung/Desktop/develop/R-devel/riemtorch/docs
+── Sitrep ──────────────────────────────────────────────────────────────────────
+✖ URLs not ok.
+  In pkgdown/_pkgdown.yml, url is missing.
+  See details in `vignette(pkgdown::metadata)`.
+✔ Favicons ok.
+✔ Open graph metadata ok.
+✔ Articles metadata ok.
+✔ Reference metadata ok.
+── Initialising site ───────────────────────────────────────────────────────────
+Updating deps/bootstrap-5.3.8/bootstrap.min.css
+── Building home ───────────────────────────────────────────────────────────────
+Reading pkgdown/index.md
+Writing `404.html`
+── Building function reference ─────────────────────────────────────────────────
+Reading man/manifold.affine.Rd
+Reading man/manifold.complexcircle.Rd
+Reading man/manifold.correlation.Rd
+Writing `reference/manifold.correlation.html`
+Reading man/manifold.doublystochastic.Rd
+Reading man/manifold.elliptope.Rd
+Writing `reference/manifold.elliptope.html`
+Reading man/manifold.euclidean.Rd
+Reading man/manifold.fixedrank.Rd
+Reading man/manifold.hyperbolic.Rd
+Writing `reference/manifold.hyperbolic.html`
+Reading man/manifold.landmark.Rd
+Reading man/manifold.oblique.Rd
+Writing `reference/manifold.oblique.html`
+Reading man/manifold.positive.Rd
+Writing `reference/manifold.positive.html`
+Reading man/manifold.power.Rd
+Reading man/manifold.product.Rd
+Reading man/manifold.rotation.Rd
+Writing `reference/manifold.rotation.html`
+Reading man/manifold.spd.Rd
+Reading man/manifold.spdk.Rd
+Reading man/manifold.sphere.Rd
+Reading man/manifold.stiefel.Rd
+Reading man/manifold.stiefel.generalized.Rd
+Writing `reference/manifold.stiefel.generalized.html`
+Reading man/manifold.torus.Rd
+Writing `reference/manifold.torus.html`
+Reading man/optim_rlinesearch.Rd
+Reading man/optim_rsgd.Rd
+Reading man/riem.belongs.Rd
+Reading man/riem.capabilities.Rd
+Reading man/riem.chart.Rd
+Writing `reference/riem.chart.html`
+Reading man/riem.check.manifold.Rd
+Reading man/riem.devices.Rd
+Reading man/riem.evaluate.Rd
+Reading man/riem.hessian.spectrum.Rd
+Reading man/riem.manifold.Rd
+Reading man/riem.materialize.Rd
+Writing `reference/riem.materialize.html`
+Reading man/riem.matrix.function.Rd
+Reading man/riem.multistart.Rd
+Reading man/riem.optimize.Rd
+Reading man/riem.problem.Rd
+Reading man/riem.problem.composite.Rd
+Reading man/riem.problem.constrained.Rd
+Reading man/riem.problem.finitesum.Rd
+Reading man/riem.problem.leastsquares.Rd
+Reading man/riem.random.Rd
+Reading man/riem.save.Rd
+Reading man/riem.schedule.Rd
+Reading man/riem.support.Rd
+Reading man/riem.to.Rd
+Reading man/riem.train.Rd
+Reading man/riemtorch-package.Rd
+── Building articles ───────────────────────────────────────────────────────────
+Reading vignettes/applications-and-devices.Rmd
+Writing `articles/applications-and-devices.html`
+Reading vignettes/checking-derivatives.Rmd
+Writing `articles/checking-derivatives.html`
+Reading vignettes/compact-lowrank.Rmd
+Reading vignettes/complex-geometry.Rmd
+Reading vignettes/constrained-nonsmooth.Rmd
+Reading vignettes/custom-objectives.Rmd
+Reading vignettes/deterministic-optimization.Rmd
+Reading vignettes/articles/example-matrix-completion.Rmd
+Reading vignettes/articles/example-robust-regression.Rmd
+Reading vignettes/articles/example-spd-mean.Rmd
+Reading vignettes/articles/example-sphere-pca.Rmd
+Reading vignettes/extending-riemtorch.Rmd
+Reading vignettes/geometry-and-metrics.Rmd
+Reading vignettes/articles/getting-started.Rmd
+Writing `articles/getting-started.html`
+Reading vignettes/numerical-limitations.Rmd
+Reading vignettes/second-order-and-leastsquares.Rmd
+Reading vignettes/sparse-training.Rmd
+Reading vignettes/structured-problems.Rmd
+Reading vignettes/torch-training.Rmd
+Reading vignettes/variance-reduction.Rmd
+── Building news ───────────────────────────────────────────────────────────────
+── Building sitemap ────────────────────────────────────────────────────────────
+── Building docs for llms ──────────────────────────────────────────────────────
+── Building search index ───────────────────────────────────────────────────────
+── Checking for problems ───────────────────────────────────────────────────────
+── Finished building pkgdown site for package riemtorch ────────────────────────
+── Finished building pkgdown site for package riemtorch ────────────────────────

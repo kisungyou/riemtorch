@@ -1,0 +1,26 @@
+[
+  {
+    "file": "penguins.csv",
+    "status": 200,
+    "bytes": 15241,
+    "sha256": "f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93"
+  },
+  {
+    "file": "NOTICE-penguins.txt",
+    "status": 200,
+    "bytes": 1616,
+    "sha256": "62b689befbbee6bc9435d9a37a61401b0b0b8b272da11c0231c780d164c01d0c"
+  },
+  {
+    "file": "extract-penguins.R",
+    "status": 200,
+    "bytes": 902,
+    "sha256": "cf9d41592f2192fad72dd032c943f3bd0c26cbededad80a3938dd45a92b0e59e"
+  },
+  {
+    "file": "example-runtimes.csv",
+    "status": 200,
+    "bytes": 590,
+    "sha256": "02c722c13e9865e1ee95d8449e82cf2da15b1e1f07823272ffc001c33cb52126"
+  }
+]

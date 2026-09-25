@@ -1,0 +1,21 @@
+Package: riemtorch
+Type: Package
+Title: Riemannian Optimization with Torch
+Version: 0.1.0
+Authors@R: person("Kisung", "You", role = c("aut", "cre"),
+    email = "kisung.you@outlook.com", comment = c(ORCID = "0000-0002-8584-459X"))
+Description: Metric-aware optimization of user-defined tensor objectives on
+    smooth manifolds and weighted products. Provides automatic differentiation,
+    deterministic and scalable finite-sum solvers, automatic device selection,
+    geometric training optimizers, portable checkpointing, native batched
+    geometry kernels, and extensible geometry contracts using 'torch' as the
+    sole numerical backend. Algorithms follow Boumal (2023)
+    <doi:10.1017/9781009166164>.
+License: GPL (>= 2)
+Depends: R (>= 4.1.0)
+Imports: torch (>= 0.17.0), stats, utils
+Suggests: testthat (>= 3.0.0), roxygen2, knitr, rmarkdown, pkgdown (>= 2.2.0)
+Encoding: UTF-8
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.1.0

@@ -1,0 +1,55 @@
+---
+title: "Sparse embeddings and resumable training"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sparse embeddings and resumable training}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse=TRUE,comment="#>",eval=torch::torch_is_installed())
+library(riemtorch);library(torch)
+if(torch_is_installed()) {torch_set_num_threads(1);torch_manual_seed(44)}
+```
+
+A power manifold represents rows as independent factors within one point.
+Riemannian Adam and AdaGrad keep one variance per factor. Sparse SGD and Adam
+coalesce repeated row indices; untouched rows, momenta, variances and clocks
+remain unchanged. Adam uses row-local clocks for bias correction. Dense and
+sparse state layouts cannot be mixed for one parameter.
+
+```{r}
+M <- manifold.power(manifold.sphere(3),8)
+embedding <- nn_embedding(8,3,sparse=TRUE)$to(dtype=torch_float64())
+with_no_grad(embedding$weight$copy_(riem.random(M,device="cpu")))
+opt <- optim_radam(list(embedding$weight),manifold=M,lr=0.01,amsgrad=TRUE)
+opt$zero_grad()
+y <- embedding(torch_tensor(c(2L,2L,5L),dtype=torch_int64()))
+(-y[,1]$sum())$backward()
+opt$step()
+opt$state$get(embedding$weight)$row_steps
+riem.belongs(M,embedding$weight)
+```
+
+`riem.train()` accepts `accumulate` (average minibatch gradients, including the
+final partial group), `clip_norm` (total metric norm), `validation`, `scheduler`,
+and an epoch callback. A callback returning TRUE requests a user stop.
+Validation runs in evaluation mode without a gradient graph.
+
+The returned `training_state` includes epoch and step counters. Optional
+`data_state=list(get=function() state, set=function(x) ...)` hooks capture and
+restore caller-owned data-order or scheduler state before the next iterator.
+Save model, optimizer, that progress and RNG together for epoch-boundary resume.
+Older optimizer checkpoints remain readable. Mid-epoch replay is not claimed.
+
+```{r}
+path <- tempfile(fileext=".pt")
+riem.save(opt,path,model=embedding,training_state=list(epoch=1L,step=1L))
+riem.load(opt,path,model=embedding,restore_rng=TRUE)
+unlink(path)
+```
+
+Line-search training uses `optim_rlinesearch()` with a deterministic closure
+that clears gradients and recomputes both loss and backward pass. Failed searches
+restore all parameters and gradients. Closures must not mutate buffers or RNG.

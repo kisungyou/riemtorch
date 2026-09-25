@@ -1,0 +1,235 @@
+---
+title: "Robust regression on industrial measurements"
+description: "Fit quadratic and Huber regression to stackloss data, inspect weights, and verify both optima with independent base R calculations."
+output: rmarkdown::html_document
+---
+
+```{r setup, include=FALSE}
+library(torch)
+library(riemtorch)
+if (!torch::torch_is_installed()) {
+  stop("This article needs the torch runtime. Run torch::install_torch() first.")
+}
+torch_set_num_threads(1)
+torch_manual_seed(6103)
+set.seed(6103)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7,
+                      fig.height = 4.6, fig.align = "center", dpi = 120)
+```
+
+A few large residuals can strongly affect least-squares regression. A Huber
+loss changes how the solver weighs those residuals while keeping the same
+linear prediction function. Here we fit both choices to industrial
+measurements and verify their answers independently.
+
+Start with [the short robust-line example](example-robust-regression.html) if
+residual-based problems are new to you. The [least-squares guide](../articles/second-order-and-leastsquares.html)
+and [`riem.problem.leastsquares()`](../reference/riem.problem.leastsquares.html)
+describe the interface used below.
+
+## Data and predictor scaling
+
+R's [stackloss data](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/stackloss.html)
+record 21 operating days at a nitric-acid plant. The response measures ammonia
+that escapes unabsorbed, in ten times percentage units. We use cooling-air
+flow, water temperature, and acid concentration as predictors. The historical
+acid column uses a coded scale; consult the linked help for its interpretation.
+See [data sources and reproducibility](example-data-sources.html) for provenance.
+
+```{r data}
+observations <- datasets::stackloss
+stopifnot(!anyNA(observations))
+scaled_predictors <- scale(as.matrix(observations[, 1:3]))
+design <- cbind(intercept = 1, scaled_predictors)
+y <- observations$stack.loss
+registered <- list(
+  X = torch_tensor(design, dtype = torch_float64(), device = "cpu"),
+  y = torch_tensor(y, dtype = torch_float64(), device = "cpu")
+)
+data.frame(observations = nrow(design), predictors = ncol(design) - 1)
+```
+
+We subtract each predictor's mean and divide by its sample standard deviation.
+This improves numerical scaling but does not transform the response. An
+intercept and three slopes form a point in four-dimensional Euclidean space.
+
+## Objective: the same residual, two losses
+
+For residual $r_i=X_i\beta-y_i$, ordinary least squares minimizes
+$\sum_i r_i^2/2$. Huber regression minimizes $\sum_i\rho_\delta(r_i)$ with
+
+\[
+\rho_\delta(r)=
+\begin{cases}
+ r^2/2, & |r|\leq\delta,\\
+ \delta(|r|-\delta/2), & |r|>\delta.
+\end{cases}
+\]
+
+We choose **$\delta=2$ response units**, corresponding to 0.2 percentage points
+in unabsorbed ammonia. This is an explicit illustrative modeling choice, not an
+estimated noise scale. Changing it changes the fitted model.
+
+```{r problem}
+threshold <- 2
+geometry <- manifold.euclidean(4)
+make_problem <- function(loss) {
+  riem.problem.leastsquares(
+    geometry,
+    residual = function(beta, data) data$X$matmul(beta) - data$y,
+    data = registered, loss = loss, loss_scale = threshold
+  )
+}
+```
+
+The tensor data are registered so they move with the problem when the solver
+selects a different device. Levenberg--Marquardt uses a positive-semidefinite
+Gauss--Newton model; for Huber loss this includes residual weights and is not
+the exact robust Hessian.
+
+## Solve and report the two fits
+
+```{r solve}
+losses <- c("linear", "huber")
+fits <- setNames(lapply(losses, function(loss) {
+  riem.optimize(
+    make_problem(loss),
+    torch_zeros(4, dtype = torch_float64(), device = "cpu"),
+    method = "levenberg_marquardt",
+    control = list(max_iterations = 150, gradient_tolerance = 1e-7),
+    device = "cpu", dtype = "float64"
+  )
+}), losses)
+estimates <- t(vapply(fits, function(fit) as.numeric(fit$point), numeric(4)))
+colnames(estimates) <- colnames(design)
+round(estimates, 4)
+data.frame(
+  loss = losses,
+  objective = vapply(fits, function(fit) fit$objective, numeric(1)),
+  gradient_norm = vapply(fits, function(fit) fit$gradient_norm, numeric(1)),
+  termination = vapply(fits, function(fit) fit$termination, character(1))
+)
+```
+
+Slopes above are per one sample standard deviation of a predictor; the intercept
+is at the mean predictor values. A `converged_gradient` result establishes the
+requested first-order tolerance. If a run instead reaches `max_iterations`,
+inspect its gradient before accepting it as converged. Raw objective values
+from the two different losses are not comparable measures of model quality.
+
+```{r fitted-residuals, echo=FALSE, fig.width=8, fig.height=4, fig.alt="Left: observed versus fitted stack loss for quadratic and Huber fits. Right: residuals versus fitted values, with dashed lines marking the positive and negative Huber threshold.", fig.cap="Both fits use the same predictors. Huber loss limits the influence of observations with large residuals."}
+predicted <- design %*% t(estimates)
+residuals <- sweep(predicted, 1, y, "-")
+local({
+  old <- par(mfrow = c(1, 2), mar = c(4.2, 4.2, 2.3, 0.7))
+  on.exit(par(old))
+  colors <- c(linear = "#446AA0", huber = "#267C74")
+  limits <- range(c(y, predicted))
+  plot(y, predicted[, "linear"], pch = 1, col = colors["linear"],
+       xlim = limits, ylim = limits, xlab = "Observed stack loss",
+       ylab = "Fitted stack loss", main = "Fitted responses")
+  points(y, predicted[, "huber"], pch = 16, col = colors["huber"])
+  abline(0, 1, lty = 3, col = "#7F8991")
+  legend("topleft", c("Quadratic", "Huber"), col = colors,
+         pch = c(1, 16), bty = "n", cex = 0.85)
+  plot(predicted[, "linear"], residuals[, "linear"], pch = 1,
+       col = colors["linear"], xlim = range(predicted), ylim = range(residuals),
+       xlab = "Fitted stack loss", ylab = "Fitted minus observed",
+       main = "Residuals")
+  points(predicted[, "huber"], residuals[, "huber"], pch = 16,
+         col = colors["huber"])
+  abline(h = 0, col = "#7F8991", lty = 3)
+  abline(h = c(-threshold, threshold), col = "#CB713C", lty = 2)
+})
+```
+
+For Huber loss, the Gauss--Newton weight is
+$w_i=\min(1,\delta/|r_i|)$, with weight one at a zero residual. Downweighting
+does not delete a row or demonstrate that the observation is erroneous.
+
+```{r robust-weights, fig.height=3.7, fig.alt="One bar per operating day shows its Huber residual weight, between zero and one; days with large residuals have smaller weights.", fig.cap="Weights are determined by the fitted residuals and the chosen threshold of two response units."}
+weights <- pmin(1, threshold / pmax(abs(residuals[, "huber"]),
+                                   .Machine$double.eps))
+barplot(weights, names.arg = seq_along(weights), col = "#267C74",
+        border = NA, ylim = c(0, 1.08), xlab = "Observation (operating day)",
+        ylab = "Huber weight", main = "Which residuals receive less weight?",
+        cex.names = 0.7)
+abline(h = 1, lty = 3, col = "#7F8991")
+```
+
+## Independent verification
+
+`lm()` solves the quadratic problem independently. For Huber loss, we implement
+the objective and its gradient using base R and run `optim()` from the same
+zero coefficients. Clipping residuals at the threshold gives the Huber score
+$\psi_\delta(r)$, so the coefficient gradient is $X^\mathsf{T}\psi_\delta(r)$.
+
+```{r verification}
+quadratic_reference <- coef(lm(y ~ scaled_predictors))
+huber_objective <- function(beta) {
+  r <- drop(design %*% beta) - y
+  sum(ifelse(abs(r) <= threshold, r^2 / 2,
+             threshold * (abs(r) - threshold / 2)))
+}
+huber_gradient <- function(beta) {
+  r <- drop(design %*% beta) - y
+  drop(crossprod(design, pmax(-threshold, pmin(threshold, r))))
+}
+huber_reference <- optim(
+  rep(0, 4), huber_objective, gr = huber_gradient, method = "BFGS",
+  control = list(reltol = 1e-14, maxit = 1000)
+)
+coefficient_error <- c(
+  linear = max(abs(estimates["linear", ] - quadratic_reference)),
+  huber = max(abs(estimates["huber", ] - huber_reference$par))
+)
+independent_huber_gradient <- sqrt(sum(huber_gradient(estimates["huber", ])^2))
+data.frame(loss = losses, maximum_coefficient_error = coefficient_error)
+independent_huber_gradient
+stopifnot(
+  huber_reference$convergence == 0,
+  all(coefficient_error < 1e-5),
+  independent_huber_gradient < 1e-6,
+  abs(huber_objective(estimates["huber", ]) - fits$huber$objective) < 1e-9,
+  all(weights > 0 & weights <= 1),
+  all(vapply(fits, function(fit) fit$gradient_norm < 1e-6, logical(1)))
+)
+```
+
+The coefficient tolerance is `1e-5` because the independent solvers use different
+stopping rules. A second seeded execution should reproduce the reported
+coefficients and residual checks to absolute tolerance `1e-10` on the same
+CPU/runtime.
+
+## Interpretation and device options
+
+This example illustrates an optimization choice. It does not establish which
+loss predicts future plant behavior best; that would require a defensible
+validation design and subject-matter assessment. Huber loss limits response
+residual influence but does not by itself solve all leverage or model
+misspecification problems.
+
+The website runs on CPU float64. You can retain that override on a workstation
+with GPUs, allow automatic selection, or explicitly request a compatible GPU:
+
+```{r device-options, eval=FALSE}
+initial <- torch_zeros(4, dtype = torch_float64(), device = "cpu")
+riem.optimize(make_problem("huber"), initial, "levenberg_marquardt",
+              device = "auto", dtype = "float64")
+riem.optimize(make_problem("huber"), initial, "levenberg_marquardt",
+              device = "cpu", dtype = "float64")
+riem.optimize(make_problem("huber"), initial, "levenberg_marquardt",
+              device = "cuda:0", dtype = "float64")
+```
+
+```{r reproducibility-result, include=FALSE}
+example_result <- c(
+  setNames(as.numeric(estimates), paste0("coefficient_", seq_len(8))),
+  linear_objective = fits$linear$objective, huber_objective = fits$huber$objective,
+  linear_gradient = fits$linear$gradient_norm,
+  huber_gradient = fits$huber$gradient_norm,
+  huber_reference_error = coefficient_error[["huber"]],
+  minimum_weight = min(weights), independent_huber_gradient = independent_huber_gradient
+)
+stopifnot(all(is.finite(example_result)))
+```

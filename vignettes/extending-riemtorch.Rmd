@@ -1,0 +1,46 @@
+---
+title: "Adding a geometry without changing a solver"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Adding a geometry without changing a solver}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = torch::torch_is_installed())
+library(riemtorch)
+library(torch)
+if (torch::torch_is_installed()) {
+  torch::torch_set_num_threads(1)
+  torch::torch_manual_seed(1)
+}
+```
+
+A custom geometry supplies point-level tensor kernels through `riem.manifold()`.
+This positive line is Euclidean in log coordinates and has metric u*v/x^2.
+
+```{r}
+M <- riem.manifold("positive_line", shape = 1, dimension = 1,
+  metric = "log_pullback", operations = list(
+    belongs = function(x, tol) x$item() > 0,
+    tangent = function(x, u) u,
+    inner = function(x, u, v) torch_sum(u * v / x^2),
+    egrad2rgrad = function(x, u) x^2 * u,
+    retr = function(x, u) x * torch_exp(u/x),
+    transport = function(x, u, y, v) v * y/x,
+    project = function(x) torch_abs(x) + 0.01
+  ), capabilities = list(isometric_transport = TRUE))
+P <- riem.problem(M, function(x) torch_sum((torch_log(x) - log(3))^2)/2)
+x <- torch_tensor(1, dtype = torch_float64())
+fit <- riem.optimize(P, x, "conjugate_gradient")
+fit
+stopifnot(abs(fit$point$item() - 3) < 1e-8)
+```
+
+Membership and tangency, metric duality, R_x(0)=x, and D R_x(0)[u]=u are the
+minimum contract. Test directional derivatives at several steps, noncontiguous
+inputs, dtype/device preservation, and a nontrivial objective. Transport must
+own vectors at the right base point and declare its path. Exact geodesic and
+higher-order capabilities are optional; do not declare them merely because a
+forward formula exists. Geometry kernels cannot call another numerical backend.

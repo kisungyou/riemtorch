@@ -1,0 +1,13 @@
+scope: optimization-only execution guideline version 2.0
+source_baselines:
+  Riemann: e847692576f8b250c8140e1343b145f72caa379f
+  GeoJAX: 46210cdb5ea2fc6db1a5a15d24d5e3a759d0d025
+backend:
+  R_tested: 4.5.2
+  torch_tested: 0.17.0
+  libtorch_tested: 2.8.0
+  reference_device: cpu
+  reference_dtype: float64
+  platform: macOS arm64
+  accelerator_status: unverified; no accelerator support claim
+numerical_policy: R torch only; no runtime reference-package dependency

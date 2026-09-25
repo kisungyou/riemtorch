@@ -1,0 +1,242 @@
+---
+title: "Find a two-dimensional penguin subspace"
+description: "Optimize a Grassmann subspace for Palmer Penguins measurements, compare with PCA, and try a finite-sum solver."
+output: rmarkdown::html_document
+resource_files:
+  - data/penguins.csv
+---
+
+```{r setup, include=FALSE}
+library(torch)
+library(riemtorch)
+if (!torch::torch_is_installed()) {
+  stop("This article needs the torch runtime. Run torch::install_torch() first.")
+}
+torch_set_num_threads(1)
+torch_manual_seed(6101)
+set.seed(6101)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7,
+                      fig.height = 4.8, fig.align = "center", dpi = 120)
+```
+
+How can four body measurements be summarized in two coordinates? PCA answers
+this by finding a plane with small reconstruction error. The plane is a point
+on a Grassmann manifold: different orthonormal bases describe the same point.
+Here we optimize that plane directly and compare the result with `prcomp()`.
+
+This builds on [the sphere PCA introduction](example-sphere-pca.html).
+For the geometry, see [geometry and metrics](../articles/geometry-and-metrics.html)
+and [`manifold.grassmann()`](../reference/manifold.stiefel.html).
+
+## Data: four measurements, one common scale
+
+The [Palmer Penguins data](https://allisonhorst.github.io/palmerpenguins/) were
+collected by Kristen Gorman and Palmer Station LTER. This site bundles the
+CC0 `penguins` data from `palmerpenguins` 0.1.1, so building this article requires
+no download. See [data sources and reproducibility](example-data-sources.html)
+for attribution and the snapshot checksum.
+
+```{r data}
+penguins <- read.csv("data/penguins.csv", stringsAsFactors = FALSE)
+measurements <- c("bill_length_mm", "bill_depth_mm",
+                  "flipper_length_mm", "body_mass_g")
+complete <- complete.cases(penguins[, measurements])
+X <- scale(as.matrix(penguins[complete, measurements]))
+species <- factor(penguins$species[complete])
+data.frame(total = nrow(penguins), retained = nrow(X),
+           missing_measurements = sum(!complete))
+```
+
+Bill and flipper measurements are in millimeters; mass is in grams. Centering
+and dividing each column by its sample standard deviation gives the four
+variables equal variance before optimization. Only missing body measurements
+cause row removal; missing sex values do not. Species labels color the final
+plot but are never inputs to the objective.
+
+## Objective and geometry
+
+Let $X$ contain the standardized observations, and let $Q$ be a $4\times2$
+matrix with orthonormal columns. We minimize
+
+\[
+  f(Q) = \frac{1}{2n}\|X-XQQ^\mathsf{T}\|_F^2.
+\]
+
+Multiplying $Q$ by any orthogonal $2\times2$ matrix leaves its projector
+$QQ^\mathsf{T}$, and therefore the objective, unchanged. This is why we use
+[`manifold.grassmann(4, 2)`](../reference/manifold.stiefel.html).
+
+```{r problem}
+geometry <- manifold.grassmann(4, 2)
+observations <- torch_tensor(X, dtype = torch_float64(), device = "cpu")
+problem <- riem.problem(
+  geometry,
+  function(Q, data) {
+    residual <- data - data$matmul(Q)$matmul(Q$t())
+    (residual^2)$sum() / (2 * data$size(1))
+  },
+  data = observations
+)
+initial <- riem.random(geometry, device = "cpu", dtype = "float64")
+```
+
+Registering tensors through `data` lets the solver move them together with the
+point when the execution device changes. Automatic differentiation computes the
+ambient derivative, and the geometry supplies the tangent gradient.
+
+## Solve and inspect termination
+
+```{r solve}
+fit <- riem.optimize(
+  problem, initial, method = "conjugate_gradient",
+  control = list(max_iterations = 200, gradient_tolerance = 1e-7),
+  device = "cpu", dtype = "float64"
+)
+fit
+Q <- as.matrix(fit$point)
+scores <- X %*% Q
+```
+
+`converged_gradient` means the metric gradient met the requested tolerance.
+`max_iterations` means the iteration allowance was exhausted, which alone does
+not establish convergence. Keep both the termination reason and gradient norm
+when comparing solvers.
+
+```{r penguin-projection, echo=FALSE, fig.alt="Palmer Penguins projected onto the optimized two-dimensional plane, with points colored by Adelie, Chinstrap, and Gentoo species.", fig.cap="Species are used only to color the projection. The optimized basis can rotate without changing the plane."}
+palette <- c(Adelie = "#CB713C", Chinstrap = "#78609E", Gentoo = "#267C74")
+plot(scores, col = grDevices::adjustcolor(palette[species], alpha.f = 0.7),
+     pch = 19, xlab = "Subspace coordinate 1", ylab = "Subspace coordinate 2",
+     asp = 1, main = "A plane fitted to four body measurements")
+legend("topright", legend = levels(species), col = palette[levels(species)],
+       pch = 19, bty = "n", cex = 0.85)
+```
+
+The two displayed axes are coordinates in the fitted plane; they need not
+equal the ordered first and second principal-component axes. This is an
+exploratory representation, not a trained species classifier.
+
+## A short finite-sum comparison
+
+The same objective is the mean of one reconstruction loss per penguin.
+[`riem.problem.finitesum()`](../reference/riem.problem.finitesum.html) can
+evaluate a selected minibatch in one tensor operation through `batch_fn`.
+
+```{r finite-sum}
+finite_problem <- riem.problem.finitesum(
+  geometry,
+  function(Q, i, data) {
+    observation <- data[i, ]
+    residual <- observation - observation$matmul(Q)$matmul(Q$t())
+    (residual^2)$sum() / 2
+  },
+  n = nrow(X),
+  batch_fn = function(Q, indices, data) {
+    batch <- data[indices, , drop = FALSE]
+    residual <- batch - batch$matmul(Q)$matmul(Q$t())
+    (residual^2)$sum(dim = 2) / 2
+  },
+  data = observations
+)
+torch_manual_seed(6102)
+svrg_fit <- riem.optimize(
+  finite_problem, initial, method = "svrg",
+  control = list(max_iterations = 120, batch_size = 32, step_size = 0.15,
+                 epoch_length = 20, full_evaluation_every = 20,
+                 gradient_tolerance = 1e-7),
+  device = "cpu", dtype = "float64"
+)
+fits <- list(conjugate_gradient = fit, svrg = svrg_fit)
+data.frame(
+  method = names(fits),
+  objective = vapply(fits, function(x) x$objective, numeric(1)),
+  full_gradient_norm = vapply(fits, function(x) x$gradient_norm, numeric(1)),
+  termination = vapply(fits, function(x) x$termination, character(1))
+)
+```
+
+SVRG uses a full gradient at a snapshot plus transported minibatch corrections.
+The Grassmann frame representation supports the local logarithm needed to
+connect each snapshot to the current point. The small steps here stay within
+that local domain; the path is not defined at a Grassmann cut locus. Unsupported
+geometries or paths fail explicitly. See [variance reduction and solver
+controls](../articles/variance-reduction.html) for the contract.
+
+This deliberately short run is a demonstration, not a speed benchmark. Its
+final gradient is evaluated on all observations; the minibatch gradient does
+not certify stationarity. A small data matrix usually favors a deterministic
+method. More iterations or different steps may be needed for SVRG to satisfy
+the same stopping tolerance.
+
+## Independent verification
+
+Compare projectors, because comparing signed basis entries would penalize
+equivalent planes. `prcomp()` uses a separate singular-value decomposition.
+The fraction of standardized variance retained is
+$\|XQ\|_F^2/\|X\|_F^2$.
+
+```{r verification}
+reference <- prcomp(X, center = FALSE, scale. = FALSE)
+reference_Q <- reference$rotation[, 1:2, drop = FALSE]
+projector_error <- max(abs(tcrossprod(Q) - tcrossprod(reference_Q)))
+captured <- sum(scores^2) / sum(X^2)
+reference_captured <- sum(reference$sdev[1:2]^2) / sum(reference$sdev^2)
+
+angle <- pi / 6
+rotation <- matrix(c(cos(angle), sin(angle), -sin(angle), cos(angle)), 2, 2)
+rotated_Q <- Q %*% rotation
+rotation_error <- max(abs(tcrossprod(Q) - tcrossprod(rotated_Q)))
+reconstruction_value <- function(basis) {
+  sum((X - X %*% tcrossprod(basis))^2) / (2 * nrow(X))
+}
+finite_value <- as.numeric(riem.evaluate(finite_problem, fit$point,
+                                        gradient = FALSE)$value)
+initial_value <- as.numeric(riem.evaluate(problem, initial,
+                                         gradient = FALSE)$value)
+data.frame(
+  projector_error, captured, reference_captured, rotation_error,
+  svrg_objective_gap = svrg_fit$objective - fit$objective
+)
+stopifnot(
+  all(riem.belongs(geometry, fit$point)),
+  projector_error < 1e-6,
+  abs(captured - reference_captured) < 1e-10,
+  rotation_error < 1e-12,
+  abs(reconstruction_value(rotated_Q) - fit$objective) < 1e-10,
+  abs(finite_value - fit$objective) < 1e-10,
+  fit$gradient_norm < 1e-6,
+  is.finite(svrg_fit$gradient_norm),
+  svrg_fit$objective < initial_value
+)
+```
+
+These tolerances check the plane, the objective normalization, and basis
+invariance separately. A second seeded execution should reproduce the reported
+numeric checks to absolute tolerance `1e-10` on the same CPU/runtime.
+
+## Device selection and interpretation
+
+This article explicitly uses CPU float64. In your own session, the same
+registered-data problem can select a suitable device automatically or honor
+an explicit override:
+
+```{r device-options, eval=FALSE}
+riem.optimize(problem, initial, device = "auto", dtype = "float64")
+riem.optimize(problem, initial, device = "cpu", dtype = "float64")
+riem.optimize(problem, initial, device = "cuda:0", dtype = "float64")
+```
+
+The CUDA call requires an available compatible GPU. Results describe the
+complete observed measurements after standardization; different scaling or
+missing-data assumptions define a different analysis. The package supplies
+the optimization tools rather than a separate statistical PCA estimator.
+
+```{r reproducibility-result, include=FALSE}
+example_result <- c(
+  objective = fit$objective, gradient_norm = fit$gradient_norm,
+  projector_error = projector_error, variance_fraction = captured,
+  rotation_error = rotation_error, finite_value = finite_value,
+  svrg_objective = svrg_fit$objective, svrg_gradient_norm = svrg_fit$gradient_norm,
+  setNames(as.numeric(tcrossprod(Q)), paste0("projector_", seq_len(16)))
+)
+stopifnot(all(is.finite(example_result)))
+```
