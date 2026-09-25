@@ -1,0 +1,285 @@
+# Average covariance matrices geometrically
+
+Covariance matrices describe both variation and relationships among
+variables. Their geometric average depends on the distance used. This
+example forms covariance matrices from successive blocks of historical
+stock-index returns, then minimizes squared distances under two SPD
+metrics.
+
+For a smaller introduction, see [the two-matrix SPD
+example](https://www.kisungyou.com/riemtorch/articles/example-spd-mean.md).
+The [geometry and metrics
+guide](https://www.kisungyou.com/riemtorch/articles/geometry-and-metrics.md)
+introduces
+[`manifold.spd()`](https://www.kisungyou.com/riemtorch/reference/manifold.spd.md),
+[`riem.sqdist()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md),
+and
+[`riem.log()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md).
+The application illustrates how the choice of geometry changes a
+covariance summary.
+
+## Data and covariance blocks
+
+R’s [`EuStockMarkets`
+dataset](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/EuStockMarkets.html)
+records 1,860 successive business-time observations for DAX, SMI, CAC,
+and FTSE from 1991–1998. We use percentage log returns,
+$`100\log(P_t/P_{t-1})`$, rather than prices. The data have no missing
+values. See [Data sources and
+reproducibility](https://www.kisungyou.com/riemtorch/articles/example-data-sources.md)
+for attribution.
+
+Divide the 1,859 return observations into 15 nonoverlapping blocks of
+120; discard the final 59 returns so that all blocks have equal size.
+For each sample covariance $`C`$, use
+$`0.95C+0.05\operatorname{tr}(C)I/4`$. This fixed shrinkage stabilizes
+eigenvalues while preserving trace. It is a preprocessing choice, not a
+tuning parameter selected from these results.
+
+``` r
+
+prices <- as.matrix(datasets::EuStockMarkets)
+returns <- apply(log(prices), 2, diff) * 100
+block_size <- 120L
+block_count <- nrow(returns) %/% block_size
+blocks <- lapply(seq_len(block_count), function(i) {
+  rows <- (i - 1L) * block_size + seq_len(block_size)
+  covariance <- cov(returns[rows, , drop = FALSE])
+  covariance * 0.95 + diag(sum(diag(covariance)) / ncol(returns),
+                           ncol(returns)) * 0.05
+})
+stopifnot(!anyNA(returns), block_count == 15,
+          all(vapply(blocks, function(C) min(eigen(C, symmetric = TRUE)$values) > 0,
+                     logical(1))))
+data.frame(return_observations = nrow(returns), complete_blocks = block_count,
+           observations_per_block = block_size,
+           discarded_returns = nrow(returns) %% block_size)
+#>   return_observations complete_blocks observations_per_block discarded_returns
+#> 1                1859              15                    120                59
+```
+
+## Objective and metric
+
+For either distance $`d`$, solve
+
+``` math
+ \min_{G\in\mathrm{SPD}(4)} \frac{1}{2B}\sum_{b=1}^{B}d(G,C_b)^2.
+```
+
+The log-Euclidean metric measures the Frobenius distance between matrix
+logarithms. The affine-invariant metric measures the logarithm after
+whitening one matrix by the other. Both keep iterates positive definite,
+but they give different means. For either metric the Riemannian gradient
+of this objective is $`-B^{-1}\sum_b \operatorname{Log}_G(C_b)`$,
+allowing an explicit gradient callback.
+
+``` r
+
+tensor_blocks <- lapply(blocks, torch_tensor, dtype = torch_float64(), device = "cpu")
+make_problem <- function(metric) {
+  M <- manifold.spd(4, metric = metric)
+  riem.problem(
+    M,
+    function(G, data) {
+      Reduce(`+`, lapply(data, function(C) riem.sqdist(M, G, C))) / (2 * length(data))
+    },
+    rgrad = function(G, data) {
+      -Reduce(`+`, lapply(data, function(C) riem.log(M, G, C))) / length(data)
+    },
+    data = tensor_blocks
+  )
+}
+problems <- list(log_euclidean = make_problem("lerm"),
+                 affine_invariant = make_problem("airm"))
+arithmetic <- Reduce(`+`, blocks) / length(blocks)
+initial <- torch_tensor(arithmetic, dtype = torch_float64(), device = "cpu")
+```
+
+All data tensors are registered with their problems, so moving a solve
+to a different device also prepares these matrices on that device. The
+arithmetic mean provides the same valid starting point for both
+optimizations.
+
+``` r
+
+fits <- lapply(problems, function(problem) {
+  riem.optimize(problem, initial, method = "steepest_descent", device = "cpu",
+                control = list(max_iterations = 60, gradient_tolerance = 1e-7))
+})
+means <- lapply(fits, function(fit) as.matrix(fit$point))
+data.frame(metric = names(fits),
+           objective = vapply(fits, function(fit) fit$objective, numeric(1)),
+           iterations = vapply(fits, function(fit) fit$iterations, numeric(1)),
+           gradient_norm = vapply(fits, function(fit) fit$gradient_norm, numeric(1)),
+           termination = vapply(fits, function(fit) fit$termination, character(1)))
+#>                            metric objective iterations gradient_norm
+#> log_euclidean       log_euclidean 0.4004717          1  2.820303e-15
+#> affine_invariant affine_invariant 0.4231704          4  8.842760e-09
+#>                         termination
+#> log_euclidean    converged_gradient
+#> affine_invariant converged_gradient
+```
+
+Each objective uses its own metric, so a smaller value across these two
+rows does not by itself indicate a better fit. Check the termination
+reason as well as the gradient norm: an iteration budget is not
+mathematical convergence.
+
+## Independent numerical checks
+
+For the log-Euclidean metric, the exact solution is
+$`\exp\{B^{-1}\sum_b\log C_b\}`$. Recalculate it with base R’s symmetric
+eigendecomposition, independently of torch’s matrix operations.
+
+``` r
+
+matrix_function <- function(C, fun) {
+  decomposition <- eigen((C + t(C)) / 2, symmetric = TRUE)
+  decomposition$vectors %*% diag(fun(decomposition$values)) %*%
+    t(decomposition$vectors)
+}
+log_average <- Reduce(`+`, lapply(blocks, matrix_function, fun = log)) / length(blocks)
+log_reference <- matrix_function(log_average, exp)
+log_reference_error <- norm(means$log_euclidean - log_reference, "F") /
+  norm(log_reference, "F")
+```
+
+For the affine-invariant mean, there is generally no corresponding
+closed-form matrix average. Instead, verify positive definiteness and
+stationarity. Whitening at $`G`$ turns its stationarity condition into
+$`B^{-1}\sum_b\log(G^{-1/2}C_bG^{-1/2})=0`$; the Frobenius norm of this
+expression is the metric gradient norm. Compute it again using base R.
+
+``` r
+
+inverse_root <- matrix_function(means$affine_invariant, function(x) x^(-0.5))
+whitened_logs <- lapply(blocks, function(C) {
+  matrix_function(inverse_root %*% C %*% inverse_root, log)
+})
+airm_stationarity <- norm(Reduce(`+`, whitened_logs) / length(blocks), "F")
+smallest_eigenvalues <- vapply(means, function(G) {
+  min(eigen(G, symmetric = TRUE)$values)
+}, numeric(1))
+stopifnot(log_reference_error < 1e-7, airm_stationarity < 1e-6,
+          all(smallest_eigenvalues > 0),
+          abs(airm_stationarity - fits$affine_invariant$gradient_norm) < 1e-8,
+          all(vapply(names(fits), function(name) {
+            riem.belongs(problems[[name]]$manifold, fits[[name]]$point)
+          }, logical(1))))
+data.frame(check = c("Relative log-Euclidean reference error",
+                     "Independent affine-invariant stationarity",
+                     "Smallest log-Euclidean eigenvalue",
+                     "Smallest affine-invariant eigenvalue"),
+           value = c(log_reference_error, airm_stationarity, smallest_eigenvalues))
+#>                                       check        value
+#> 1    Relative log-Euclidean reference error 1.185082e-15
+#> 2 Independent affine-invariant stationarity 8.842760e-09
+#> 3         Smallest log-Euclidean eigenvalue 2.651884e-01
+#> 4      Smallest affine-invariant eigenvalue 2.671864e-01
+```
+
+## Compare the averages and block distances
+
+The heatmaps share one color scale and label each covariance in squared
+percentage log-return units. The arithmetic mean is included as a
+familiar reference.
+
+``` r
+
+panels <- c(list(Arithmetic = arithmetic),
+             list(`Log-Euclidean` = means$log_euclidean,
+                  `Affine-invariant` = means$affine_invariant))
+limits <- range(unlist(panels))
+palette <- hcl.colors(60, "YlOrRd")
+color_breaks <- seq(limits[1], limits[2], length.out = length(palette) + 1L)
+old_par <- par(mfrow = c(1, 3), mar = c(4, 4, 3, 1))
+for (name in names(panels)) {
+  image(seq_len(4), seq_len(4), panels[[name]], col = palette,
+        zlim = limits, axes = FALSE, xlab = "", ylab = "", main = name, asp = 1)
+  axis(1, seq_len(4), colnames(prices), cex.axis = 0.8)
+  axis(2, seq_len(4), colnames(prices), cex.axis = 0.8, las = 2)
+  values <- as.vector(panels[[name]])
+  cell_colors <- palette[findInterval(values, color_breaks, all.inside = TRUE)]
+  brightness <- drop(c(0.299, 0.587, 0.114) %*% col2rgb(cell_colors))
+  text(rep(seq_len(4), times = 4), rep(seq_len(4), each = 4),
+       labels = formatC(values, format = "f", digits = 2),
+       col = ifelse(brightness > 145, "black", "white"), cex = 1)
+}
+```
+
+![Three four-by-four heatmaps with numeric cell labels compare the
+arithmetic, log-Euclidean, and affine-invariant covariance means across
+DAX, SMI, CAC, and
+FTSE.](example-covariance-means_files/figure-html/covariance-heatmaps-1.png)
+
+The arithmetic and two geometric means use the same color scale; cell
+labels give covariances in squared percentage log-return units.
+
+``` r
+
+par(old_par)
+```
+
+Distances between **consecutive blocks** reveal changes in covariance,
+while distances from a mean summarize variation around a chosen center.
+These are descriptive geometric distances, not tests of structural
+change.
+
+``` r
+
+distance_to_mean <- sapply(names(problems), function(name) {
+  vapply(tensor_blocks, function(C) {
+    as.numeric(riem.dist(problems[[name]]$manifold, fits[[name]]$point, C))
+  }, numeric(1))
+})
+consecutive_distance <- sapply(problems, function(problem) {
+  vapply(seq_len(block_count - 1L), function(i) {
+    as.numeric(riem.dist(problem$manifold, tensor_blocks[[i]], tensor_blocks[[i + 1L]]))
+  }, numeric(1))
+})
+```
+
+``` r
+
+old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 2, 1))
+colors <- c("#21618C", "#C0652A")
+matplot(seq_len(block_count), distance_to_mean, type = "b", pch = c(19, 17),
+        lty = 1:2, col = colors, xlab = "120-observation block", ylab = "Distance to mean")
+legend("topleft", c("Log-Euclidean", "Affine-invariant"), col = colors,
+       lty = 1:2, pch = c(19, 17), bty = "n", cex = 0.75)
+matplot(2:block_count, consecutive_distance, type = "b", pch = c(19, 17),
+        lty = 1:2, col = colors, xlab = "Later block", ylab = "Distance from previous block")
+```
+
+![Two line charts compare log-Euclidean and affine-invariant distances,
+first from each block to its mean and then between consecutive
+covariance
+blocks.](example-covariance-means_files/figure-html/distance-plots-1.png)
+
+Left: each block’s distance from its corresponding geometric mean.
+Right: distances between consecutive blocks.
+
+``` r
+
+par(old_par)
+```
+
+The block length and shrinkage affect these results. Blocks follow the
+stored business-time order, rather than exact calendar semesters. Both
+geometric means are SPD, but an averaging geometry is a modeling choice.
+The independent checks establish solutions to the stated optimization
+problems. Assessing other block lengths and shrinkage levels would help
+distinguish changes in the data from effects of preprocessing.
+
+CPU float64 is explicit throughout. These alternatives illustrate device
+discovery and overrides without assuming accelerator hardware is
+available. See [Applications and
+devices](https://www.kisungyou.com/riemtorch/articles/applications-and-devices.md)
+for capability checks.
+
+``` r
+
+riem.optimize(problems$affine_invariant, initial, device = "auto")
+riem.optimize(problems$affine_invariant, initial, device = "cpu")
+riem.optimize(problems$affine_invariant, initial, device = "cuda:0")
+```

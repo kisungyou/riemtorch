@@ -11,6 +11,9 @@ Description: Metric-aware optimization of user-defined tensor objectives on
     geometry kernels, and extensible geometry contracts using 'torch' as the
     sole numerical backend. Algorithms follow Boumal (2023)
     <doi:10.1017/9781009166164>.
+URL: https://www.kisungyou.com/riemtorch/,
+    https://github.com/kisungyou/riemtorch
+BugReports: https://github.com/kisungyou/riemtorch/issues
 License: GPL (>= 2)
 Depends: R (>= 4.1.0)
 Imports: torch (>= 0.17.0), stats, utils

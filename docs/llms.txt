@@ -1,0 +1,431 @@
+# riemtorch
+
+RIEMANNIAN OPTIMIZATION IN R
+
+Your objective. Its geometry.  
+One torch workflow.
+
+Optimize user-defined tensor objectives on spheres, matrix manifolds,
+hyperbolic spaces, and products. Use automatic differentiation, choose a
+solver, and run on a compatible CPU or GPU.
+
+[Get
+started](https://www.kisungyou.com/riemtorch/articles/getting-started.md)
+[Explore
+examples](https://www.kisungyou.com/riemtorch/articles/examples.md)
+
+## A first optimization
+
+Find the unit vector most aligned with a target. The sphere supplies the
+geometry; the objective is an ordinary scalar torch expression.
+
+``` r
+
+library(torch)
+library(riemtorch)
+
+M <- manifold.sphere(3)
+target <- torch_tensor(c(1, 2, 3), dtype = torch_float64())
+x0 <- torch_tensor(c(1, 0, 0), dtype = torch_float64())
+problem <- riem.problem(
+  M, function(x, data) -torch_sum(x * data), data = target
+)
+
+fit <- riem.optimize(problem, x0, method = "conjugate_gradient")
+fit$point  # approximately c(0.2673, 0.5345, 0.8018)
+fit$termination
+```
+
+The run selects a compatible device automatically. Add `device = "cpu"`
+to force CPU execution, including on a CUDA workstation. Registered
+`data` moves with the problem. [Learn about devices and
+precision](https://www.kisungyou.com/riemtorch/articles/applications-and-devices.md).
+
+## Learn with public data
+
+Explore ten worked examples in the [example
+gallery](https://www.kisungyou.com/riemtorch/articles/examples.md), from
+short introductions to complete applications. Every example includes
+executable code, figures, and numerical checks.
+
+[**Penguin measurements**Find a two-dimensional subspace and compare
+deterministic and finite-sum
+optimization.](https://www.kisungyou.com/riemtorch/articles/example-penguin-subspace.md)
+[**Industrial measurements**Compare quadratic and Huber regression on
+observations from an ammonia
+plant.](https://www.kisungyou.com/riemtorch/articles/example-stackloss-regression.md)
+[**Missing air-quality readings**Fit a compact low-rank matrix and
+evaluate predictions on held-out
+observations.](https://www.kisungyou.com/riemtorch/articles/example-airquality-completion.md)
+[**Covariance geometry**Average covariance matrices from observed time
+series using two geometric
+metrics.](https://www.kisungyou.com/riemtorch/articles/example-covariance-means.md)
+[**Tree-volume constraints**Encode nonnegative scaling exponents and
+check the constrained
+optimum.](https://www.kisungyou.com/riemtorch/articles/example-tree-constraints.md)
+[**Sparse car-data regression**Write an exact proximal operator and
+trace coefficients across penalty
+strengths.](https://www.kisungyou.com/riemtorch/articles/example-mtcars-proximal.md)
+
+The data are built into R or bundled locally with attribution. See [data
+sources and
+reproducibility](https://www.kisungyou.com/riemtorch/articles/example-data-sources.md)
+for citations, preprocessing, and downloads.
+
+## Choose your workflow
+
+| I want to… | Start with |
+|:---|:---|
+| Define my own loss | [Custom objectives](https://www.kisungyou.com/riemtorch/articles/custom-objectives.md) |
+| Choose a manifold and metric | [Geometry and metrics](https://www.kisungyou.com/riemtorch/articles/geometry-and-metrics.md) |
+| Compare smooth solvers | [Deterministic optimization](https://www.kisungyou.com/riemtorch/articles/deterministic-optimization.md) |
+| Check gradients or Hessians | [Derivative diagnostics](https://www.kisungyou.com/riemtorch/articles/checking-derivatives.md) |
+| Work with large finite sums | [Variance reduction](https://www.kisungyou.com/riemtorch/articles/variance-reduction.md) |
+| Train a torch module | [Torch training](https://www.kisungyou.com/riemtorch/articles/torch-training.md) |
+| Add constraints or a proximal term | [Constrained and nonsmooth problems](https://www.kisungyou.com/riemtorch/articles/constrained-nonsmooth.md) |
+| Find a function | [Function reference](https://www.kisungyou.com/riemtorch/reference/index.md) |
+
+## Installation
+
+Install the package from GitHub and set up the R torch runtime:
+
+``` r
+
+install.packages(c("remotes", "torch"))
+if (!torch::torch_is_installed()) torch::install_torch()
+remotes::install_github("kisungyou/riemtorch")
+```
+
+To install a local checkout instead, open `riemtorch.Rproj` and use
+**Build → Install Package** in RStudio.
+
+riemtorch uses R torch as its numerical backend and contains no compiled
+extension of its own. The [getting-started
+guide](https://www.kisungyou.com/riemtorch/articles/getting-started.md)
+walks through installation, your first solve, and interpretation of the
+result.
+
+## Know what is supported
+
+`riem.capabilities(M)` describes the operations supported by a geometry.
+[`riem.support()`](https://www.kisungyou.com/riemtorch/reference/riem.support.md)
+exposes the evidence tables. Solver convergence, derivative support, and
+hardware qualification are separate questions; consult [numerical
+limitations](https://www.kisungyou.com/riemtorch/articles/numerical-limitations.md)
+when selecting a method.
+
+Manifold means and PCA here are worked optimization examples. For a
+collection of statistical methods on manifolds, see the author’s
+[Riemann package](https://www.kisungyou.com/Riemann/).
+
+## Build this documentation locally
+
+With `riemtorch.Rproj` open in RStudio:
+
+``` r
+
+install.packages("pkgdown")  # only needed once
+pkgdown::build_site()
+```
+
+The site is written to `docs/` and opens in your browser in an
+interactive session. You can also open `docs/index.html` directly. No
+deployment is needed.
+
+# Package index
+
+## Define and solve a problem
+
+User-defined scalar objectives, structured losses, and optimization
+drivers.
+
+- [`riemtorch`](https://www.kisungyou.com/riemtorch/reference/riemtorch-package.md)
+  [`riemtorch-package`](https://www.kisungyou.com/riemtorch/reference/riemtorch-package.md)
+  : Optimization on Riemannian Manifolds with Torch
+- [`riem.problem()`](https://www.kisungyou.com/riemtorch/reference/riem.problem.md)
+  : Define a Scalar Manifold Optimization Problem
+- [`riem.problem.finitesum()`](https://www.kisungyou.com/riemtorch/reference/riem.problem.finitesum.md)
+  : Finite-Sum Problems with Explicit Normalization
+- [`riem.problem.leastsquares()`](https://www.kisungyou.com/riemtorch/reference/riem.problem.leastsquares.md)
+  : Least-Squares Objectives and Metric Adjoints
+- [`riem.problem.constrained()`](https://www.kisungyou.com/riemtorch/reference/riem.problem.constrained.md)
+  : Smooth Equality and Inequality Constrained Problems
+- [`riem.problem.composite()`](https://www.kisungyou.com/riemtorch/reference/riem.problem.composite.md)
+  : Smooth Plus Nonsmooth Manifold Problems
+- [`riem.optimize()`](https://www.kisungyou.com/riemtorch/reference/riem.optimize.md)
+  : Optimize a User-Defined Manifold Objective
+- [`riem.multistart()`](https://www.kisungyou.com/riemtorch/reference/riem.multistart.md)
+  : Run Reproducible Multiple Starts on One Device
+- [`riem.evaluate()`](https://www.kisungyou.com/riemtorch/reference/riem.evaluate.md)
+  [`riem.hessian()`](https://www.kisungyou.com/riemtorch/reference/riem.evaluate.md)
+  : Evaluate Values and Metric Derivatives
+
+## Choose a geometry
+
+### Vectors, tensors, and curved spaces
+
+- [`manifold.euclidean()`](https://www.kisungyou.com/riemtorch/reference/manifold.euclidean.md)
+  : Euclidean Tensor Geometry
+- [`manifold.sphere()`](https://www.kisungyou.com/riemtorch/reference/manifold.sphere.md)
+  : Round Sphere Geometry
+- [`manifold.oblique()`](https://www.kisungyou.com/riemtorch/reference/manifold.oblique.md)
+  [`manifold.multinomial()`](https://www.kisungyou.com/riemtorch/reference/manifold.oblique.md)
+  : Oblique Matrices and the Fisher–Rao Simplex
+- [`manifold.hyperbolic()`](https://www.kisungyou.com/riemtorch/reference/manifold.hyperbolic.md)
+  : Hyperbolic Ball and Hyperboloid
+- [`manifold.torus()`](https://www.kisungyou.com/riemtorch/reference/manifold.torus.md)
+  : Flat Torus in Angle Coordinates
+- [`manifold.positive()`](https://www.kisungyou.com/riemtorch/reference/manifold.positive.md)
+  : Positive Tensors with a Log-Euclidean Metric
+- [`manifold.complexcircle()`](https://www.kisungyou.com/riemtorch/reference/manifold.complexcircle.md)
+  [`manifold.unitary()`](https://www.kisungyou.com/riemtorch/reference/manifold.complexcircle.md)
+  : Complex Phases and Unitary Matrices
+
+### Frames, matrix groups, and subspaces
+
+- [`manifold.stiefel()`](https://www.kisungyou.com/riemtorch/reference/manifold.stiefel.md)
+  [`manifold.grassmann()`](https://www.kisungyou.com/riemtorch/reference/manifold.stiefel.md)
+  : Stiefel and Grassmann Frame Geometries
+- [`manifold.stiefel.generalized()`](https://www.kisungyou.com/riemtorch/reference/manifold.stiefel.generalized.md)
+  [`manifold.grassmann.generalized()`](https://www.kisungyou.com/riemtorch/reference/manifold.stiefel.generalized.md)
+  : Generalized Orthogonality Geometries
+- [`manifold.rotation()`](https://www.kisungyou.com/riemtorch/reference/manifold.rotation.md)
+  [`manifold.rigidmotion()`](https://www.kisungyou.com/riemtorch/reference/manifold.rotation.md)
+  : Rotations and Rigid Motions
+- [`manifold.affine()`](https://www.kisungyou.com/riemtorch/reference/manifold.affine.md)
+  [`manifold.orthogonal()`](https://www.kisungyou.com/riemtorch/reference/manifold.affine.md)
+  : Affine Subspaces and Orthogonal Matrices
+
+### Positive-definite, low-rank, and constrained matrices
+
+- [`manifold.spd()`](https://www.kisungyou.com/riemtorch/reference/manifold.spd.md)
+  : Symmetric Positive-Definite Matrix Geometry
+- [`manifold.spdk()`](https://www.kisungyou.com/riemtorch/reference/manifold.spdk.md)
+  : Fixed-Rank Positive-Semidefinite Geometry
+- [`manifold.fixedrank()`](https://www.kisungyou.com/riemtorch/reference/manifold.fixedrank.md)
+  : Fixed-Rank Rectangular Matrix Geometry
+- [`manifold.elliptope()`](https://www.kisungyou.com/riemtorch/reference/manifold.elliptope.md)
+  [`manifold.spectrahedron()`](https://www.kisungyou.com/riemtorch/reference/manifold.elliptope.md)
+  : Fixed-Rank Elliptope and Spectrahedron
+- [`manifold.correlation()`](https://www.kisungyou.com/riemtorch/reference/manifold.correlation.md)
+  : Full-Rank Correlation Geometries
+- [`manifold.doublystochastic()`](https://www.kisungyou.com/riemtorch/reference/manifold.doublystochastic.md)
+  : Positive Doubly Stochastic Matrix Geometry
+- [`manifold.landmark()`](https://www.kisungyou.com/riemtorch/reference/manifold.landmark.md)
+  : Kendall Landmark Shape Geometry
+
+### Combine and scale geometries
+
+- [`manifold.product()`](https://www.kisungyou.com/riemtorch/reference/manifold.product.md)
+  : Weighted Product Geometry
+- [`manifold.power()`](https://www.kisungyou.com/riemtorch/reference/manifold.power.md)
+  [`manifold.scaled()`](https://www.kisungyou.com/riemtorch/reference/manifold.power.md)
+  : Repeated and Scaled Manifold Geometries
+
+## Operate on manifold points
+
+- [`riem.random()`](https://www.kisungyou.com/riemtorch/reference/riem.random.md)
+  : Generate Feasible Initial Points
+- [`riem.belongs()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.tangent()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.istangent()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.inner()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.norm()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.egrad2rgrad()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.retr()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.transport()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.project()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.exp()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.log()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.sqdist()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.dist()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  [`riem.ehess2rhess()`](https://www.kisungyou.com/riemtorch/reference/riem.belongs.md)
+  : Inspect and Operate on Manifold Points
+- [`riem.materialize()`](https://www.kisungyou.com/riemtorch/reference/riem.materialize.md)
+  : Materialize or Extract Entries from a Compact Matrix Point
+- [`riem.chart()`](https://www.kisungyou.com/riemtorch/reference/riem.chart.md)
+  [`riem.chart.inverse()`](https://www.kisungyou.com/riemtorch/reference/riem.chart.md)
+  : Correlation Chart Coordinates
+- [`riem.matrix.function()`](https://www.kisungyou.com/riemtorch/reference/riem.matrix.function.md)
+  [`riem.matrix.frechet()`](https://www.kisungyou.com/riemtorch/reference/riem.matrix.function.md)
+  : Stable Symmetric Matrix Functions
+
+## Check derivatives and capabilities
+
+- [`riem.check.manifold()`](https://www.kisungyou.com/riemtorch/reference/riem.check.manifold.md)
+  [`riem.check.gradient()`](https://www.kisungyou.com/riemtorch/reference/riem.check.manifold.md)
+  [`riem.check.hessian()`](https://www.kisungyou.com/riemtorch/reference/riem.check.manifold.md)
+  [`riem.check.adjoint()`](https://www.kisungyou.com/riemtorch/reference/riem.check.manifold.md)
+  : Check a Manifold or User-Supplied Derivatives
+- [`riem.hessian.spectrum()`](https://www.kisungyou.com/riemtorch/reference/riem.hessian.spectrum.md)
+  : Estimate Extreme Riemannian Hessian Eigenvalues
+- [`riem.capabilities()`](https://www.kisungyou.com/riemtorch/reference/riem.capabilities.md)
+  : Inspect Primitive-Level Geometry Capabilities
+- [`riem.support()`](https://www.kisungyou.com/riemtorch/reference/riem.support.md)
+  : Inspect Published Geometry and Solver Evidence
+- [`riem.manifold()`](https://www.kisungyou.com/riemtorch/reference/riem.manifold.md)
+  : Define a Manifold Through Public Geometry Contracts
+
+## Train torch models
+
+- [`optim_rsgd()`](https://www.kisungyou.com/riemtorch/reference/optim_rsgd.md)
+  [`optim_radam()`](https://www.kisungyou.com/riemtorch/reference/optim_rsgd.md)
+  [`optim_radagrad()`](https://www.kisungyou.com/riemtorch/reference/optim_rsgd.md)
+  : Native Torch Riemannian Training Optimizers
+- [`optim_rlinesearch()`](https://www.kisungyou.com/riemtorch/reference/optim_rlinesearch.md)
+  : Armijo Riemannian Training Optimizer
+- [`riem.train()`](https://www.kisungyou.com/riemtorch/reference/riem.train.md)
+  : Train a Torch Module on One Resolved Device
+- [`riem.schedule()`](https://www.kisungyou.com/riemtorch/reference/riem.schedule.md)
+  : Learning-Rate Schedules
+- [`riem.save()`](https://www.kisungyou.com/riemtorch/reference/riem.save.md)
+  [`riem.load()`](https://www.kisungyou.com/riemtorch/reference/riem.save.md)
+  : Save and Restore Training Parameters and Optimizer State
+
+## Devices and precision
+
+- [`riem.devices()`](https://www.kisungyou.com/riemtorch/reference/riem.devices.md)
+  [`riem.device()`](https://www.kisungyou.com/riemtorch/reference/riem.devices.md)
+  : Discover and Select Torch Execution Devices
+- [`riem.to()`](https://www.kisungyou.com/riemtorch/reference/riem.to.md)
+  : Move Tensor Trees and Device-Bound Geometry
+
+# Articles
+
+### Start here
+
+Install the package, define an objective, and inspect your first result.
+
+- [Get started with
+  riemtorch](https://www.kisungyou.com/riemtorch/articles/getting-started.md):
+
+  Define a constrained tensor objective, solve it, check the result, and
+  choose CPU or GPU execution.
+
+- [Example
+  gallery](https://www.kisungyou.com/riemtorch/articles/examples.md):
+
+  Ten complete optimization examples, from first steps to public-data
+  applications, constraints, and sparse solutions.
+
+- [Data sources and
+  reproducibility](https://www.kisungyou.com/riemtorch/articles/example-data-sources.md):
+
+  Where the example data come from, how they are prepared, and how to
+  reproduce the website without dataset downloads.
+
+### Foundations
+
+Four small optimization problems with plots and independent checks.
+
+- [Find a principal direction on the
+  sphere](https://www.kisungyou.com/riemtorch/articles/example-sphere-pca.md):
+
+  A complete optimization example with iris data, a convergence plot,
+  and an independent eigenvector check.
+
+- [Fit a line with a robust
+  loss](https://www.kisungyou.com/riemtorch/articles/example-robust-regression.md):
+
+  Compare ordinary least squares and Huber loss using the same residual
+  function and verify both answers independently.
+
+- [Average positive-definite matrices
+  geometrically](https://www.kisungyou.com/riemtorch/articles/example-spd-mean.md):
+
+  Optimize an affine-invariant midpoint, visualize covariance ellipses,
+  and check a closed-form matrix reference.
+
+- [Complete a partially observed low-rank
+  matrix](https://www.kisungyou.com/riemtorch/articles/example-matrix-completion.md):
+
+  Recover missing entries with compact rank-two factors and a Riemannian
+  L-BFGS solver.
+
+### Public-data applications
+
+Work with biological, industrial, environmental, and time-series
+measurements.
+
+- [Find a two-dimensional penguin
+  subspace](https://www.kisungyou.com/riemtorch/articles/example-penguin-subspace.md):
+
+  Optimize a Grassmann subspace for Palmer Penguins measurements,
+  compare with PCA, and try a finite-sum solver.
+
+- [Robust regression on industrial
+  measurements](https://www.kisungyou.com/riemtorch/articles/example-stackloss-regression.md):
+
+  Fit quadratic and Huber regression to stackloss data, inspect weights,
+  and verify both optima with independent base R calculations.
+
+- [Reconstruct missing environmental
+  measurements](https://www.kisungyou.com/riemtorch/articles/example-airquality-completion.md):
+
+  Fit compact low-rank factors to New York air-quality measurements,
+  with a leakage-free holdout and a simple imputation baseline.
+
+- [Average covariance matrices
+  geometrically](https://www.kisungyou.com/riemtorch/articles/example-covariance-means.md):
+
+  Compare log-Euclidean and affine-invariant averages of covariance
+  matrices from European stock-index returns.
+
+### Constraints and sparsity
+
+Express modeling assumptions and penalties through optimization
+callbacks.
+
+- [Fit a constrained tree-volume
+  model](https://www.kisungyou.com/riemtorch/articles/example-tree-constraints.md):
+
+  Use equality and inequality constraints for a log-volume model, then
+  verify the solution by eliminating one slope.
+
+- [Sparse regression with a proximal
+  operator](https://www.kisungyou.com/riemtorch/articles/example-mtcars-proximal.md):
+
+  Follow a five-penalty Lasso path with an exact Euclidean proximal map
+  and verify it using coordinate descent and optimality conditions.
+
+### Geometry and objectives
+
+- [Geometry, metrics and
+  representations](https://www.kisungyou.com/riemtorch/articles/geometry-and-metrics.md):
+- [Custom tensor
+  objectives](https://www.kisungyou.com/riemtorch/articles/custom-objectives.md):
+- [Products, blocks and finite
+  sums](https://www.kisungyou.com/riemtorch/articles/structured-problems.md):
+- [Compact low-rank
+  optimization](https://www.kisungyou.com/riemtorch/articles/compact-lowrank.md):
+- [Optimization with complex
+  geometry](https://www.kisungyou.com/riemtorch/articles/complex-geometry.md):
+
+### Solvers and numerical checks
+
+- [Deterministic optimization and
+  diagnostics](https://www.kisungyou.com/riemtorch/articles/deterministic-optimization.md):
+- [Hessians and least-squares
+  problems](https://www.kisungyou.com/riemtorch/articles/second-order-and-leastsquares.md):
+- [Checking geometry and
+  derivatives](https://www.kisungyou.com/riemtorch/articles/checking-derivatives.md):
+- [Variance reduction and solver
+  controls](https://www.kisungyou.com/riemtorch/articles/variance-reduction.md):
+- [Constraints and intrinsic nonsmooth
+  optimization](https://www.kisungyou.com/riemtorch/articles/constrained-nonsmooth.md):
+
+### Training and execution
+
+- [Mixed-parameter torch training and
+  checkpoints](https://www.kisungyou.com/riemtorch/articles/torch-training.md):
+- [Sparse embeddings and resumable
+  training](https://www.kisungyou.com/riemtorch/articles/sparse-training.md):
+- [Applications and Portable Device
+  Execution](https://www.kisungyou.com/riemtorch/articles/applications-and-devices.md):
+
+### Extending the package and understanding limits
+
+- [Adding a geometry without changing a
+  solver](https://www.kisungyou.com/riemtorch/articles/extending-riemtorch.md):
+- [Numerical domains and
+  reproducibility](https://www.kisungyou.com/riemtorch/articles/numerical-limitations.md):

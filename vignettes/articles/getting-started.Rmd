@@ -26,20 +26,21 @@ This tutorial finds the unit vector most aligned with a given direction. The
 answer is known, so we can check the objective, the constraint, and the final
 point independently.
 
-## Install from your local source package
+## Installation
 
-Open `riemtorch.Rproj` in RStudio so that the package directory is your working
-directory. Install the R dependency and its numerical runtime once, then install
-the local package. These commands are setup instructions; the documentation
+Install the R torch dependency and its numerical runtime once, then install
+riemtorch from GitHub. These commands are setup instructions; the documentation
 build does not run them.
 
 ```{r installation, eval=FALSE}
-install.packages("torch")
+install.packages(c("remotes", "torch"))
 if (!torch::torch_is_installed()) torch::install_torch()
-install.packages(".", repos = NULL, type = "source")
+remotes::install_github("kisungyou/riemtorch")
 ```
 
-If you installed riemtorch already, start with the next section. Reinstall the
+To install a local checkout instead, open `riemtorch.Rproj` and use
+**Build → Install Package** in RStudio. If riemtorch is already installed,
+start with the next section. Reinstall the
 package after changing its source code to use those changes in a fresh R session.
 
 ```{r runtime-note, echo=FALSE, results='asis', eval=TRUE}

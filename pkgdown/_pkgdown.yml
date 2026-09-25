@@ -1,4 +1,4 @@
-# Local builds deliberately have no published URL. Set `url` when deploying.
+url: https://www.kisungyou.com/riemtorch/
 destination: docs
 title: riemtorch
 
@@ -39,7 +39,7 @@ navbar:
   bg: dark
   structure:
     left: [start, examples, guides, reference, news, related]
-    right: [search]
+    right: [search, github]
   components:
     start:
       text: Get started

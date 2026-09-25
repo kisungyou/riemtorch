@@ -1,0 +1,115 @@
+# Data sources and reproducibility
+
+The [example
+gallery](https://www.kisungyou.com/riemtorch/articles/examples.md)
+combines small synthetic problems with applications using public
+observations. All data needed for the examples are available locally:
+five applications use R’s `datasets` package, and the penguin
+application uses a bundled CSV. Building the site does not install a
+data package or download a dataset.
+
+## Data inventory
+
+| Dataset | Source and measurements | Missing data and preparation |
+|:---|:---|:---|
+| [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/reference/penguins.html) | 344 penguins; bill length/depth and flipper length in millimeters, mass in grams. | Complete cases of these four measurements only, leaving 342 rows. Standardize the measurements. Species is used only to color a plot. Missing sex does not remove a row. |
+| [Stack loss](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/stackloss.html) | 21 days of ammonia-plant operation: air flow, water temperature, acid concentration, and stack loss. | No missing values. Standardize the predictors; document the loss threshold in response units. These are observational measurements, not known erroneous values. |
+| [Air quality](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/airquality.html) | 153 days in New York in 1973. Ozone in ppb, solar radiation in Langleys, wind in mph, temperature in degrees Fahrenheit. | Ozone has 37 missing values and solar radiation has 7. Exclude Month/Day from the matrix. Separate naturally missing values from a seeded holdout of observed entries; derive means and scales from training entries. |
+| [European stock indices](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/EuStockMarkets.html) | 1,860 business-time observations of DAX, SMI, CAC, and FTSE indices, supplied to R by Erste Bank AG. | Convert to percentage log returns. Use 15 complete, nonoverlapping blocks of 120 returns; omit the final 59 returns. Apply 5% covariance shrinkage before geometric averaging. |
+| [Black cherry trees](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html) | 31 trees: diameter in inches, height in feet, and timber volume in cubic feet. | No missing values. The column named `Girth` actually measures diameter. Log-transform the three variables; nonnegative exponents summing to three are a modeling assumption. |
+| [Motor Trend cars](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html) | 32 cars. Response: miles per US gallon. Predictors: displacement (cubic inches), horsepower, rear-axle ratio, weight (1,000 pounds), and quarter-mile time (seconds). | No missing values in the selected columns. Center `mpg`, standardize the five predictors, and recover the intercept from the centering transformation. No test-set prediction claim is made. |
+
+The foundation PCA example uses R’s `iris` measurements; the other three
+foundation examples use fixed synthetic matrices or seeded simulated
+data. Consult
+[`help("iris", package = "datasets")`](https://rdrr.io/r/datasets/iris.html)
+and each R dataset’s help page for the original bibliographic
+references. The examples use the copies distributed with R rather than
+fetching another version from a website.
+
+## The bundled penguin snapshot
+
+- [Download
+  penguins.csv](https://www.kisungyou.com/riemtorch/articles/data/penguins.csv).
+- [Download the attribution and CC0
+  notice](https://www.kisungyou.com/riemtorch/articles/data/NOTICE-penguins.txt).
+- [Download the extraction
+  script](https://www.kisungyou.com/riemtorch/articles/data/extract-penguins.R).
+
+The CSV is an unchanged copy of `extdata/penguins.csv` from
+`palmerpenguins` **0.1.1**. Its SHA-256 checksum is:
+
+``` text
+f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93
+```
+
+The observations were collected by Kristen B. Gorman and the Palmer
+Station Antarctica Long Term Ecological Research program, and curated
+for R by Allison Marie Horst, Alison Presmanes Hill, and Kristen B.
+Gorman. The upstream project distributes these data under [CC0
+1.0](https://allisonhorst.github.io/palmerpenguins/LICENSE.html). No
+penguin artwork is redistributed here.
+
+For attribution, cite Horst, Hill, and Gorman (2020),
+[palmerpenguins](https://doi.org/10.5281/zenodo.3960218), and Gorman,
+Williams, and Fraser (2014), [the original ecological
+study](https://doi.org/10.1371/journal.pone.0090081). The notice links
+the original species-level data releases as well.
+
+The five R datasets are accessed through `datasets::` and are not copied
+into riemtorch. R’s distribution terms and the source references in
+their help pages remain applicable; the penguin dataset’s CC0 notice
+does not cover those separate datasets.
+
+To recreate the penguin snapshot, obtain `palmerpenguins` version 0.1.1
+and run the extraction script from the package project. It checks the
+package version and file checksum before copying the CSV. This is a
+maintenance operation; neither that package nor the extraction script is
+needed to build the site.
+
+``` r
+
+source("vignettes/articles/data/extract-penguins.R")
+```
+
+## Reproduce the examples
+
+Open `riemtorch.Rproj` in RStudio and run
+[`pkgdown::build_site()`](https://pkgdown.r-lib.org/reference/build_site.html).
+The new applications use CPU float64, one torch thread, and explicit
+R/torch seeds. Each article executes numerical assertions against an
+independent calculation or a clearly stated geometric condition. A
+failed assertion stops the build.
+
+The gallery’s [recorded
+runtimes](https://www.kisungyou.com/riemtorch/articles/data/example-runtimes.csv)
+measure complete standalone article rendering, including initialization,
+plots, and Pandoc, on the documented reference machine. They are not
+solver benchmarks. Fresh processes are used for two repetitions of each
+new application; deterministic numeric results are compared with
+tolerance `1e-8` after scaling by `pmax(1, abs(result))`. Wall-clock
+times and hardware metadata are excluded from that comparison.
+
+No dataset network connection is needed. pkgdown itself may still
+retrieve its standard theme assets or package metadata; this is separate
+from data loading. The articles show explicit `device = "auto"`,
+`device = "cpu"`, and indexed CUDA alternatives. Only CPU results are
+used for the reproducibility checks.
+
+## What the checks establish
+
+PCA is checked by its subspace projector, since basis vectors are not
+unique. Regression and proximal solutions are compared with independent
+base-R calculations. Constrained fits report feasibility and optimality
+residuals. SPD examples verify positive definiteness and the relevant
+metric conditions.
+
+For air quality, only deliberately withheld observations have known
+answers. The example reports its errors alongside a column-mean baseline
+even if it does not improve on that baseline. Nothing in the example
+establishes the accuracy of predictions for measurements that were
+originally missing.
+
+Small illustrative datasets support learning and numerical verification.
+They do not establish general predictive accuracy, causal conclusions,
+or large-scale performance.

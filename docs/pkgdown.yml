@@ -1,0 +1,36 @@
+pandoc: 3.8.3
+pkgdown: 2.2.1
+pkgdown_sha: ~
+articles:
+  applications-and-devices: applications-and-devices.html
+  checking-derivatives: checking-derivatives.html
+  compact-lowrank: compact-lowrank.html
+  complex-geometry: complex-geometry.html
+  constrained-nonsmooth: constrained-nonsmooth.html
+  custom-objectives: custom-objectives.html
+  deterministic-optimization: deterministic-optimization.html
+  articles/example-airquality-completion: example-airquality-completion.html
+  articles/example-covariance-means: example-covariance-means.html
+  articles/example-data-sources: example-data-sources.html
+  articles/example-matrix-completion: example-matrix-completion.html
+  articles/example-mtcars-proximal: example-mtcars-proximal.html
+  articles/example-penguin-subspace: example-penguin-subspace.html
+  articles/example-robust-regression: example-robust-regression.html
+  articles/example-spd-mean: example-spd-mean.html
+  articles/example-sphere-pca: example-sphere-pca.html
+  articles/example-stackloss-regression: example-stackloss-regression.html
+  articles/example-tree-constraints: example-tree-constraints.html
+  articles/examples: examples.html
+  extending-riemtorch: extending-riemtorch.html
+  geometry-and-metrics: geometry-and-metrics.html
+  articles/getting-started: getting-started.html
+  numerical-limitations: numerical-limitations.html
+  second-order-and-leastsquares: second-order-and-leastsquares.html
+  sparse-training: sparse-training.html
+  structured-problems: structured-problems.html
+  torch-training: torch-training.html
+  variance-reduction: variance-reduction.html
+last_built: 2026-09-25T19:03Z
+urls:
+  reference: https://www.kisungyou.com/riemtorch/reference
+  article: https://www.kisungyou.com/riemtorch/articles

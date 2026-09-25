@@ -69,19 +69,16 @@ citations, preprocessing, and downloads.
 
 ## Installation
 
-Install R torch and its numerical runtime once:
+Install the package from GitHub and set up the R torch runtime:
 
 ```r
-install.packages("torch")
-torch::install_torch()
+install.packages(c("remotes", "torch"))
+if (!torch::torch_is_installed()) torch::install_torch()
+remotes::install_github("kisungyou/riemtorch")
 ```
 
-Open `riemtorch.Rproj` and use **Build → Install Package** in RStudio, or install
-the local source from the package directory:
-
-```r
-install.packages(".", repos = NULL, type = "source")
-```
+To install a local checkout instead, open `riemtorch.Rproj` and use
+**Build → Install Package** in RStudio.
 
 riemtorch uses R torch as its numerical backend and contains no compiled extension
 of its own. The [getting-started guide](articles/getting-started.html) walks through
