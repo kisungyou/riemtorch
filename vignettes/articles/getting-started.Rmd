@@ -233,7 +233,7 @@ registered tensor data and device-aware training in more detail.
 
 ## Where to go next
 
-- [Example gallery](examples.html): ten illustrated introductions and public-data applications.
+- [Example gallery](examples.html): illustrated introductions and public-data applications.
 - [Data sources and reproducibility](example-data-sources.html): local data, provenance, and numerical checks.
 - [Geometry and metrics](geometry-and-metrics.html): choose a geometry and its metric.
 - [Custom objectives](custom-objectives.html): write losses and register tensor data.

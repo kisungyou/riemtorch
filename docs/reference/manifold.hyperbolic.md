@@ -45,8 +45,8 @@ if (torch::torch_is_installed()) {
   riem.log(M, x, y)
 }
 #> torch_tensor
-#>  0.1688
-#> -0.2223
-#>  0.0272
+#> -0.1332
+#>  0.0417
+#> -0.1915
 #> [ CPUDoubleType{3} ]
 ```

@@ -9,3 +9,6 @@
 "example-covariance-means",9.545,9.03099999999998,9.28799999999999,0
 "example-tree-constraints",12.04,11.55,11.795,0
 "example-mtcars-proximal",17.788,18.021,17.9045,0
+"example-hands-alignment",4.969,3.882,4.4255,0
+"example-cities-center",2.139,2.187,2.163,0
+"example-erp-covariances",2.433,2.271,2.352,0

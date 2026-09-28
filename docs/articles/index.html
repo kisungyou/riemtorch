@@ -48,13 +48,13 @@
       <dl><dt><a href="getting-started.html">Get started with riemtorch</a></dt>
         <dd><p>Define a constrained tensor objective, solve it, check the result, and choose CPU or GPU execution.</p>
         </dd><dt><a href="examples.html">Example gallery</a></dt>
-        <dd><p>Ten complete optimization examples, from first steps to public-data applications, constraints, and sparse solutions.</p>
+        <dd><p>Thirteen complete optimization examples, from first steps to public-data applications, constraints, and sparse solutions.</p>
         </dd><dt><a href="example-data-sources.html">Data sources and reproducibility</a></dt>
         <dd><p>Where the example data come from, how they are prepared, and how to reproduce the website without dataset downloads.</p>
       </dd></dl></div>
     <div class="section ">
       <h3>Foundations</h3>
-      <div class="section-desc"><p>Four small optimization problems with plots and independent checks.</p></div>
+      <div class="section-desc"><p>Five small optimization problems with plots and independent checks.</p></div>
 
       <dl><dt><a href="example-sphere-pca.html">Find a principal direction on the sphere</a></dt>
         <dd><p>A complete optimization example with iris data, a convergence plot, and an independent eigenvector check.</p>
@@ -64,10 +64,12 @@
         <dd><p>Optimize an affine-invariant midpoint, visualize covariance ellipses, and check a closed-form matrix reference.</p>
         </dd><dt><a href="example-matrix-completion.html">Complete a partially observed low-rank matrix</a></dt>
         <dd><p>Recover missing entries with compact rank-two factors and a Riemannian L-BFGS solver.</p>
+        </dd><dt><a href="example-hands-alignment.html">Align hand shapes without reflections</a></dt>
+        <dd><p>Align planar hand landmarks on the rotation manifold and check each solution against determinant-corrected SVD.</p>
       </dd></dl></div>
     <div class="section ">
       <h3>Public-data applications</h3>
-      <div class="section-desc"><p>Work with biological, industrial, environmental, and time-series measurements.</p></div>
+      <div class="section-desc"><p>Optimize geometric summaries and models from public observations.</p></div>
 
       <dl><dt><a href="example-penguin-subspace.html">Find a two-dimensional penguin subspace</a></dt>
         <dd><p>Optimize a Grassmann subspace for Palmer Penguins measurements, compare with PCA, and try a finite-sum solver.</p>
@@ -77,6 +79,10 @@
         <dd><p>Fit compact low-rank factors to New York air-quality measurements, with a leakage-free holdout and a simple imputation baseline.</p>
         </dd><dt><a href="example-covariance-means.html">Average covariance matrices geometrically</a></dt>
         <dd><p>Compare log-Euclidean and affine-invariant averages of covariance matrices from European stock-index returns.</p>
+        </dd><dt><a href="example-cities-center.html">Find a population-weighted center on the globe</a></dt>
+        <dd><p>Find spherical centers of 60 historical US city locations, compare population weights, and verify the result with base R.</p>
+        </dd><dt><a href="example-erp-covariances.html">Summarize MEG covariance features geometrically</a></dt>
+        <dd><p>Optimize a log-Euclidean covariance mean for 216 transformed MEG epochs from Riemann’s ERP data.</p>
       </dd></dl></div>
     <div class="section ">
       <h3>Constraints and sparsity</h3>

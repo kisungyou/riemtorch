@@ -35,8 +35,8 @@ if(torch::torch_is_installed()) {
   x$sum(dim=1)
 }
 #> torch_tensor
-#>  1.0000
-#>  1.0000
-#>  1.0000
+#>  1
+#>  1
+#>  1
 #> [ CPUDoubleType{3} ]
 ```

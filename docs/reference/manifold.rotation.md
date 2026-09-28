@@ -41,14 +41,14 @@ if (torch::torch_is_installed()) {
 }
 #> $rotation
 #> torch_tensor
-#> -0.9096  0.4156
-#> -0.4156 -0.9096
+#> -0.6762  0.7367
+#> -0.7367 -0.6762
 #> [ CPUDoubleType{2,2} ]
 #> 
 #> $translation
 #> torch_tensor
-#> -1.3964
-#> -0.9807
+#>  1.2751
+#>  0.7991
 #> [ CPUDoubleType{2} ]
 #> 
 ```

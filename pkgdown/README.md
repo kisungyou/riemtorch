@@ -37,16 +37,18 @@ required to execute the tutorials; the build does not install it automatically.
   `roxygen2::roxygenise()` before rebuilding the site.
 - `NEWS.md`: the changelog.
 
-The ten worked examples use seeded, small CPU problems and base R plots.
+The thirteen worked examples use seeded, small CPU problems and base R plots.
 They execute during an ordinary site build. The installed package vignettes
 retain their existing behavior, including automatic device selection where
 demonstrated. Reference examples are enabled.
 
-Six public-data applications use five built-in R datasets and the bundled
-`vignettes/articles/data/penguins.csv` snapshot. Its attribution, CC0 notice,
-checksum, and extraction instructions are supplied alongside it and on the
-data-source page. `palmerpenguins` is needed only to recreate the snapshot,
-not to build the website. No dataset is downloaded during a build.
+The examples use built-in R datasets, the bundled
+`vignettes/articles/data/penguins.csv`, and three Riemann data snapshots.
+Hand alignment appears under Foundations; cities and ERP appear under
+Public-data applications. Attribution, license notices, checksums, and
+extraction instructions are supplied alongside the snapshots and on the
+data-source page. Neither `palmerpenguins` nor Riemann is needed to build
+the website. No dataset is downloaded during a build.
 
 The gallery reads measured article render times from
 `vignettes/articles/data/example-runtimes.csv`. To refresh these measurements
@@ -59,6 +61,26 @@ Rebuild the site after refreshing the measurements. Then run
 local links, fragment targets, figure descriptions, and downloadable files.
 The public-data verification report and logs are in
 `development/documentation/public-data/verification.md`.
+
+To verify only the three Riemann examples, keep their evidence separate with:
+
+```sh
+RIEMTORCH_VERIFICATION_DIR=development/documentation/riemann-data \
+  Rscript development/documentation/verify-public-examples.R \
+  example-hands-alignment example-cities-center example-erp-covariances
+```
+
+This runs each selected article twice in fresh R sessions, checks its independent
+numerical assertions and reproducibility, and updates only its timing rows.
+After rebuilding the site, save the link and download checks with:
+
+```sh
+python3 development/documentation/validate-public-site.py \
+  --output development/documentation/riemann-data/site-check.json
+```
+
+See `development/documentation/riemann-data/verification.md` for the corresponding
+results and data-snapshot checks.
 
 The generated `docs/` directory and website-only sources are excluded from
 package source archives. Commit `docs/` to Git after rebuilding: GitHub Pages

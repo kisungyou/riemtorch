@@ -1,0 +1,9 @@
+Tracing function "download.file" in package "namespace:utils"
+[WARNING] Could not convert TeX math 
+   F(G)=\frac{1}{2n}\sum_{i=1}^n
+        \|\log G-\log C_i\|_F^2.
+  , rendering as TeX
+[WARNING] Could not convert TeX math 
+   F(G)=\tfrac12\|\log G-\bar L\|_F^2+\tfrac12v.
+  , rendering as TeX
+Untracing function "download.file" in package "namespace:utils"

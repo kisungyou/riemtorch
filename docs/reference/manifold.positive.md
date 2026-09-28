@@ -27,8 +27,8 @@ if(torch::torch_is_installed()) {
   riem.random(M,device="cpu")
 }
 #> torch_tensor
-#>  0.2743
-#>  5.8222
-#>  1.9203
+#>  0.2329
+#>  1.3809
+#>  1.0549
 #> [ CPUDoubleType{3} ]
 ```

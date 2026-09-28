@@ -50,9 +50,9 @@ if (torch::torch_is_installed()) {
   riem.random(S)
 }
 #> torch_tensor
-#>  0.2100
-#>  0.0410
-#>  0.3220
-#>  0.4270
+#>  0.0540
+#>  0.3590
+#>  0.1983
+#>  0.3887
 #> [ CPUDoubleType{4} ]
 ```

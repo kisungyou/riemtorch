@@ -7,13 +7,20 @@ resource_files:
   - data/NOTICE-penguins.txt
   - data/extract-penguins.R
   - data/example-runtimes.csv
+  - data/riemann-cities.rds
+  - data/riemann-hands.rds
+  - data/riemann-ERP.rds
+  - data/riemann-snapshots.csv
+  - data/NOTICE-Riemann.txt
+  - data/extract-riemann.R
 ---
 
 The [example gallery](examples.html) combines small synthetic problems with
 applications using public observations. All data needed for the examples are
-available locally: five applications use R's `datasets` package, and the
-penguin application uses a bundled CSV. Building the site does not install a
-data package or download a dataset.
+available locally: examples use R's `datasets` package and bundled snapshots
+from Palmer Penguins and Riemann. Building the site does not install a data
+package or download a dataset. Riemann supplies observations for three examples;
+their numerical optimization uses riemtorch and R torch.
 
 ## Data inventory
 
@@ -25,9 +32,13 @@ data package or download a dataset.
 | [European stock indices](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/EuStockMarkets.html) | 1,860 business-time observations of DAX, SMI, CAC, and FTSE indices, supplied to R by Erste Bank AG. | Convert to percentage log returns. Use 15 complete, nonoverlapping blocks of 120 returns; omit the final 59 returns. Apply 5% covariance shrinkage before geometric averaging. |
 | [Black cherry trees](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html) | 31 trees: diameter in inches, height in feet, and timber volume in cubic feet. | No missing values. The column named `Girth` actually measures diameter. Log-transform the three variables; nonnegative exponents summing to three are a modeling assumption. |
 | [Motor Trend cars](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html) | 32 cars. Response: miles per US gallon. Predictors: displacement (cubic inches), horsepower, rear-axle ratio, weight (1,000 pounds), and quarter-mile time (seconds). | No missing values in the selected columns. Center `mpg`, standardize the five predictors, and recover the intercept from the centering transformation. No test-set prediction claim is made. |
+| [US cities](example-cities-center.html) (`Riemann::cities`) | 60 historical city locations and population counts, described as January 2006 data; latitude/longitude in degrees and unit Cartesian coordinates. Derived by Riemann from `maps::us.cities`. | No missing locations or populations. Compare equal-city weights with population weights normalized to sum to one. The selected cities are not the entire US population. |
+| [Hand landmarks](example-hands-alignment.html) (`Riemann::hands`) | 40 left-hand configurations from four people, with 56 corresponding planar landmarks per configuration. Physical coordinate units are unspecified. | No missing landmarks. Use the first six poses of person 1; remove translation and positive scale. Additional rotations are explicitly introduced for the demonstration and removed by SO(2) alignment. Reflections are excluded. |
+| [MEG covariance features](example-erp-covariances.html) (`Riemann::ERP`) | 216 matrices of size 32 by 32, from one participant's epochs after supervised xDAWN filtering and prototype augmentation. Labels LA, LV, RA, RV have counts 57, 57, 53, 49. | No missing matrices or labels. Apply a common positive rescaling to the very small original values, retaining every matrix. The 32 coordinates are derived features, not original sensor channels. |
 
-The foundation PCA example uses R's `iris` measurements; the other three
-foundation examples use fixed synthetic matrices or seeded simulated data. Consult
+The foundation PCA example uses R's `iris` measurements, the hand-alignment
+example uses observed landmarks, and the other three foundation examples use
+fixed synthetic matrices or seeded simulated data. Consult
 `help("iris", package = "datasets")` and each R dataset's help page for the
 original bibliographic references. The examples use the copies distributed
 with R rather than fetching another version from a website.
@@ -70,6 +81,64 @@ neither that package nor the extraction script is needed to build the site.
 
 ```{r extraction-instructions, eval=FALSE}
 source("vignettes/articles/data/extract-penguins.R")
+```
+
+## The bundled Riemann snapshots
+
+The three complete dataset objects come from **Riemann 0.1.7**, commit
+[`e847692576f8b250c8140e1343b145f72caa379f`](https://github.com/kisungyou/Riemann/tree/e847692576f8b250c8140e1343b145f72caa379f).
+The original `.rda` files were loaded and saved as version-2 RDS files without
+changing values, labels, ordering, or attributes. No preprocessing is hidden
+in these snapshots; each article shows its own transformations.
+
+- [Download cities](data/riemann-cities.rds), [hands](data/riemann-hands.rds),
+  and [ERP](data/riemann-ERP.rds).
+- [Download source and snapshot checksums](data/riemann-snapshots.csv).
+- [Download attribution and license notices](data/NOTICE-Riemann.txt).
+- [Download the extraction script](data/extract-riemann.R).
+
+The pinned Riemann release declares **MIT + file LICENSE**, with copyright
+2020 Kisung You; the bundled notice includes that license and the original
+data-source credits. This describes the pinned release, not a later development
+version. The separate Palmer Penguins CC0 notice does not apply to these
+Riemann snapshots.
+
+The hand data are attributed to Stegmann and Gomez (2002), *A Brief Introduction
+to Statistical Shape Analysis*, Technical University of Denmark. The source
+help does not identify an additional public-domain dedication for those data.
+The alignment example keeps handedness; Riemann's `wrap.landmark()` uses an
+orthogonal quotient that also identifies reflections, so the two conventions
+must not be compared as if they were identical.
+
+For ERP, the provenance follows the reconstruction documented in Riemann's
+September 2026 data-source correction and the
+[historical pyRiemann recipe](https://github.com/pyRiemann/pyRiemann/blob/176e766f540bd4c7846f38573165fc3d27fc69ca/examples/ERP/plot_embedding_EEG.py).
+The recipe selects **MEG and excludes EEG**. Its separate 72-epoch training
+split supplies the supervised spatial filters; the packaged matrices describe
+the remaining 216 epochs. The first 16 coordinates are class-prototype
+features and the last 16 are filtered-trial features. These are repeated
+measurements from **one participant**, not 216 independent participants.
+The older package help's EEG/channel/participant wording is superseded by this
+reconstruction; the stored numerical data are unchanged.
+
+The underlying MNE sample dataset's
+[OpenNeuro record, ds000248 version 1.2.4](https://doi.org/10.18112/openneuro.ds000248.v1.2.4),
+declares CC0. Cite Gramfort et al.
+[(2013)](https://doi.org/10.3389/fnins.2013.00267) and
+[(2014)](https://doi.org/10.1016/j.neuroimage.2013.10.027) for MNE.
+The notice links the pinned metadata and keeps these source terms distinct
+from the package license. Neither the original recordings nor upstream code
+are redistributed in riemtorch.
+
+To recreate the snapshots, obtain a local checkout of the pinned Riemann
+source and run the following maintenance commands. The script checks the
+source-file hashes and verifies that the extracted R objects are unchanged.
+Riemann need not be installed; neither this checkout nor the script is needed
+for an ordinary website build.
+
+```{r riemann-extraction, eval=FALSE}
+source("vignettes/articles/data/extract-riemann.R")
+extract_riemann_snapshots("../Riemann")
 ```
 
 ## Reproduce the examples

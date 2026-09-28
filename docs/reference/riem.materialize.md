@@ -49,7 +49,7 @@ if(torch::torch_is_installed()) {
 }
 #> torch_tensor
 #> 0.01 *
-#>  3.1750
-#>  1.2177
+#> -9.6572
+#>  5.7723
 #> [ CPUDoubleType{2} ]
 ```

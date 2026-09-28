@@ -123,5 +123,5 @@ and an orthonormal matrix-valued point.
 Try [the penguin subspace
 application](https://www.kisungyou.com/riemtorch/articles/example-penguin-subspace.md)
 to fit two directions from public measurements and compare a finite-sum
-solver. Browse all ten applications and introductions in the [example
+solver. Browse the other applications and introductions in the [example
 gallery](https://www.kisungyou.com/riemtorch/articles/examples.md).

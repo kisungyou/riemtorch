@@ -13,8 +13,8 @@ Install the package, define an objective, and inspect your first result.
 - [Example
   gallery](https://www.kisungyou.com/riemtorch/articles/examples.md):
 
-  Ten complete optimization examples, from first steps to public-data
-  applications, constraints, and sparse solutions.
+  Thirteen complete optimization examples, from first steps to
+  public-data applications, constraints, and sparse solutions.
 
 - [Data sources and
   reproducibility](https://www.kisungyou.com/riemtorch/articles/example-data-sources.md):
@@ -24,7 +24,7 @@ Install the package, define an objective, and inspect your first result.
 
 ### Foundations
 
-Four small optimization problems with plots and independent checks.
+Five small optimization problems with plots and independent checks.
 
 - [Find a principal direction on the
   sphere](https://www.kisungyou.com/riemtorch/articles/example-sphere-pca.md):
@@ -50,10 +50,15 @@ Four small optimization problems with plots and independent checks.
   Recover missing entries with compact rank-two factors and a Riemannian
   L-BFGS solver.
 
+- [Align hand shapes without
+  reflections](https://www.kisungyou.com/riemtorch/articles/example-hands-alignment.md):
+
+  Align planar hand landmarks on the rotation manifold and check each
+  solution against determinant-corrected SVD.
+
 ### Public-data applications
 
-Work with biological, industrial, environmental, and time-series
-measurements.
+Optimize geometric summaries and models from public observations.
 
 - [Find a two-dimensional penguin
   subspace](https://www.kisungyou.com/riemtorch/articles/example-penguin-subspace.md):
@@ -78,6 +83,18 @@ measurements.
 
   Compare log-Euclidean and affine-invariant averages of covariance
   matrices from European stock-index returns.
+
+- [Find a population-weighted center on the
+  globe](https://www.kisungyou.com/riemtorch/articles/example-cities-center.md):
+
+  Find spherical centers of 60 historical US city locations, compare
+  population weights, and verify the result with base R.
+
+- [Summarize MEG covariance features
+  geometrically](https://www.kisungyou.com/riemtorch/articles/example-erp-covariances.md):
+
+  Optimize a log-Euclidean covariance mean for 216 transformed MEG
+  epochs from Riemann’s ERP data.
 
 ### Constraints and sparsity
 

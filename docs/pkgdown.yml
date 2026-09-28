@@ -10,8 +10,11 @@ articles:
   custom-objectives: custom-objectives.html
   deterministic-optimization: deterministic-optimization.html
   articles/example-airquality-completion: example-airquality-completion.html
+  articles/example-cities-center: example-cities-center.html
   articles/example-covariance-means: example-covariance-means.html
   articles/example-data-sources: example-data-sources.html
+  articles/example-erp-covariances: example-erp-covariances.html
+  articles/example-hands-alignment: example-hands-alignment.html
   articles/example-matrix-completion: example-matrix-completion.html
   articles/example-mtcars-proximal: example-mtcars-proximal.html
   articles/example-penguin-subspace: example-penguin-subspace.html
@@ -30,7 +33,7 @@ articles:
   structured-problems: structured-problems.html
   torch-training: torch-training.html
   variance-reduction: variance-reduction.html
-last_built: 2026-09-25T19:49Z
+last_built: 2026-09-26T21:54Z
 urls:
   reference: https://www.kisungyou.com/riemtorch/reference
   article: https://www.kisungyou.com/riemtorch/articles

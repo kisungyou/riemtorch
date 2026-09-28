@@ -8,14 +8,21 @@ if (!rmarkdown::pandoc_available()) stop("Run in RStudio or configure RSTUDIO_PA
 if (!torch::torch_is_installed()) stop("Install the torch runtime before verification.")
 
 root <- normalizePath(".")
-out <- file.path(root, "development", "documentation", "public-data")
+out <- Sys.getenv("RIEMTORCH_VERIFICATION_DIR",
+                  file.path(root, "development", "documentation", "public-data"))
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
-articles <- c("example-sphere-pca", "example-robust-regression", "example-spd-mean",
+all_articles <- c("example-sphere-pca", "example-robust-regression", "example-spd-mean",
               "example-matrix-completion", "example-penguin-subspace",
               "example-stackloss-regression", "example-airquality-completion",
               "example-covariance-means", "example-tree-constraints",
-              "example-mtcars-proximal")
-applications <- articles[5:10]
+              "example-mtcars-proximal", "example-hands-alignment",
+              "example-cities-center", "example-erp-covariances")
+requested <- commandArgs(trailingOnly = TRUE)
+if (anyDuplicated(requested) || !all(requested %in% all_articles)) {
+  stop("Supply unique article names from the worked-example gallery.")
+}
+articles <- if (length(requested)) requested else all_articles
+applications <- setdiff(all_articles, all_articles[1:4])
 stopifnot(unname(tools::md5sum(file.path(root, "vignettes/articles/data/penguins.csv"))) ==
             "a06a0210251465a86fb970018292304d")
 
@@ -74,7 +81,12 @@ for (i in seq_along(articles)) {
 }
 
 timings <- do.call(rbind, records)
-write.csv(timings, file.path(root, "vignettes/articles/data/example-runtimes.csv"),
+timing_path <- file.path(root, "vignettes/articles/data/example-runtimes.csv")
+previous <- read.csv(timing_path, stringsAsFactors = FALSE)
+updated <- rbind(previous[!previous$article %in% articles, ], timings)
+updated <- updated[match(all_articles, updated$article), ]
+stopifnot(!anyNA(updated$article), !anyDuplicated(updated$article))
+write.csv(updated, timing_path,
           row.names = FALSE)
 writeLines(c(capture.output(sessionInfo()),
              paste("Platform:", paste(Sys.info(), collapse = "; ")),

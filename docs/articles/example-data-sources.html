@@ -76,10 +76,11 @@
     
 <p>The <a href="examples.html">example gallery</a> combines small
 synthetic problems with applications using public observations. All data
-needed for the examples are available locally: five applications use R’s
-<code>datasets</code> package, and the penguin application uses a
-bundled CSV. Building the site does not install a data package or
-download a dataset.</p>
+needed for the examples are available locally: examples use R’s
+<code>datasets</code> package and bundled snapshots from Palmer Penguins
+and Riemann. Building the site does not install a data package or
+download a dataset. Riemann supplies observations for three examples;
+their numerical optimization uses riemtorch and R torch.</p>
 <div class="section level2">
 <h2 id="data-inventory">Data inventory<a class="anchor" aria-label="anchor" href="#data-inventory"></a>
 </h2>
@@ -153,15 +154,50 @@ pounds), and quarter-mile time (seconds).</td>
 intercept from the centering transformation. No test-set prediction
 claim is made.</td>
 </tr>
+<tr class="odd">
+<td align="left">
+<a href="example-cities-center.html">US cities</a>
+(<code><a href="https://kisungyou.com/Riemann/reference/cities.html" class="external-link">Riemann::cities</a></code>)</td>
+<td align="left">60 historical city locations and population counts,
+described as January 2006 data; latitude/longitude in degrees and unit
+Cartesian coordinates. Derived by Riemann from
+<code><a href="https://rdrr.io/pkg/maps/man/us.cities.html" class="external-link">maps::us.cities</a></code>.</td>
+<td align="left">No missing locations or populations. Compare equal-city
+weights with population weights normalized to sum to one. The selected
+cities are not the entire US population.</td>
+</tr>
+<tr class="even">
+<td align="left">
+<a href="example-hands-alignment.html">Hand
+landmarks</a> (<code><a href="https://kisungyou.com/Riemann/reference/hands.html" class="external-link">Riemann::hands</a></code>)</td>
+<td align="left">40 left-hand configurations from four people, with 56
+corresponding planar landmarks per configuration. Physical coordinate
+units are unspecified.</td>
+<td align="left">No missing landmarks. Use the first six poses of person
+1; remove translation and positive scale. Additional rotations are
+explicitly introduced for the demonstration and removed by SO(2)
+alignment. Reflections are excluded.</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<a href="example-erp-covariances.html">MEG covariance
+features</a> (<code><a href="https://kisungyou.com/Riemann/reference/ERP.html" class="external-link">Riemann::ERP</a></code>)</td>
+<td align="left">216 matrices of size 32 by 32, from one participant’s
+epochs after supervised xDAWN filtering and prototype augmentation.
+Labels LA, LV, RA, RV have counts 57, 57, 53, 49.</td>
+<td align="left">No missing matrices or labels. Apply a common positive
+rescaling to the very small original values, retaining every matrix. The
+32 coordinates are derived features, not original sensor channels.</td>
+</tr>
 </tbody>
 </table>
-<p>The foundation PCA example uses R’s <code>iris</code> measurements;
-the other three foundation examples use fixed synthetic matrices or
-seeded simulated data. Consult
-<code><a href="https://rdrr.io/r/datasets/iris.html" class="external-link">help("iris", package = "datasets")</a></code> and each R dataset’s
-help page for the original bibliographic references. The examples use
-the copies distributed with R rather than fetching another version from
-a website.</p>
+<p>The foundation PCA example uses R’s <code>iris</code> measurements,
+the hand-alignment example uses observed landmarks, and the other three
+foundation examples use fixed synthetic matrices or seeded simulated
+data. Consult <code><a href="https://rdrr.io/r/datasets/iris.html" class="external-link">help("iris", package = "datasets")</a></code> and each R
+dataset’s help page for the original bibliographic references. The
+examples use the copies distributed with R rather than fetching another
+version from a website.</p>
 </div>
 <div class="section level2">
 <h2 id="the-bundled-penguin-snapshot">The bundled penguin snapshot<a class="anchor" aria-label="anchor" href="#the-bundled-penguin-snapshot"></a>
@@ -200,6 +236,66 @@ This is a maintenance operation; neither that package nor the extraction
 script is needed to build the site.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"vignettes/articles/data/extract-penguins.R"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="the-bundled-riemann-snapshots">The bundled Riemann snapshots<a class="anchor" aria-label="anchor" href="#the-bundled-riemann-snapshots"></a>
+</h2>
+<p>The three complete dataset objects come from <strong>Riemann
+0.1.7</strong>, commit <a href="https://github.com/kisungyou/Riemann/tree/e847692576f8b250c8140e1343b145f72caa379f" class="external-link"><code>e847692576f8b250c8140e1343b145f72caa379f</code></a>.
+The original <code>.rda</code> files were loaded and saved as version-2
+RDS files without changing values, labels, ordering, or attributes. No
+preprocessing is hidden in these snapshots; each article shows its own
+transformations.</p>
+<ul>
+<li>
+<a href="data/riemann-cities.rds">Download cities</a>, <a href="data/riemann-hands.rds">hands</a>, and <a href="data/riemann-ERP.rds">ERP</a>.</li>
+<li>
+<a href="data/riemann-snapshots.csv">Download source and snapshot
+checksums</a>.</li>
+<li>
+<a href="data/NOTICE-Riemann.txt">Download attribution and license
+notices</a>.</li>
+<li>
+<a href="data/extract-riemann.R">Download the extraction
+script</a>.</li>
+</ul>
+<p>The pinned Riemann release declares <strong>MIT + file
+LICENSE</strong>, with copyright 2020 Kisung You; the bundled notice
+includes that license and the original data-source credits. This
+describes the pinned release, not a later development version. The
+separate Palmer Penguins CC0 notice does not apply to these Riemann
+snapshots.</p>
+<p>The hand data are attributed to Stegmann and Gomez (2002), <em>A
+Brief Introduction to Statistical Shape Analysis</em>, Technical
+University of Denmark. The source help does not identify an additional
+public-domain dedication for those data. The alignment example keeps
+handedness; Riemann’s <code>wrap.landmark()</code> uses an orthogonal
+quotient that also identifies reflections, so the two conventions must
+not be compared as if they were identical.</p>
+<p>For ERP, the provenance follows the reconstruction documented in
+Riemann’s September 2026 data-source correction and the <a href="https://github.com/pyRiemann/pyRiemann/blob/176e766f540bd4c7846f38573165fc3d27fc69ca/examples/ERP/plot_embedding_EEG.py" class="external-link">historical
+pyRiemann recipe</a>. The recipe selects <strong>MEG and excludes
+EEG</strong>. Its separate 72-epoch training split supplies the
+supervised spatial filters; the packaged matrices describe the remaining
+216 epochs. The first 16 coordinates are class-prototype features and
+the last 16 are filtered-trial features. These are repeated measurements
+from <strong>one participant</strong>, not 216 independent participants.
+The older package help’s EEG/channel/participant wording is superseded
+by this reconstruction; the stored numerical data are unchanged.</p>
+<p>The underlying MNE sample dataset’s <a href="https://doi.org/10.18112/openneuro.ds000248.v1.2.4" class="external-link">OpenNeuro
+record, ds000248 version 1.2.4</a>, declares CC0. Cite Gramfort et al.
+<a href="https://doi.org/10.3389/fnins.2013.00267" class="external-link">(2013)</a> and <a href="https://doi.org/10.1016/j.neuroimage.2013.10.027" class="external-link">(2014)</a> for
+MNE. The notice links the pinned metadata and keeps these source terms
+distinct from the package license. Neither the original recordings nor
+upstream code are redistributed in riemtorch.</p>
+<p>To recreate the snapshots, obtain a local checkout of the pinned
+Riemann source and run the following maintenance commands. The script
+checks the source-file hashes and verifies that the extracted R objects
+are unchanged. Riemann need not be installed; neither this checkout nor
+the script is needed for an ordinary website build.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"vignettes/articles/data/extract-riemann.R"</span><span class="op">)</span></span>
+<span><span class="fu">extract_riemann_snapshots</span><span class="op">(</span><span class="st">"../Riemann"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reproduce-the-examples">Reproduce the examples<a class="anchor" aria-label="anchor" href="#reproduce-the-examples"></a>

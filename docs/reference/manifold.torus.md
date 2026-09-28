@@ -23,7 +23,7 @@ A manifold with d real angles, each interpreted modulo 2\*pi.
 ``` r
 if (torch::torch_is_installed()) riem.random(manifold.torus(2))
 #> torch_tensor
-#> -0.4008
-#>  1.8734
+#>  1.2411
+#> -1.9798
 #> [ CPUDoubleType{2} ]
 ```

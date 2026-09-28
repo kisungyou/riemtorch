@@ -37,7 +37,7 @@ with the problem. [Learn about devices and precision](articles/applications-and-
 
 ## Learn with public data
 
-Explore ten worked examples in the [example gallery](articles/examples.html),
+Explore thirteen worked examples in the [example gallery](articles/examples.html),
 from short introductions to complete applications. Every example includes
 executable code, figures, and numerical checks.
 
@@ -49,6 +49,9 @@ executable code, figures, and numerical checks.
 <a class="rt-example" href="articles/example-covariance-means.html"><strong>Covariance geometry</strong><span>Average covariance matrices from observed time series using two geometric metrics.</span></a>
 <a class="rt-example" href="articles/example-tree-constraints.html"><strong>Tree-volume constraints</strong><span>Encode nonnegative scaling exponents and check the constrained optimum.</span></a>
 <a class="rt-example" href="articles/example-mtcars-proximal.html"><strong>Sparse car-data regression</strong><span>Write an exact proximal operator and trace coefficients across penalty strengths.</span></a>
+<a class="rt-example" href="articles/example-cities-center.html"><strong>Cities on the globe</strong><span>Find spherical centers with equal and population weights using historical city locations.</span></a>
+<a class="rt-example" href="articles/example-hands-alignment.html"><strong>Hand-shape alignment</strong><span>Optimize rotations of hand landmarks and verify the result with a singular-value decomposition.</span></a>
+<a class="rt-example" href="articles/example-erp-covariances.html"><strong>Brain-recording covariances</strong><span>Summarize MEG covariance features with an efficient log-Euclidean objective.</span></a>
 </div>
 ```
 

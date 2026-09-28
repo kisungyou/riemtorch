@@ -43,7 +43,7 @@ precision](https://www.kisungyou.com/riemtorch/articles/applications-and-devices
 
 ## Learn with public data
 
-Explore ten worked examples in the [example
+Explore thirteen worked examples in the [example
 gallery](https://www.kisungyou.com/riemtorch/articles/examples.md), from
 short introductions to complete applications. Every example includes
 executable code, figures, and numerical checks.
@@ -66,6 +66,15 @@ optimum.](https://www.kisungyou.com/riemtorch/articles/example-tree-constraints.
 [**Sparse car-data regression**Write an exact proximal operator and
 trace coefficients across penalty
 strengths.](https://www.kisungyou.com/riemtorch/articles/example-mtcars-proximal.md)
+[**Cities on the globe**Find spherical centers with equal and population
+weights using historical city
+locations.](https://www.kisungyou.com/riemtorch/articles/example-cities-center.md)
+[**Hand-shape alignment**Optimize rotations of hand landmarks and verify
+the result with a singular-value
+decomposition.](https://www.kisungyou.com/riemtorch/articles/example-hands-alignment.md)
+[**Brain-recording covariances**Summarize MEG covariance features with
+an efficient log-Euclidean
+objective.](https://www.kisungyou.com/riemtorch/articles/example-erp-covariances.md)
 
 The data are built into R or bundled locally with attribution. See [data
 sources and

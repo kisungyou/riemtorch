@@ -1,0 +1,98 @@
+Riemann data snapshots for the riemtorch documentation
+
+Source package: Riemann 0.1.7, by Kisung You
+Repository: https://github.com/kisungyou/Riemann
+Pinned commit: e847692576f8b250c8140e1343b145f72caa379f
+Source directory: https://github.com/kisungyou/Riemann/tree/e847692576f8b250c8140e1343b145f72caa379f/data
+Snapshot date: 2026-09-25
+
+Files: riemann-cities.rds, riemann-hands.rds, riemann-ERP.rds.
+The complete R objects were loaded from cities.rda, hands.rda, and ERP.rda
+and saved as version-2, xz-compressed RDS files. Values, ordering, labels,
+and attributes are unchanged. Preprocessing is performed visibly in the
+articles. riemann-snapshots.csv records source-file MD5 and snapshot SHA-256
+checksums. extract-riemann.R reproduces the extraction from a local checkout.
+These website-only files are excluded from the installed riemtorch package.
+
+The pinned Riemann release declares MIT + file LICENSE, with YEAR: 2020 and
+COPYRIGHT HOLDER: Kisung You. This refers to that pinned release, not the
+license or version of a later development checkout. Its MIT notice follows
+below. Original data-source credits and terms are retained separately;
+Riemann's package license does not erase those attributions. No upstream
+artwork or numerical implementation is copied.
+
+cities
+------
+60 cities in the contiguous United States with populations above 300,000
+in the historical January-2006 description; city names, latitude/longitude,
+unit Cartesian coordinates, and population counts. Riemann derived the
+observations from maps::us.cities. These are historical data, not a current
+population inventory. Source documentation:
+https://github.com/kisungyou/Riemann/blob/e847692576f8b250c8140e1343b145f72caa379f/R/data_cities.R
+https://cran.r-project.org/package=maps
+
+hands
+-----
+40 left-hand configurations from four people, with 56 corresponding planar
+landmarks per configuration. The first six configurations per person form a
+sequence from maximally to minimally spread fingers; the remaining four
+are additional poses. These are repeated configurations, not 40 people.
+Source attribution: Stegmann MB and Gomez DD (2002), A Brief Introduction
+to Statistical Shape Analysis, Informatics and Mathematical Modelling,
+Technical University of Denmark (DTU).
+https://github.com/kisungyou/Riemann/blob/e847692576f8b250c8140e1343b145f72caa379f/R/data_hands.R
+Riemann's dataset help does not supply a separate public-domain dedication
+for hands. The penguin or MNE CC0 notices must not be applied to it.
+
+ERP
+---
+216 covariance matrices of size 32 by 32, with labels LA, LV, RA, RV
+(57, 57, 53, 49 epochs respectively). The underlying MNE sample audiovisual
+recording is from ONE participant. A reconstruction documented in Riemann's
+September-21-2026 provenance update identifies supervised xDAWN filtering
+and prototype augmentation of MEG data, not 32 original EEG sensors.
+The matrices comprise 16 prototype and 16 filtered-trial features.
+The separate 72-epoch training set was used to learn the representation;
+the packaged 216 test epochs are not independent participants.
+Data values match the pinned release; the older release's EEG/channel/
+participant description is superseded by this provenance reconstruction.
+
+Historical recipe by Pedro Rodrigues, pyRiemann 0.2.7:
+https://github.com/pyRiemann/pyRiemann/blob/176e766f540bd4c7846f38573165fc3d27fc69ca/examples/ERP/plot_embedding_EEG.py
+The recipe explicitly uses meg=True, eeg=False, four xDAWN filters per
+class, centered empirical covariance, and a 25% training split with seed 42.
+The recipe code is BSD-3-Clause; no recipe code is redistributed here.
+
+Underlying MNE sample dataset: OpenNeuro ds000248, version 1.2.4 (CC0).
+https://doi.org/10.18112/openneuro.ds000248.v1.2.4
+Pinned metadata declaring CC0:
+https://raw.githubusercontent.com/OpenNeuroDatasets/ds000248/0a357f1276dbf7fcc3c3fc35f74cb24ffe4a68a8/dataset_description.json
+CC0 legal text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+References:
+Gramfort A et al. (2013). MEG and EEG data analysis with MNE-Python.
+Frontiers in Neuroscience 7:267. https://doi.org/10.3389/fnins.2013.00267
+Gramfort A et al. (2014). MNE software for processing MEG and EEG data.
+NeuroImage 86:446-460. https://doi.org/10.1016/j.neuroimage.2013.10.027
+
+MIT License (pinned Riemann package)
+----------------------------------
+Copyright (c) 2020 Kisung You
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

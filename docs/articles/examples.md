@@ -2,15 +2,16 @@
 
 Start with a foundation example to learn the problem interface, or
 choose a public-data application close to your work. Every page contains
-runnable code, figures, and checks of the numerical result. The six
-applications use data already included with R or bundled in this
-website; no dataset download is needed when building the documentation.
+runnable code, figures, and checks of the numerical result. The examples
+use data already included with R or bundled from Palmer Penguins and
+Riemann; no dataset download is needed when building the documentation.
 
 ## Foundations
 
-These short introductions isolate the optimization ideas. The sphere
-example uses two iris measurements; the other three construct small
-synthetic problems with known reference answers.
+These introductions isolate the optimization ideas. The sphere example
+uses two iris measurements, and the rotation example uses hand landmarks
+from Riemann. The other three construct small synthetic problems with
+known reference answers.
 
 [![Centered iris measurements with the optimized principal
 direction.](example-sphere-pca_files/figure-html/direction-plot-1.png)](https://www.kisungyou.com/riemtorch/articles/example-sphere-pca.md)
@@ -65,6 +66,21 @@ representation.
 **Dataset** Synthetic rank-two matrix
 
 Intermediate CPU render: 8.0 s
+
+Read example →
+
+[![Overlaid hand landmarks before and after rotation alignment,
+preserving differences between finger
+poses.](example-hands-alignment_files/figure-html/alignment-plot-1.png)](https://www.kisungyou.com/riemtorch/articles/example-hands-alignment.md)
+
+Rotations: SO(2) **Align hand shapes without reflections**
+
+Align centered hand landmarks with rotations and check the result
+against an exact SVD solution.
+
+**Dataset** Hand landmarks (Riemann)
+
+Introductory CPU render: 4.4 s
 
 Read example →
 
@@ -130,6 +146,36 @@ stock-index returns.
 **Dataset** European stock indices
 
 Intermediate CPU render: 9.3 s
+
+Read example →
+
+[![Historical US city locations and equal-city, population-weighted, and
+chordal
+centers.](example-cities-center_files/figure-html/cities-centers-1.png)](https://www.kisungyou.com/riemtorch/articles/example-cities-center.md)
+
+Sphere **Find a population-weighted center**
+
+Compare equal-city and population-weighted centers using squared
+great-circle distances.
+
+**Dataset** US cities (Riemann)
+
+Intermediate CPU render: 2.2 s
+
+Read example →
+
+[![Heatmaps comparing arithmetic and log-Euclidean summaries of MEG
+covariance
+features.](example-erp-covariances_files/figure-html/erp-mean-heatmaps-1.png)](https://www.kisungyou.com/riemtorch/articles/example-erp-covariances.md)
+
+SPD: log-Euclidean **Summarize MEG covariances**
+
+Use an exact compact objective to average all 216 covariance matrices
+from one participant's MEG epochs.
+
+**Dataset** MEG epochs (Riemann)
+
+Intermediate CPU render: 2.4 s
 
 Read example →
 

@@ -117,4 +117,4 @@ uses the gradient norm. For several principal directions together, use
 
 Try [the penguin subspace application](example-penguin-subspace.html) to fit
 two directions from public measurements and compare a finite-sum solver.
-Browse all ten applications and introductions in the [example gallery](examples.html).
+Browse the other applications and introductions in the [example gallery](examples.html).

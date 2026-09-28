@@ -1,0 +1,6 @@
+Tracing function "download.file" in package "namespace:utils"
+[WARNING] Could not convert TeX math 
+  \min_{R\in\mathrm{SO}(2)} \frac12\lVert XR-Y\rVert_F^2,
+  \qquad R^\mathsf{T}R=I,\quad \det(R)=1.
+  , rendering as TeX
+Untracing function "download.file" in package "namespace:utils"

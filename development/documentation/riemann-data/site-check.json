@@ -1,0 +1,106 @@
+{
+  "status": "pass",
+  "checked_at_utc": "2026-09-26T03:44:57.610734+00:00",
+  "html_pages": 131,
+  "local_links_and_assets": 2917,
+  "html_fragment_links": 614,
+  "css_asset_references": 48,
+  "public_article_plots": {
+    "example-penguin-subspace": {
+      "plots": 1,
+      "descriptive_alt": 1
+    },
+    "example-stackloss-regression": {
+      "plots": 2,
+      "descriptive_alt": 2
+    },
+    "example-airquality-completion": {
+      "plots": 2,
+      "descriptive_alt": 2
+    },
+    "example-covariance-means": {
+      "plots": 2,
+      "descriptive_alt": 2
+    },
+    "example-tree-constraints": {
+      "plots": 1,
+      "descriptive_alt": 1
+    },
+    "example-mtcars-proximal": {
+      "plots": 1,
+      "descriptive_alt": 1
+    },
+    "example-hands-alignment": {
+      "plots": 1,
+      "descriptive_alt": 1
+    },
+    "example-cities-center": {
+      "plots": 1,
+      "descriptive_alt": 1
+    },
+    "example-erp-covariances": {
+      "plots": 2,
+      "descriptive_alt": 2
+    }
+  },
+  "downloads": {
+    "penguins.csv": {
+      "bytes": 15241,
+      "linked": true
+    },
+    "NOTICE-penguins.txt": {
+      "bytes": 1616,
+      "linked": true
+    },
+    "extract-penguins.R": {
+      "bytes": 902,
+      "linked": true
+    },
+    "example-runtimes.csv": {
+      "bytes": 727,
+      "linked": true,
+      "rows": 13
+    },
+    "riemann-cities.rds": {
+      "bytes": 2796,
+      "linked": true
+    },
+    "riemann-hands.rds": {
+      "bytes": 10536,
+      "linked": true
+    },
+    "riemann-ERP.rds": {
+      "bytes": 757884,
+      "linked": true
+    },
+    "riemann-snapshots.csv": {
+      "bytes": 573,
+      "linked": true
+    },
+    "NOTICE-Riemann.txt": {
+      "bytes": 5400,
+      "linked": true
+    },
+    "extract-riemann.R": {
+      "bytes": 1333,
+      "linked": true
+    }
+  },
+  "penguins_sha256": "f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93",
+  "penguins_source_and_site_match": true,
+  "riemann_snapshots": {
+    "cities": {
+      "sha256": "6f872ce94c5e94f5d00ea46b4b51d89397f9dbab7df3ee9b196f998b292a68fe",
+      "source_and_site_match": true
+    },
+    "hands": {
+      "sha256": "7854870e08e2b85537e2a4df4c08b5cb43b774324336f7157837078a08a635c0",
+      "source_and_site_match": true
+    },
+    "ERP": {
+      "sha256": "b81c4d7c43b662019716154af5521adf291b0d5724cf3f39f0fa17a281926e16",
+      "source_and_site_match": true
+    }
+  },
+  "errors": []
+}

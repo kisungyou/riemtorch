@@ -1,6 +1,6 @@
 ---
 title: "Example gallery"
-description: "Ten complete optimization examples, from first steps to public-data applications, constraints, and sparse solutions."
+description: "Thirteen complete optimization examples, from first steps to public-data applications, constraints, and sparse solutions."
 output: rmarkdown::html_document
 resource_files:
   - data/example-runtimes.csv
@@ -8,8 +8,8 @@ resource_files:
 
 Start with a foundation example to learn the problem interface, or choose a
 public-data application close to your work. Every page contains runnable code,
-figures, and checks of the numerical result. The six applications use data
-already included with R or bundled in this website; no dataset download is
+figures, and checks of the numerical result. The examples use data
+already included with R or bundled from Palmer Penguins and Riemann; no dataset download is
 needed when building the documentation.
 
 ```{r setup, include=FALSE}
@@ -59,29 +59,34 @@ show_examples <- function(article, application, dataset, geometry, level,
 
 ## Foundations
 
-These short introductions isolate the optimization ideas. The sphere example
-uses two iris measurements; the other three construct small synthetic problems
-with known reference answers.
+These introductions isolate the optimization ideas. The sphere example uses
+two iris measurements, and the rotation example uses hand landmarks from
+Riemann. The other three construct small synthetic problems with known
+reference answers.
 
 ```{r foundations, echo=FALSE, results='asis'}
 show_examples(
   c("example-sphere-pca", "example-robust-regression", "example-spd-mean",
-    "example-matrix-completion"),
+    "example-matrix-completion", "example-hands-alignment"),
   c("Find a principal direction", "Compare quadratic and Huber loss",
-    "Compute a geometric midpoint", "Complete a low-rank matrix"),
-  c("Iris", "Synthetic regression", "Two synthetic matrices", "Synthetic rank-two matrix"),
-  c("Sphere", "Euclidean", "Positive-definite matrices", "Compact fixed rank"),
-  c("Introductory", "Introductory", "Intermediate", "Intermediate"),
+    "Compute a geometric midpoint", "Complete a low-rank matrix",
+    "Align hand shapes without reflections"),
+  c("Iris", "Synthetic regression", "Two synthetic matrices", "Synthetic rank-two matrix",
+    "Hand landmarks (Riemann)"),
+  c("Sphere", "Euclidean", "Positive-definite matrices", "Compact fixed rank", "Rotations: SO(2)"),
+  c("Introductory", "Introductory", "Intermediate", "Intermediate", "Introductory"),
   c("Recover the direction of greatest variation in two iris measurements.",
     "See how Huber loss changes a regression fit when observations contain outliers.",
     "Compare a geometric midpoint with the arithmetic average of two covariance shapes.",
-    "Recover missing entries while keeping the matrix in a compact rank-two representation."),
-  c("direction-plot", "fits-plot", "ellipses", "matrix-panels"),
+    "Recover missing entries while keeping the matrix in a compact rank-two representation.",
+    "Align centered hand landmarks with rotations and check the result against an exact SVD solution."),
+  c("direction-plot", "fits-plot", "ellipses", "matrix-panels", "alignment-plot"),
   c("Centered iris measurements with the optimized principal direction.",
     "Synthetic observations and fitted quadratic and Huber regression lines.",
     "Ellipses comparing the input matrices and their geometric and arithmetic averages.",
-    "Heatmaps of the true, partially observed, and recovered rank-two matrix."),
-  c(1680, 1680, 1680, 1536), c(1104, 1104, 1176, 652)
+    "Heatmaps of the true, partially observed, and recovered rank-two matrix.",
+    "Overlaid hand landmarks before and after rotation alignment, preserving differences between finger poses."),
+  c(1680, 1680, 1680, 1536, 1920), c(1104, 1104, 1176, 652, 1080)
 )
 ```
 
@@ -95,22 +100,31 @@ numerical details.
 ```{r applications, echo=FALSE, results='asis'}
 show_examples(
   c("example-penguin-subspace", "example-stackloss-regression",
-    "example-airquality-completion", "example-covariance-means"),
+    "example-airquality-completion", "example-covariance-means",
+    "example-cities-center", "example-erp-covariances"),
   c("Find a penguin subspace", "Fit robust industrial regression",
-    "Reconstruct missing measurements", "Average observed covariances"),
-  c("Palmer Penguins", "Stack loss", "Air quality", "European stock indices"),
-  c("Grassmann", "Euclidean", "Compact fixed rank", "SPD: log-Euclidean and affine-invariant"),
-  c("Intermediate", "Introductory", "Intermediate", "Intermediate"),
+    "Reconstruct missing measurements", "Average observed covariances",
+    "Find a population-weighted center", "Summarize MEG covariances"),
+  c("Palmer Penguins", "Stack loss", "Air quality", "European stock indices",
+    "US cities (Riemann)", "MEG epochs (Riemann)"),
+  c("Grassmann", "Euclidean", "Compact fixed rank", "SPD: log-Euclidean and affine-invariant",
+    "Sphere", "SPD: log-Euclidean"),
+  c("Intermediate", "Introductory", "Intermediate", "Intermediate", "Intermediate", "Intermediate"),
   c("Project four penguin body measurements onto a two-dimensional plane and compare with PCA.",
     "Fit quadratic and Huber models to industrial measurements and inspect their residuals.",
     "Fill gaps in environmental measurements and assess predictions on held-out observations.",
-    "Compare geometric averages of covariance matrices estimated from stock-index returns."),
-  c("penguin-projection", "fitted-residuals", "patterns", "covariance-heatmaps"),
+    "Compare geometric averages of covariance matrices estimated from stock-index returns.",
+    "Compare equal-city and population-weighted centers using squared great-circle distances.",
+    "Use an exact compact objective to average all 216 covariance matrices from one participant's MEG epochs."),
+  c("penguin-projection", "fitted-residuals", "patterns", "covariance-heatmaps",
+    "cities-centers", "erp-mean-heatmaps"),
   c("Penguin observations projected onto two dimensions and colored by species.",
     "Fitted values and residuals for quadratic and Huber industrial regression.",
     "Heatmaps separating missing and withheld measurements and showing their reconstruction.",
-    "Heatmaps comparing arithmetic, log-Euclidean, and affine-invariant covariance means."),
-  c(1680, 1920, 1920, 2160), c(1152, 960, 960, 816)
+    "Heatmaps comparing arithmetic, log-Euclidean, and affine-invariant covariance means.",
+    "Historical US city locations and equal-city, population-weighted, and chordal centers.",
+    "Heatmaps comparing arithmetic and log-Euclidean summaries of MEG covariance features."),
+  c(1680, 1920, 1920, 2160, 1680, 2160), c(1152, 960, 960, 816, 1152, 960)
 )
 ```
 

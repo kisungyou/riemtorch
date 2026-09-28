@@ -41,7 +41,7 @@ if (torch::torch_is_installed()) {
   riem.chart.inverse(M, riem.chart(M, x))
 }
 #> torch_tensor
-#>  1.0000  0.5696
-#>  0.5696  1.0000
+#>  1.0000  0.0998
+#>  0.0998  1.0000
 #> [ CPUDoubleType{2,2} ]
 ```

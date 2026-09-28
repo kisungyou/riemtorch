@@ -76,19 +76,22 @@ articles:
       - articles/examples
       - articles/example-data-sources
   - title: Foundations
-    desc: Four small optimization problems with plots and independent checks.
+    desc: Five small optimization problems with plots and independent checks.
     contents:
       - articles/example-sphere-pca
       - articles/example-robust-regression
       - articles/example-spd-mean
       - articles/example-matrix-completion
+      - articles/example-hands-alignment
   - title: Public-data applications
-    desc: Work with biological, industrial, environmental, and time-series measurements.
+    desc: Optimize geometric summaries and models from public observations.
     contents:
       - articles/example-penguin-subspace
       - articles/example-stackloss-regression
       - articles/example-airquality-completion
       - articles/example-covariance-means
+      - articles/example-cities-center
+      - articles/example-erp-covariances
   - title: Constraints and sparsity
     desc: Express modeling assumptions and penalties through optimization callbacks.
     contents:

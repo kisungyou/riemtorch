@@ -12,8 +12,8 @@
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Example gallery">
-<meta name="description" content="Ten complete optimization examples, from first steps to public-data applications, constraints, and sparse solutions.">
-<meta property="og:description" content="Ten complete optimization examples, from first steps to public-data applications, constraints, and sparse solutions.">
+<meta name="description" content="Thirteen complete optimization examples, from first steps to public-data applications, constraints, and sparse solutions.">
+<meta property="og:description" content="Thirteen complete optimization examples, from first steps to public-data applications, constraints, and sparse solutions.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -76,16 +76,17 @@
     
 <p>Start with a foundation example to learn the problem interface, or
 choose a public-data application close to your work. Every page contains
-runnable code, figures, and checks of the numerical result. The six
-applications use data already included with R or bundled in this
-website; no dataset download is needed when building the
+runnable code, figures, and checks of the numerical result. The examples
+use data already included with R or bundled from Palmer Penguins and
+Riemann; no dataset download is needed when building the
 documentation.</p>
 <div class="section level2">
 <h2 id="foundations">Foundations<a class="anchor" aria-label="anchor" href="#foundations"></a>
 </h2>
-<p>These short introductions isolate the optimization ideas. The sphere
-example uses two iris measurements; the other three construct small
-synthetic problems with known reference answers.</p>
+<p>These introductions isolate the optimization ideas. The sphere
+example uses two iris measurements, and the rotation example uses hand
+landmarks from Riemann. The other three construct small synthetic
+problems with known reference answers.</p>
 <div class="rt-gallery-grid">
 <a class="rt-gallery-card" href="example-sphere-pca.html" aria-labelledby="example-sphere-pca-title"><img class="rt-gallery-image" src="example-sphere-pca_files/figure-html/direction-plot-1.png" alt="Centered iris measurements with the optimized principal direction." loading="lazy" width="1680" height="1104"><div class="rt-gallery-body">
 <span class="rt-gallery-geometry">Sphere</span>
@@ -150,6 +151,23 @@ representation.
 </p>
 <div class="rt-gallery-footer">
 <span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 8.0 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+</a>
+<a class="rt-gallery-card" href="example-hands-alignment.html" aria-labelledby="example-hands-alignment-title"><img class="rt-gallery-image" src="example-hands-alignment_files/figure-html/alignment-plot-1.png" alt="Overlaid hand landmarks before and after rotation alignment, preserving differences between finger poses." loading="lazy" width="1920" height="1080"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Rotations: SO(2)</span>
+<strong class="rt-gallery-title" id="example-hands-alignment-title">Align
+hand shapes without reflections</strong>
+<p class="rt-gallery-description">
+Align centered hand landmarks with rotations and check the result
+against an exact SVD solution.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> Hand landmarks (Riemann)
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Introductory</span> <span class="rt-gallery-runtime">CPU render: 4.4 s</span>
 </div>
 <span class="rt-gallery-link" aria-hidden="true">Read example →</span>
 </div>
@@ -229,6 +247,40 @@ stock-index returns.
 </p>
 <div class="rt-gallery-footer">
 <span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 9.3 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+</a>
+<a class="rt-gallery-card" href="example-cities-center.html" aria-labelledby="example-cities-center-title"><img class="rt-gallery-image" src="example-cities-center_files/figure-html/cities-centers-1.png" alt="Historical US city locations and equal-city, population-weighted, and chordal centers." loading="lazy" width="1680" height="1152"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">Sphere</span>
+<strong class="rt-gallery-title" id="example-cities-center-title">Find a
+population-weighted center</strong>
+<p class="rt-gallery-description">
+Compare equal-city and population-weighted centers using squared
+great-circle distances.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> US cities (Riemann)
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 2.2 s</span>
+</div>
+<span class="rt-gallery-link" aria-hidden="true">Read example →</span>
+</div>
+</a>
+<a class="rt-gallery-card" href="example-erp-covariances.html" aria-labelledby="example-erp-covariances-title"><img class="rt-gallery-image" src="example-erp-covariances_files/figure-html/erp-mean-heatmaps-1.png" alt="Heatmaps comparing arithmetic and log-Euclidean summaries of MEG covariance features." loading="lazy" width="2160" height="960"><div class="rt-gallery-body">
+<span class="rt-gallery-geometry">SPD: log-Euclidean</span>
+<strong class="rt-gallery-title" id="example-erp-covariances-title">Summarize
+MEG covariances</strong>
+<p class="rt-gallery-description">
+Use an exact compact objective to average all 216 covariance matrices
+from one participant's MEG epochs.
+</p>
+<p class="rt-gallery-meta">
+<strong>Dataset</strong> MEG epochs (Riemann)
+</p>
+<div class="rt-gallery-footer">
+<span class="rt-gallery-level">Intermediate</span> <span class="rt-gallery-runtime">CPU render: 2.4 s</span>
 </div>
 <span class="rt-gallery-link" aria-hidden="true">Read example →</span>
 </div>

@@ -24,12 +24,21 @@ ARTICLES = (
     "example-covariance-means",
     "example-tree-constraints",
     "example-mtcars-proximal",
+    "example-hands-alignment",
+    "example-cities-center",
+    "example-erp-covariances",
 )
 DOWNLOADS = (
     "penguins.csv",
     "NOTICE-penguins.txt",
     "extract-penguins.R",
     "example-runtimes.csv",
+    "riemann-cities.rds",
+    "riemann-hands.rds",
+    "riemann-ERP.rds",
+    "riemann-snapshots.csv",
+    "NOTICE-Riemann.txt",
+    "extract-riemann.R",
 )
 PENGUINS_SHA256 = "f204db2c753b0937caac3cb35258562c14f073e4bbc76be24b4c51ce22767a93"
 
@@ -186,7 +195,7 @@ def main():
         with csv_path.open(encoding="utf-8", newline="") as stream:
             runtime_rows = list(csv.DictReader(stream))
         downloads.setdefault("example-runtimes.csv", {})["rows"] = len(runtime_rows)
-        if len(runtime_rows) != 10:
+        if len(runtime_rows) != 13:
             error("unexpected_gallery_runtime_count", csv_path, count=len(runtime_rows))
 
     source_csv = REPO / "vignettes/articles/data/penguins.csv"
@@ -197,6 +206,22 @@ def main():
     if not hashes_match:
         error("penguins_checksum_mismatch", built_csv,
               source_sha256=source_hash, built_sha256=built_hash)
+
+    riemann_checks = {}
+    manifest = REPO / "vignettes/articles/data/riemann-snapshots.csv"
+    with manifest.open(encoding="utf-8", newline="") as stream:
+        snapshots = list(csv.DictReader(stream))
+    if {row["dataset"] for row in snapshots} != {"cities", "hands", "ERP"} or len(snapshots) != 3:
+        error("invalid_riemann_manifest", manifest)
+    for row in snapshots:
+        source = manifest.parent / row["filename"]
+        published = site / "articles/data" / row["filename"]
+        source_sha = hashlib.sha256(source.read_bytes()).hexdigest()
+        site_sha = hashlib.sha256(published.read_bytes()).hexdigest() if published.is_file() else None
+        match = source_sha == site_sha == row["sha256"]
+        riemann_checks[row["dataset"]] = {"sha256": source_sha, "source_and_site_match": match}
+        if not match:
+            error("riemann_checksum_mismatch", published)
 
     evidence = {
         "status": "pass" if not errors else "fail",
@@ -209,6 +234,7 @@ def main():
         "downloads": downloads,
         "penguins_sha256": source_hash,
         "penguins_source_and_site_match": hashes_match,
+        "riemann_snapshots": riemann_checks,
         "errors": errors,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
